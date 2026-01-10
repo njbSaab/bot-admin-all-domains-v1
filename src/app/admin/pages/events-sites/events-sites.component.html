@@ -1,0 +1,130 @@
+
+<app-sidebar></app-sidebar>
+<section class="events-page ml-side section-full">
+  <div class="mx-auto pt-[10px]">
+    <div
+      class="bg-main-trans2-gradient-90 header-tab flex items-center justify-between py-[10px] mb-0 rounded-[20px] w-full pr-4 max-w-[1200px] mx-auto"
+    >
+      <div class="title-group flex items-center gap-4">
+        <h2 class="title-tab text-xl font-bold text-indigo-600 w-[30%]">
+          Выберите сайт события: 👉
+        </h2>
+        <div class="title-tab text-main-trans font-bold w-fit">
+          <select
+            class="select select-primary text-xl rounded-[25px] w-full"
+            [(ngModel)]="selectedLandingUrl"
+            (ngModelChange)="onLandingUrlFilterChange()"
+          >
+            <option [ngValue]="null">Все лендинги</option>
+            <option
+              *ngFor="let landing of uniqueLatestLandings"
+              [ngValue]="landing.url"
+            >
+              {{ landing.url }} ({{
+                landing.status === "0" ? "Неактивен" : "Активен"
+              }})
+              {{
+                getActiveEventTypeEventId(landing.url)
+                  ? " - " + getActiveEventTypeEventId(landing.url)
+                  : ""
+              }}
+            </option>
+          </select>
+        </div>
+      </div>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="40"
+        height="40"
+        viewBox="0 0 24 24"
+      >
+        <!-- SVG остается без изменений -->
+      </svg>
+    </div>
+
+    <!-- Форма создания события -->
+    <div
+      *ngIf="selectedLandingUrl && canCreateEvent()"
+      class="card-wrapper bg-main-trans-gradient-0 rounded-[20px] px-[20px] pt-[15px] pb-[80px]"
+    >
+      <app-event-create
+        [newEvent]="newEvent"
+        [sports]="sports"
+        [sportBackgrounds]="sportBackgrounds"
+        [landingUrl]="selectedLandingUrl"
+        [hasActiveEvent]="hasActiveEvent(selectedLandingUrl)"
+        (sportChange)="onSportChange()"
+        (create)="createEvent()"
+        (cancel)="cancelCreateEvent()"
+      ></app-event-create>
+    </div>
+
+    <!-- Режим редактирования/просмотра событий -->
+    <div
+      *ngIf="!loading && filteredEvents.length > 0"
+      class="card-wrapper bg-main-trans-gradient-0 rounded-[20px] px-[20px] pt-[15px] pb-[80px] min-h-[91dvh] h-auto"
+    >
+      <div
+        *ngFor="let event of filteredEvents; index as i"
+        class="event-card"
+        [ngClass]="{
+          inactive: event.status === 'inactive'
+        }"
+      >
+        <div
+          class="flex items-center justify-between w-[90%] mx-auto pt-[20px] pb-[20px]"
+        >
+          <p class="text-lg font-bold text-indigo-600 nj-toast-gradient">
+            🌐 Сайт
+            <a target="_blank" href="{{ event.landing_url }}">{{
+              event.landing_url
+            }}</a>
+            <span
+              class="text-sm"
+              [ngClass]="{
+                'text-green-500': event.status === 'active',
+                'text-red-500':
+                  event.status !== 'active' 
+              }"
+            >
+              ({{
+                event.status === "active"
+                  ? "Активно"
+                  : event.status === "inactive"
+                  ? "Завершено"
+                  : "Неактивно"
+              }})
+            </span>
+          </p>
+          <div class="card-date flex items-center gap-2">
+            <p class="text-xs text-gray-500">
+              Дата создания: {{ event.createdAt | date : "medium" }}
+            </p>
+          </div>
+        </div>
+
+        <!-- Режим просмотра -->
+        <app-event-view
+          *ngIf="!event.isEditing"
+          [event]="event"
+          (edit)="toggleEdit(event)"
+        ></app-event-view>
+
+        <!-- Режим редактирования -->
+        <app-event-edit
+          *ngIf="event.isEditing"
+          [event]="event"
+          (save)="saveChanges($event)"
+          (cancel)="toggleEdit(event)"
+        ></app-event-edit>
+
+        <!-- email template sends -->
+        <app-event-email-push
+          [event]="event"
+          [templates]="templates"
+          [siteUsers]="siteUsers"
+        ></app-event-email-push>
+      </div>
+    </div>
+  </div>
+</section>

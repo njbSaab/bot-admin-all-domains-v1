@@ -1,0 +1,173 @@
+<!-- Режим редактирования события -->
+<div class="card bg-base-100 mx-auto hover-shadow-white cursor-pointer w-[90%] flex flex-col gap-8">
+  <div class="card-primary-inner flex flex-col gap-4 items-center p-6">
+    <span class="text-lg text-gray-600 text-center">
+      <b>Event id: </b>{{ event.typeEventId }}
+    </span>
+
+    <div class="card-primary-text flex flex-col gap-4 items-center w-full pb-4">
+      <label class="text-lg font-bold w-full text-center grid justify-center items-center label-grid">
+        Вид спорта:
+        <input
+          [(ngModel)]="event.name"
+          class="input w-fit border border-gray-300 rounded-lg px-4 py-2.5 focus:ring focus:ring-indigo-300 focus:ring-opacity-40 text-indigo-600"
+          placeholder="Введите название события"
+        />
+      </label>
+
+      <label class="text-lg font-bold w-full text-center grid justify-center items-center label-grid">
+        Тип события:
+        <input
+          [(ngModel)]="event.type"
+          class="input w-fit border border-gray-300 rounded-lg px-4 py-2.5 focus:ring focus:ring-indigo-300 focus:ring-opacity-40 text-indigo-600"
+          placeholder="Введите тип события (напр., Ultra Liga)"
+        />
+      </label>
+
+      <label class="text-lg font-bold w-full text-center grid justify-center items-center label-grid">
+        <span class="flex flex-col">
+          Дата:
+          <span class="text-gray-400 text-xs">{{ event.endAt | date: "medium" }}</span>
+        </span>
+        <input
+          [(ngModel)]="event.endAt"
+          type="datetime-local"
+          class="input w-fit border border-gray-400 rounded-lg px-4 py-2.5 focus:ring focus:ring-indigo-300 focus:ring-opacity-40 text-indigo-600"
+        />
+      </label>
+
+      <label class="text-lg font-bold w-full text-center grid justify-center items-center label-grid">
+        Статус:
+        <select class="select select-primary text-xl w-fit rounded-[25px]" [(ngModel)]="event.status">
+          <option value="active">Активно</option>
+          <option value="inactive">Неактивно</option>
+        </select>
+      </label>
+    </div>
+
+    <div class="card-primary-image flex items-center w-full pb-8">
+      <!-- Команда A -->
+      <div class="mebmer flex flex-col items-center w-[40%]">
+        <picture *ngIf="event.imageMemberA" class="tooltip tooltip-bottom tooltip-primary" [attr.data-tip]="event.imageMemberA">
+          <img [src]="event.imageMemberA" alt="{{ event.memberA }}" class="team-image mt-2" />
+        </picture>
+        <label class="text-sm font-bold w-full text-center flex flex-col justify-center items-center gap-2 mb-2">
+          URL изображения команды A:
+          <input
+            [(ngModel)]="event.imageMemberA"
+            (blur)="refreshImage()"
+            class="input w-fit border border-gray-300 rounded-lg px-4 py-2.5 focus:ring focus:ring-indigo-300 focus:ring-opacity-40 text-indigo-600"
+            placeholder="Введите URL изображения"
+          />
+          <span
+            *ngIf="event.imageMemberA && !urlValidationService.isValidImageUrl(event.imageMemberA)"
+            class="text-red-500 text-sm mt-2 block"
+          >
+            Неверный URL, пример: {{ imageUrl }}/images/example.png
+          </span>
+        </label>
+        <label class="text-sm font-bold w-full text-center flex flex-col justify-center items-center">
+          Команда/Игрок 1:
+          <input
+            [(ngModel)]="event.memberA"
+            class="input w-fit border border-gray-300 rounded-lg px-4 focus:ring focus:ring-indigo-300 focus:ring-opacity-40 text-indigo-600"
+            placeholder="Введите название команды/игрока"
+          />
+        </label>
+      </div>
+
+      <!-- Результат -->
+      <div class="result flex flex-col items-center w-[20%]">
+        <picture *ngIf="event.result === null">
+          <img class="vs-img bg-base-300 rounded-xl p-[10px]" src="https://vietget.online/lp200/img/card-primary/VS.svg" alt="VS" />
+        </picture>
+        <div *ngIf="event.result !== null" class="text-5xl font-bold w-full text-center flex flex-col justify-center items-center">
+          {{ event.result === 1 ? event.memberA + " победил" : event.result === 2 ? event.memberB + " победил" : "Ничья" }}
+        </div>
+      </div>
+
+      <!-- Команда B -->
+      <div class="mebmer flex flex-col items-center w-[40%]">
+        <picture *ngIf="event.imageMemberB" class="tooltip tooltip-bottom tooltip-primary" [attr.data-tip]="event.imageMemberB">
+          <img [src]="event.imageMemberB" alt="{{ event.memberB }}" class="team-image mt-2" />
+        </picture>
+        <label class="text-sm font-bold w-full text-center flex flex-col justify-center items-center gap-2 mb-2">
+          URL изображения команды B:
+          <input
+            [(ngModel)]="event.imageMemberB"
+            (blur)="refreshImage()"
+            class="input w-fit border border-gray-300 rounded-lg px-4 py-2.5 focus:ring focus:ring-indigo-300 focus:ring-opacity-40 text-indigo-600"
+            placeholder="Введите URL изображения"
+          />
+          <span
+            *ngIf="event.imageMemberB && !urlValidationService.isValidImageUrl(event.imageMemberB)"
+            class="text-red-500 text-sm mt-2 block"
+          >
+            Неверный URL, пример: {{ imageUrl }}/images/example.png
+          </span>
+        </label>
+        <label class="text-sm font-bold w-full text-center flex flex-col justify-center items-center">
+          Команда/Игрок 2:
+          <input
+            [(ngModel)]="event.memberB"
+            class="input w-fit border border-gray-300 rounded-lg px-4 focus:ring focus:ring-indigo-300 focus:ring-opacity-40 text-indigo-600"
+            placeholder="Введите название команды/игрока"
+          />
+        </label>
+      </div>
+    </div>
+
+    <div class="card-primary-image flex flex-col gap-4 items-center w-full">
+      <label class="text-lg font-bold w-full text-center grid justify-center items-center label-grid">
+        Основной приз:
+        <input
+          [(ngModel)]="event.grandPrize"
+          class="input w-fit border border-gray-300 rounded-lg px-4 py-2.5 focus:ring focus:ring-indigo-300 focus:ring-opacity-40 text-indigo-600"
+          placeholder="Введите основной приз (напр., 100 FREESPINS)"
+        />
+      </label>
+      <label class="text-lg font-bold w-full text-center grid justify-center items-center label-grid">
+        Приз для каждого:
+        <input
+          [(ngModel)]="event.everyoneForPrize"
+          class="input w-fit border border-gray-300 rounded-lg px-4 py-2.5 focus:ring focus:ring-indigo-300 focus:ring-opacity-40 text-indigo-600"
+          placeholder="Введите приз для каждого (напр., +10 FS)"
+        />
+      </label>
+    </div>
+
+    <!-- Блок выбора результата для завершённых событий -->
+    <div class="w-full flex flex-col justify-center items-center gap-4" *ngIf="event.status === 'ended' || event.status === 'inactive'">
+      <label class="text-3xl font-bold w-full text-center flex justify-center items-center gap-4">
+        Результат:
+        <div class="dropdown dropdown-bottom dropdown-center">
+          <select
+            class="select select-bordered w-[200px] text-xl"
+            [(ngModel)]="event.result"
+            (ngModelChange)="onResultChange($event)"
+          >
+            <option [value]="null">Выберите результат</option>
+            <option [value]="1">{{ event.memberA }}</option>
+            <option [value]="2">{{ event.memberB }}</option>
+            <option [value]="3">Draw (Ничья)</option>
+          </select>
+        </div>
+      </label>
+    </div>
+
+    <!-- Кнопки Сохранить / Отмена -->
+    <div class="card-actions justify-center pt-4 gap-4">
+      <button class="btn btn-ghost pr-0 text-success" (click)="saveChanges()">
+        Сохранить
+        <span class="btn btn-accent">
+          <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24">
+            <path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+          </svg>
+        </span>
+      </button>
+      <button class="btn btn-ghost text-error hover:bg-error hover:text-white" (click)="cancelEdit()">
+        Отмена
+      </button>
+    </div>
+  </div>
+</div>

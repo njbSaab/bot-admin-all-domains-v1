@@ -1,0 +1,954 @@
+<div class="w-[100%] h-[1150px]">
+  <div class="overflow-y-auto h-[100%] bg-aliceblue rounded-3xl pl-4 mr-8">
+    <div class="text-edit w-full pr-5" *ngIf="emailTemplate">
+      <!-- Редактирование контента -->
+      <h2 class="text-xl font-bold text-gray-600 mb-2 py-4 text-center">
+        ✍🏻 Редактировать контент письма
+      </h2>
+      <div class="form-group mb-4">
+        <label class="block text-sm text-indigo-400 font-bold mb-1"
+          >URL логотипа:</label
+        >
+        <input
+          [(ngModel)]="emailTemplate.templateLogo"
+          class="w-full border rounded-lg px-4 py-2 focus:ring focus:ring-blue-300 focus:ring-opacity-40"
+          [disabled]="isSending"
+          placeholder="Введите URL изображения"
+        />
+      </div>
+      <div class="form-group mb-4">
+        <label class="block text-sm text-indigo-400 font-bold mb-1"
+          >Заголовок:</label
+        >
+        <input
+          [(ngModel)]="emailTemplate.templateHeader"
+          (ngModelChange)="onModelChange()"
+          class="w-full border rounded-lg px-4 py-2 focus:ring focus:ring-blue-300 focus:ring-opacity-40"
+          [disabled]="isSending"
+        />
+      </div>
+      <div class="form-group mb-4">
+        <label class="block text-sm text-indigo-400 font-bold mb-1"
+          >URL главного изображения:</label
+        >
+        <input
+          [(ngModel)]="emailTemplate.templateMainImage"
+          class="w-full border rounded-lg px-4 py-2 focus:ring focus:ring-blue-300 focus:ring-opacity-40"
+          [disabled]="isSending"
+          placeholder="Введите URL изображения"
+        />
+      </div>
+      <div class="form-group mb-4">
+        <label class="block text-sm text-indigo-400 font-bold mb-1"
+          >URL волнового изображения:</label
+        >
+        <input
+          [(ngModel)]="emailTemplate.templateWaveImage"
+          class="w-full border rounded-lg px-4 py-2 focus:ring focus:ring-blue-300 focus:ring-opacity-40"
+          [disabled]="isSending"
+          placeholder="Введите URL изображения"
+          (ngModelChange)="onModelChange()"
+        />
+      </div>
+      <div class="form-group mb-4">
+        <label class="block text-sm text-indigo-400 font-bold mb-1"
+          >Текст второго заголовка:</label
+        >
+        <input
+          [(ngModel)]="emailTemplate.templateSecondHeader"
+          class="w-full border rounded-lg px-4 py-2 focus:ring focus:ring-blue-300 focus:ring-opacity-40"
+          [disabled]="isSending"
+          (ngModelChange)="onModelChange()"
+        />
+      </div>
+      <div class="form-group mb-6">
+        <label class="text-sm text-indigo-400 font-bold mb-1 flex items-center"
+          >Текст: для отступа с новой строкой следует добавить тэг {{br}} 
+          <span class="tooltip tooltip-left tooltip-info" data-tip="Пример: Привет!<br>Это новая строка. Пример: Привет!<br><br>Это новая строка." >
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="32" viewBox="0 0 24 24"><!-- Icon from Google Material Icons by Material Design Authors - https://github.com/material-icons/material-icons/blob/master/LICENSE --><path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10s10-4.48 10-10S17.52 2 12 2m1 15h-2v-6h2zm0-8h-2V7h2z"/></svg>
+          </span>
+          </label
+        >
+        <textarea
+          [(ngModel)]="emailTemplate.templateBody"
+          class="w-full h-[25dvh] border rounded-lg px-4 py-2 focus:ring focus:ring-blue-300 focus:ring-opacity-40"
+          [disabled]="isSending"
+          (ngModelChange)="onModelChange()"
+        ></textarea>
+      </div>
+      <div class="form-group mb-4">
+        <label class="block text-sm text-indigo-400 font-bold mb-1"
+          >Текст кнопки:</label
+        >
+        <input
+          [(ngModel)]="emailTemplate.templateButtonText"
+          class="w-full border rounded-lg px-4 py-2 focus:ring focus:ring-blue-300 focus:ring-opacity-40"
+          [disabled]="isSending"
+          (ngModelChange)="onModelChange()"
+        />
+      </div>
+      <div class="form-group mb-4">
+        <label class="block text-sm text-indigo-400 font-bold mb-1"
+          >Ссылка кнопки:</label
+        >
+        <input
+          [(ngModel)]="emailTemplate.templateButtonLink"
+          class="w-full border rounded-lg px-4 py-2 focus:ring focus:ring-blue-300 focus:ring-opacity-40"
+          [disabled]="isSending"
+          placeholder="Введите URL (например, https://www.example.com)"
+          (ngModelChange)="onModelChange()"
+        />
+      </div>
+      <div class="form-group mb-4">
+        <label class="block text-sm text-indigo-400 font-bold mb-1"
+          >Текст футера:</label
+        >
+        <input
+          [(ngModel)]="emailTemplate.templateFooterText"
+          class="w-full border rounded-lg px-4 py-2 focus:ring focus:ring-blue-300 focus:ring-opacity-40"
+          [disabled]="isSending"
+          (ngModelChange)="onModelChange()"
+        />
+      </div>
+
+      <!-- Редактирование стилей -->
+      <h2 class="text-xl font-bold text-gray-600 mb-2 py-4 text-center">
+        🎨 Редактировать стили письма
+      </h2>
+      <div class="controlls">
+        <div class="mb-2 w-fit relative">
+          <label class="block text-xs pr-2">
+            Цвет фона тела:
+            <span class="text-xs">{{ emailTemplate.bodyStyle }}</span>
+          </label>
+          <input
+            type="color"
+            [(ngModel)]="emailTemplate.bodyStyle"
+            class="w-full rounded-[20px]"
+          />
+        </div>
+        <div class="mb-2 w-fit relative">
+          <label class="block text-xs pr-2"> Закругление тела письма: </label>
+          <input
+            type="text"
+            [(ngModel)]="emailTemplate.textWrapperRadius"
+            class="w-full border rounded px-2 py-1"
+          />
+        </div>
+      </div>
+
+      <div class="mb-2 w-fit relative">
+        <label class="block text-xs pr-2">
+          Цвет фона обертки:
+          <span class="text-xs">{{ emailTemplate.wrapperBg }}</span>
+        </label>
+        <input
+          type="text"
+          [(ngModel)]="emailTemplate.wrapperBg"
+          class="w-full border rounded px-2 py-1"
+          placeholder="Введите градиент или цвет (например, #ffffff)"
+        />
+      </div>
+
+      <!-- Стили логотипа -->
+      <div class="logo-controlls">
+        <div
+          class="style-header-wrapper flex items-center justify-between mb-4"
+        >
+          <h3 class="text-lg font-bold text-indigo-600">
+            Управление стилями логотипа
+          </h3>
+          <div class="w-fit flex items-center gap-2 pr-2">
+            <label class="block text-xs">Активен</label>
+            <input
+              type="checkbox"
+              [(ngModel)]="emailTemplate.isLogoActive"
+              class="checkbox checkbox-primary"
+            />
+          </div>
+        </div>
+        <div class="controlls">
+          <div class="mb-2 w-fit">
+            <label class="block text-xs">Ширина обертки</label>
+            <input
+              type="text"
+              [(ngModel)]="emailTemplate.logoWrappWidth"
+              class="w-full border rounded px-2 py-1"
+            />
+          </div>
+          <div class="mb-2 relative">
+            <label class="block text-xs">Цвет фона:</label>
+            <input
+              type="color"
+              [(ngModel)]="emailTemplate.logoBg"
+              class="w-full"
+            />
+            <span class="text-xs pos-absolute">{{
+              emailTemplate.logoBg.slice(0, 8)
+            }}</span>
+          </div>
+          <div class="mb-2">
+            <label class="block text-xs">Радиус логотипа:</label>
+            <input
+              type="text"
+              [(ngModel)]="emailTemplate.logoRadius"
+              class="w-full border rounded px-2 py-1"
+            />
+          </div>
+          <div class="mb-2 w-fit">
+            <label class="block text-xs">Выравнивание:</label>
+            <select
+              [(ngModel)]="emailTemplate.logoFloat"
+              class="w-full border rounded px-2 py-1"
+            >
+              <option value="left">Лево</option>
+              <option value="center">Центр</option>
+              <option value="right">Право</option>
+            </select>
+          </div>
+          <div class="mb-2 w-fit">
+            <label class="block text-xs">Отступ сверху:</label>
+            <input
+              type="text"
+              [(ngModel)]="emailTemplate.logoMarginT"
+              class="w-full border rounded px-2 py-1"
+            />
+          </div>
+          <div class="mb-2 w-fit">
+            <label class="block text-xs">Отступ снизу:</label>
+            <input
+              type="text"
+              [(ngModel)]="emailTemplate.logoMarginB"
+              class="w-full border rounded px-2 py-1"
+            />
+          </div>
+          <div class="mb-2 w-fit">
+            <label class="block text-xs">Ширина логотипа:</label>
+            <input
+              type="text"
+              [(ngModel)]="emailTemplate.logoWidth"
+              class="w-full border rounded px-2 py-1"
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- Стили заголовка h1 -->
+      <div class="header-controlls">
+        <div
+          class="style-header-wrapper flex items-center justify-between mb-4"
+        >
+          <h3 class="text-lg font-bold text-indigo-600">
+            Управление стилями заголовка
+          </h3>
+          <div class="w-fit flex items-center gap-2 pr-2">
+            <label class="block text-xs">Активен</label>
+            <input
+              type="checkbox"
+              [(ngModel)]="emailTemplate.isHeaderActive"
+              class="checkbox checkbox-primary"
+            />
+          </div>
+        </div>
+        <div class="controlls">
+          <div class="mb-2 relative">
+            <label class="block text-xs">Цвет фона:</label>
+            <input
+              type="color"
+              [(ngModel)]="emailTemplate.headerTitleBg"
+              class="w-full"
+            />
+            <span class="text-xs pos-absolute">{{
+              emailTemplate.headerTitleBg.slice(0, 8)
+            }}</span>
+          </div>
+          <div class="mb-2 relative">
+            <label class="block text-xs">Цвет текста:</label>
+            <input
+              type="color"
+              [(ngModel)]="emailTemplate.headercolorText"
+              class="w-full"
+            />
+            <span class="text-xs pos-absolute">{{
+              emailTemplate.headercolorText.slice(0, 8)
+            }}</span>
+          </div>
+          <div class="mb-2">
+            <label class="block text-xs">Размер шрифта:</label>
+            <input
+              type="text"
+              [(ngModel)]="emailTemplate.headerTitleFontSize"
+              class="w-full border rounded px-2 py-1"
+            />
+          </div>
+          <div class="mb-2">
+            <label class="block text-xs">Наклон шрифта:</label>
+            <select
+              [(ngModel)]="emailTemplate.headerTitleStyle"
+              class="w-full border rounded px-2 py-1"
+            >
+              <option value="normal">Обычный</option>
+              <option value="italic">Курсив</option>
+            </select>
+          </div>
+          <div class="mb-2">
+            <label class="block text-xs">Жирность шрифта:</label>
+            <select
+              [(ngModel)]="emailTemplate.headerTitleWeight"
+              class="w-full border rounded px-2 py-1"
+            >
+              <option value="normal">Обычный</option>
+              <option value="bold">Жирный</option>
+            </select>
+          </div>
+          <div class="mb-2">
+            <label class="block text-xs">Отступ сверху:</label>
+            <input
+              type="text"
+              [(ngModel)]="emailTemplate.headerTitleMarginTop"
+              class="w-full border rounded px-2 py-1"
+            />
+          </div>
+          <div class="mb-2">
+            <label class="block text-xs">Отступ снизу:</label>
+            <input
+              type="text"
+              [(ngModel)]="emailTemplate.headerTitleMarginBottom"
+              class="w-full border rounded px-2 py-1"
+            />
+          </div>
+          <div class="mb-2">
+            <label class="block text-xs">Выравнивание:</label>
+            <select
+              [(ngModel)]="emailTemplate.headerTitleAlign"
+              class="w-full border rounded px-2 py-1"
+            >
+              <option value="center">Центр</option>
+              <option value="left">Лево</option>
+              <option value="right">Право</option>
+            </select>
+          </div>
+          <div class="mb-2">
+            <label class="block text-xs">Закругление:</label>
+            <input
+              type="text"
+              [(ngModel)]="emailTemplate.headerRadius"
+              class="w-full border rounded px-2 py-1"
+            />
+          </div>
+          <div class="mb-2">
+            <label class="block text-xs">Ширина заголовка:</label>
+            <input
+              type="text"
+              [(ngModel)]="emailTemplate.headerWidth"
+              class="w-full border rounded px-2 py-1"
+            />
+          </div>
+          <div class="mb-2">
+            <label class="block text-xs">Декорация текста h1:</label>
+            <select
+              [(ngModel)]="emailTemplate.headerDecoration"
+              class="w-full border rounded px-2 py-1"
+            >
+              <option value="none">Нет</option>
+              <option value="underline">Подчеркнутый</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Стили главного изображения -->
+      <div class="img-controlls">
+        <div
+          class="style-header-wrapper flex items-center justify-between mb-4"
+        >
+          <h3 class="text-lg font-bold text-indigo-600">
+            Управление стилями главного изображения
+          </h3>
+          <div class="w-fit flex items-center gap-2 pr-2">
+            <label class="block text-xs">Активен</label>
+            <input
+              type="checkbox"
+              [(ngModel)]="emailTemplate.isMainImageActive"
+              class="checkbox checkbox-primary"
+            />
+          </div>
+        </div>
+        <div class="controlls">
+          <div class="mb-2">
+            <label class="block text-xs">Ширина изображения:</label>
+            <input
+              type="text"
+              [(ngModel)]="emailTemplate.imgWidth"
+              class="w-full border rounded px-2 py-1"
+            />
+          </div>
+          <div class="mb-2 relative">
+            <label class="block text-xs">Цвет фона:</label>
+            <input
+              type="color"
+              [(ngModel)]="emailTemplate.imgBg"
+              class="w-full"
+            />
+            <span class="text-xs pos-absolute">{{
+              emailTemplate.imgBg.slice(0, 8)
+            }}</span>
+          </div>
+          <div class="mb-2">
+            <label class="block text-xs">Закругление обертки:</label>
+            <input
+              type="text"
+              [(ngModel)]="emailTemplate.imgWrapRadius"
+              class="w-full border rounded px-2 py-1"
+            />
+          </div>
+          <div class="mb-2">
+            <label class="block text-xs">Закругление изображения:</label>
+            <input
+              type="text"
+              [(ngModel)]="emailTemplate.imgRadius"
+              class="w-full border rounded px-2 py-1"
+            />
+          </div>
+          <div class="mb-2">
+            <label class="block text-xs">Выравнивание:</label>
+            <select
+              [(ngModel)]="emailTemplate.imgFloat"
+              class="w-full border rounded px-2 py-1"
+            >
+              <option value="left">Лево</option>
+              <option value="center">Центр</option>
+              <option value="right">Право</option>
+            </select>
+          </div>
+          <div class="mb-2">
+            <label class="block text-xs">Отступ сверху:</label>
+            <input
+              type="text"
+              [(ngModel)]="emailTemplate.imgMrTop"
+              class="w-full border rounded px-2 py-1"
+            />
+          </div>
+          <div class="mb-2">
+            <label class="block text-xs">Отступ снизу:</label>
+            <input
+              type="text"
+              [(ngModel)]="emailTemplate.imgMrBottom"
+              class="w-full border rounded px-2 py-1"
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- Стили волнового изображения -->
+      <!-- <div class="wave-img-controlls">
+        <div
+          class="style-header-wrapper flex items-center justify-between mb-4"
+        >
+          <h3 class="text-lg font-bold text-indigo-600">
+            Управление стилями волнового изображения
+          </h3>
+          <div class="w-fit flex items-center gap-2 pr-2">
+            <label class="block text-xs">Активен</label>
+            <input
+              type="checkbox"
+              [(ngModel)]="emailTemplate.isWaveImageActive"
+              class="checkbox checkbox-primary"
+            />
+          </div>
+        </div>
+        <div class="controlls">
+          <div class="mb-2">
+            <label class="block text-xs">Ширина изображения:</label>
+            <input
+              type="text"
+              [(ngModel)]="emailTemplate.waveImageWidth"
+              class="w-full border rounded px-2 py-1"
+            />
+          </div>
+        </div>
+      </div> -->
+
+      <!-- Стили заголовка h2 -->
+      <div class="h2-controlls">
+        <div
+          class="style-header-wrapper flex items-center justify-between mb-4"
+        >
+          <h3 class="text-lg font-bold text-indigo-600">
+            Управление стилями заголовка h2
+          </h3>
+          <div class="w-fit flex items-center gap-2 pr-2">
+            <label class="block text-xs">Активен</label>
+            <input
+              type="checkbox"
+              [(ngModel)]="emailTemplate.isSecondHeaderActive"
+              class="checkbox checkbox-primary"
+            />
+          </div>
+        </div>
+        <div class="controlls">
+          <div class="mb-2">
+            <label class="block text-xs">Выравнивание:</label>
+            <select
+              [(ngModel)]="emailTemplate.h2TitleAlign"
+              class="w-full border rounded px-2 py-1"
+            >
+              <option value="left">Лево</option>
+              <option value="center">Центр</option>
+              <option value="right">Право</option>
+            </select>
+          </div>
+          <div class="mb-2 relative">
+            <label class="block text-xs">Цвет h2:</label>
+            <input
+              type="color"
+              [(ngModel)]="emailTemplate.h2TitleColor"
+              class="w-full"
+            />
+            <span class="text-xs pos-absolute">{{
+              emailTemplate.h2TitleColor.slice(0, 8)
+            }}</span>
+          </div>
+          <div class="mb-2 relative">
+            <label class="block text-xs">Цвет фона:</label>
+            <input
+              type="color"
+              [(ngModel)]="emailTemplate.h2Bg"
+              class="w-full"
+            />
+            <span class="text-xs pos-absolute">{{
+              emailTemplate.h2Bg.slice(0, 8)
+            }}</span>
+          </div>
+          <div class="mb-2">
+            <label class="block text-xs">Наклон шрифта:</label>
+            <select
+              [(ngModel)]="emailTemplate.h2TitleStyle"
+              class="w-full border rounded px-2 py-1"
+            >
+              <option value="normal">Обычный</option>
+              <option value="italic">Курсив</option>
+            </select>
+          </div>
+          <div class="mb-2">
+            <label class="block text-xs">Размер шрифта:</label>
+            <input
+              type="text"
+              [(ngModel)]="emailTemplate.h2TitleSize"
+              class="w-full border rounded px-2 py-1"
+            />
+          </div>
+          <div class="mb-2">
+            <label class="block text-xs">Жирность шрифта:</label>
+            <select
+              [(ngModel)]="emailTemplate.h2TitleWeight"
+              class="w-full border rounded px-2 py-1"
+            >
+              <option value="normal">Обычный</option>
+              <option value="bold">Жирный</option>
+            </select>
+          </div>
+          <div class="mb-2">
+            <label class="block text-xs">Отступ сверху:</label>
+            <input
+              type="text"
+              [(ngModel)]="emailTemplate.h2TitleMarginTop"
+              class="w-full border rounded px-2 py-1"
+            />
+          </div>
+          <div class="mb-2">
+            <label class="block text-xs">Отступ снизу:</label>
+            <input
+              type="text"
+              [(ngModel)]="emailTemplate.h2TitleMarginBottom"
+              class="w-full border rounded px-2 py-1"
+            />
+          </div>
+          <div class="mb-2">
+            <label class="block text-xs">Подчеркнутость:</label>
+            <select
+              [(ngModel)]="emailTemplate.h2TextDecoration"
+              class="w-full border rounded px-2 py-1"
+            >
+              <option value="none">Нет</option>
+              <option value="underline">Подчеркнутый</option>
+            </select>
+          </div>
+          <div class="mb-2">
+            <label class="block text-xs">Закругление:</label>
+            <input
+              type="text"
+              [(ngModel)]="emailTemplate.h2Radius"
+              class="w-full border rounded px-2 py-1"
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- Стили текстового блока -->
+      <div class="text-controlls">
+        <div
+          class="style-header-wrapper flex items-center justify-between mb-4"
+        >
+          <h3 class="text-lg font-bold text-indigo-600">
+            Управление стилями текстового блока
+          </h3>
+          <div class="w-fit flex items-center gap-2 pr-2">
+            <label class="block text-xs">Активен</label>
+            <input
+              type="checkbox"
+              [(ngModel)]="emailTemplate.isBodyActive"
+              class="checkbox checkbox-primary"
+            />
+          </div>
+        </div>
+        <div class="controlls">
+          <div class="mb-2 relative">
+            <label class="block text-xs">Цвет текста:</label>
+            <input
+              type="color"
+              [(ngModel)]="emailTemplate.mainTextColor"
+              class="w-full"
+            />
+            <span class="text-xs pos-absolute">{{
+              emailTemplate.mainTextColor.slice(0, 8)
+            }}</span>
+          </div>
+          <div class="mb-2">
+            <label class="block text-xs">Выравнивание:</label>
+            <select
+              [(ngModel)]="emailTemplate.mainTextAlign"
+              class="w-full border rounded px-2 py-1"
+            >
+              <option value="left">Лево</option>
+              <option value="center">Центр</option>
+              <option value="right">Право</option>
+            </select>
+          </div>
+          <div class="mb-2 relative">
+            <label class="block text-xs">Цвет фона:</label>
+            <input
+              type="color"
+              [(ngModel)]="emailTemplate.mainTextBg"
+              class="w-full"
+            />
+            <span class="text-xs pos-absolute">{{
+              emailTemplate.mainTextBg.slice(0, 8)
+            }}</span>
+          </div>
+          <div class="mb-2">
+            <label class="block text-xs">Отступ слева:</label>
+            <input
+              type="text"
+              [(ngModel)]="emailTemplate.textPdLeft"
+              class="w-full border rounded px-2 py-1"
+            />
+          </div>
+          <div class="mb-2">
+            <label class="block text-xs">Отступ справа:</label>
+            <input
+              type="text"
+              [(ngModel)]="emailTemplate.textPdRight"
+              class="w-full border rounded px-2 py-1"
+            />
+          </div>
+          <div class="mb-2">
+            <label class="block text-xs">Закругления фона:</label>
+            <input
+              type="text"
+              [(ngModel)]="emailTemplate.textRadius"
+              class="w-full border rounded px-2 py-1"
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- Стили обертки текста -->
+      <div class="text-controlls">
+        <h3 class="text-lg font-bold text-indigo-600 mb-2">
+          Управление стилями обертки текста
+        </h3>
+        <div class="controlls">
+          <div class="mb-2">
+            <label class="block text-xs">Выравнивание:</label>
+            <select
+              [(ngModel)]="emailTemplate.textDescrAlign"
+              class="w-full border rounded px-2 py-1"
+            >
+              <option value="left">Лево</option>
+              <option value="center">Центр</option>
+              <option value="right">Право</option>
+            </select>
+          </div>
+          <div class="mb-2 relative">
+            <label class="block text-xs">Цвет текста:</label>
+            <input
+              type="color"
+              [(ngModel)]="emailTemplate.textDescrColor"
+              class="w-full"
+            />
+            <span class="text-xs pos-absolute">{{
+              emailTemplate.textDescrColor.slice(0, 8)
+            }}</span>
+          </div>
+          <div class="mb-2 relative">
+            <label class="block text-xs">Цвет фона:</label>
+            <input
+              type="color"
+              [(ngModel)]="emailTemplate.textWrapperBg"
+              class="w-full"
+            />
+            <span class="text-xs pos-absolute">{{
+              emailTemplate.textWrapperBg.slice(0, 8)
+            }}</span>
+          </div>
+          <div class="mb-2">
+            <label class="block text-xs">Закругление:</label>
+            <input
+              type="text"
+              [(ngModel)]="emailTemplate.textWrapperRadius"
+              class="w-full border rounded px-2 py-1"
+            />
+          </div>
+          <div class="mb-2">
+            <label class="block text-xs">Отступ верх/низ:</label>
+            <input
+              type="text"
+              [(ngModel)]="emailTemplate.textPadY"
+              class="w-full border rounded px-2 py-1"
+            />
+          </div>
+          <div class="mb-2">
+            <label class="block text-xs">Отступ лево/право:</label>
+            <input
+              type="text"
+              [(ngModel)]="emailTemplate.textPadX"
+              class="w-full border rounded px-2 py-1"
+            />
+          </div>
+          <div class="mb-2">
+            <label class="block text-xs">Размер шрифта:</label>
+            <input
+              type="text"
+              [(ngModel)]="emailTemplate.textDescrFont"
+              class="w-full border rounded px-2 py-1"
+            />
+          </div>
+          <div class="mb-2">
+            <label class="block text-xs">Жирность шрифта:</label>
+            <select
+              [(ngModel)]="emailTemplate.textDescrWeight"
+              class="w-full border rounded px-2 py-1"
+            >
+              <option value="normal">Обычный</option>
+              <option value="bold">Жирный</option>
+            </select>
+          </div>
+          <div class="mb-2">
+            <label class="block text-xs">Стиль шрифта:</label>
+            <select
+              [(ngModel)]="emailTemplate.textDescrStyle"
+              class="w-full border rounded px-2 py-1"
+            >
+              <option value="normal">Обычный</option>
+              <option value="italic">Курсив</option>
+            </select>
+          </div>
+          <div class="mb-2">
+            <label class="block text-xs">Подчеркнутость:</label>
+            <select
+              [(ngModel)]="emailTemplate.textDescr"
+              class="w-full border rounded px-2 py-1"
+            >
+              <option value="none">Нет</option>
+              <option value="underline">Подчеркнутый</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Стили кнопки -->
+      <div class="btn-controlls">
+        <div
+          class="style-header-wrapper flex items-center justify-between mb-4"
+        >
+          <h3 class="text-lg font-bold text-indigo-600">
+            Управление стилями кнопки
+          </h3>
+          <div class="w-fit flex items-center gap-2 pr-2">
+            <label class="block text-xs">Активен</label>
+            <input
+              type="checkbox"
+              [(ngModel)]="emailTemplate.isButtonActive"
+              class="checkbox checkbox-primary"
+            />
+          </div>
+        </div>
+        <div class="controlls">
+          <div class="mb-2 relative">
+            <label class="block text-xs">Цвет кнопки:</label>
+            <input
+              type="color"
+              [(ngModel)]="emailTemplate.buttonColor"
+              class="w-full"
+            />
+            <span class="text-xs pos-absolute">{{
+              emailTemplate.buttonColor.slice(0, 8)
+            }}</span>
+          </div>
+          <div class="mb-2 relative">
+            <label class="block text-xs">Цвет фона:</label>
+            <input
+              type="color"
+              [(ngModel)]="emailTemplate.buttonWrapperBg"
+              class="w-full"
+            />
+            <span class="text-xs pos-absolute">{{
+              emailTemplate.buttonColor.slice(0, 8)
+            }}</span>
+          </div>
+          <!-- buttonWrapperBg -->
+          <div class="mb-2 relative">
+            <label class="block text-xs">Цвет текста:</label>
+            <input
+              type="color"
+              [(ngModel)]="emailTemplate.buttonTextColor"
+              class="w-full"
+            />
+            <span class="text-xs pos-absolute">{{
+              emailTemplate.buttonTextColor.slice(0, 8)
+            }}</span>
+          </div>
+          <div class="mb-2">
+            <label class="block text-xs">Закругление:</label>
+            <input
+              type="text"
+              [(ngModel)]="emailTemplate.buttonBorderRadius"
+              class="w-full border rounded px-2 py-1"
+            />
+          </div>
+          <div class="mb-2">
+            <label class="block text-xs">Выравнивание:</label>
+            <select
+              [(ngModel)]="emailTemplate.btnAlign"
+              class="w-full border rounded px-2 py-1"
+            >
+              <option value="left">Лево</option>
+              <option value="center">Центр</option>
+              <option value="right">Право</option>
+            </select>
+          </div>
+          <div class="mb-2">
+            <label class="block text-xs">Отступ лево/право:</label>
+            <input
+              type="text"
+              [(ngModel)]="emailTemplate.buttonPaddingX"
+              class="w-full border rounded px-2 py-1"
+            />
+          </div>
+          <div class="mb-2">
+            <label class="block text-xs">Отступ верх/низ:</label>
+            <input
+              type="text"
+              [(ngModel)]="emailTemplate.buttonPaddingY"
+              class="w-full border rounded px-2 py-1"
+            />
+          </div>
+          <div class="mb-2">
+            <label class="block text-xs">Ширина кнопки:</label>
+            <input
+              type="text"
+              [(ngModel)]="emailTemplate.buttonWidth"
+              class="w-full border rounded px-2 py-1"
+            />
+          </div>
+          <div class="mb-2">
+            <label class="block text-xs">Размер текста:</label>
+            <input
+              type="text"
+              [(ngModel)]="emailTemplate.buttonTextSize"
+              class="w-full border rounded px-2 py-1"
+            />
+          </div>
+          <div class="mb-2">
+            <label class="block text-xs">Жирность шрифта:</label>
+            <select
+              [(ngModel)]="emailTemplate.buttonfontWeight"
+              class="w-full border rounded px-2 py-1"
+            >
+              <option value="normal">Обычный</option>
+              <option value="bold">Жирный</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Стили футера -->
+      <div class="footer-controlls">
+        <div
+          class="style-header-wrapper flex items-center justify-between mb-4"
+        >
+          <h3 class="text-lg font-bold text-indigo-600">
+            Управление стилями футера
+          </h3>
+          <div class="w-fit flex items-center gap-2 pr-2">
+            <label class="block text-xs">Активен</label>
+            <input
+              type="checkbox"
+              [(ngModel)]="emailTemplate.isFooterActive"
+              class="checkbox checkbox-primary"
+            />
+          </div>
+        </div>
+        <div class="controlls">
+          <div class="mb-2 relative">
+            <label class="block text-xs">Цвет фона:</label>
+            <input
+              type="color"
+              [(ngModel)]="emailTemplate.footerBg"
+              class="w-full"
+            />
+            <span class="text-xs pos-absolute">{{
+              emailTemplate.footerBg.slice(0, 8)
+            }}</span>
+          </div>
+          <div class="mb-2 relative">
+            <label class="block text-xs">Цвет текста:</label>
+            <input
+              type="color"
+              [(ngModel)]="emailTemplate.footerTextColor"
+              class="w-full"
+            />
+            <span class="text-xs pos-absolute">{{
+              emailTemplate.footerTextColor.slice(0, 8)
+            }}</span>
+          </div>
+          <div class="mb-2">
+            <label class="block text-xs">Размер шрифта:</label>
+            <input
+              type="text"
+              [(ngModel)]="emailTemplate.footerTextFontSize"
+              class="w-full border rounded px-2 py-1"
+            />
+          </div>
+          <div class="mb-2">
+            <label class="block text-xs">Отступ лево/право:</label>
+            <input
+              type="text"
+              [(ngModel)]="emailTemplate.footerTextPaddingX"
+              class="w-full border rounded px-2 py-1"
+            />
+          </div>
+          <div class="mb-2">
+            <label class="block text-xs">Отступ верх/низ:</label>
+            <input
+              type="text"
+              [(ngModel)]="emailTemplate.footerTextPaddingY"
+              class="w-full border rounded px-2 py-1"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

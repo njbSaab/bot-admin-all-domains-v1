@@ -1,0 +1,38 @@
+<div class="chosie-email-sent flex gap-2 mb-4">
+  <!-- Manual -->
+  <div
+    class="manual-enter-email btn-block shadow-2xl px-5 py-8 mx-2 my-4 ml-1 rounded-3xl cursor-pointer hover-shadow transition-all duration-300"
+    [ngClass]="{
+      'bg-gradient-to-r from-indigo-500 to-blue-500 text-white': isActive('manual')
+    }"
+    (click)="setMode('manual')"
+  >
+    <p class="text-xl">Вставьте email-адрес(а) вручную</p>
+  </div>
+
+  <!-- Telegram -->
+  <div
+    class="telegram-users btn-block shadow-2xl px-5 py-8 mx-2 my-4 rounded-3xl cursor-pointer hover-shadow transition-all duration-300"
+    [ngClass]="{
+      'bg-gradient-to-r from-indigo-500 to-blue-500 text-white': isActive('telegram')
+    }"
+    (click)="setMode('telegram')"
+  >
+    <p class="text-xl">
+      Telegram пользователи <b>Всего:</b> ({{ telegramCount }})
+    </p>
+  </div>
+
+  <!-- Site -->
+  <div
+    class="site-users btn-block shadow-2xl px-5 py-8 mx-2 my-4 rounded-3xl cursor-pointer hover-shadow transition-all duration-300"
+    [ngClass]="{
+      'bg-gradient-to-r from-indigo-500 to-blue-500 text-white': isActive('site')
+    }"
+    (click)="setMode('site')"
+  >
+    <p class="text-xl">
+      Site пользователи <b>Всего:</b> ({{ siteCount }})
+    </p>
+  </div>
+</div>

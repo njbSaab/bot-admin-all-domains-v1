@@ -1,0 +1,143 @@
+<div
+  *ngFor="let button of buttons"
+  class="bg-reg collapse collapse-arrow hover-shadow card my-4 w-[98%] mx-auto py-4"
+>
+  <input type="checkbox" class="peer" />
+  <div
+    class="collapse-title text-indigo-400 bg-reg peer-checked:bg-primary peer-checked:text-white font-bold text-lg relative"
+  >
+    {{ button.name }}
+  </div>
+  <div class="collapse-content bg-reg">
+    <div
+      *ngIf="!button.isEditing"
+      class="sub-btn-date flex justify-between text-gray-400 text-xs py-2 px-4"
+    >
+      <span>Дата создания {{ button.created_at | date: "medium" }}</span>
+      <span>Обновлена {{ button.updated_at | date: "medium" }}</span>
+    </div>
+    <div class="sub-btn-body-wrapper">
+      <div
+        *ngIf="!button.isEditing"
+        class="sub-btn-body flex justify-between items-center"
+      >
+        <div
+          class="sub-btn-body-title text-lg font-bold text-indigo-400 flex gap-2"
+        >
+          <span>{{ button.name }}</span>
+        </div>
+        <div class="sub-btn-body-order font-bold flex gap-4 items-center">
+          <div class="order">
+            Order: <span class="nj-toast-trans">{{ button.order }}</span>
+          </div>
+          <span class="btn btn-primary" (click)="toggleEdit(button)">
+            <app-edit-icon></app-edit-icon>
+          </span>
+        </div>
+        <div class="sub-btn-url" *ngIf="button.url">Url: {{ button.url }}</div>
+      </div>
+
+      <div *ngIf="button.isEditing" class="flex items-center">
+        <div class="form-group-wrapper flex flex-1 items-center gap-4 pt-4">
+          <div class="form-group w-[30%]">
+            <label class="block text-sm text-indigo-400 font-bold"
+              >Название поста:</label
+            >
+            <input
+              [(ngModel)]="button.name"
+              class="input w-full mt-2 mb-4 border border-gray-300 rounded-lg px-4 py-2.5 focus:ring focus:ring-blue-300 focus:ring-opacity-40"
+              placeholder="Редактировать заголовок"
+            />
+          </div>
+
+          <div class="form-group w-[50%]">
+            <label class="block text-sm text-indigo-400 font-bold"
+              >Ссылка на ресурс(необязательный параметр):</label
+            >
+            <input
+              [(ngModel)]="button.url"
+              class="input w-full mt-2 mb-4 border border-gray-300 rounded-lg px-4 py-2.5 focus:ring focus:ring-blue-300 focus:ring-opacity-40"
+              placeholder="Редактировать URL кнопки"
+            />
+          </div>
+          <div class="form-group w-[12.5%]">
+            <label class="block text-sm text-indigo-400 font-bold"
+              >Очередность:</label
+            >
+            <input
+              disabled
+              [(ngModel)]="button.order"
+              class="input w-full mt-2 mb-4 border border-gray-300 rounded-lg px-4 py-2.5 focus:ring focus:ring-blue-300 focus:ring-opacity-40"
+              placeholder=""
+            />
+          </div>
+        </div>
+        <div class="btn-group flex items-center gap-2 pt-5">
+          <span class="btn btn-error" (click)="cancelEdit(button)">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="30"
+              height="30"
+              viewBox="0 0 24 24"
+              cl=""
+            >
+              <g
+                fill="none"
+                stroke="#fffFFF"
+                stroke-dasharray="16"
+                stroke-dashoffset="16"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+              >
+                <path d="M7 7l10 10">
+                  <animate
+                    fill="freeze"
+                    attributeName="stroke-dashoffset"
+                    dur="0.4s"
+                    values="16;0"
+                  />
+                </path>
+                <path d="M17 7l-10 10">
+                  <animate
+                    fill="freeze"
+                    attributeName="stroke-dashoffset"
+                    begin="0.4s"
+                    dur="0.4s"
+                    values="16;0"
+                  />
+                </path>
+              </g>
+            </svg>
+          </span>
+          <span class="btn btn-accent" (click)="saveChanges(button)">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="25"
+              height="25"
+              viewBox="0 0 24 24"
+            >
+              <path
+                fill="none"
+                stroke="#fff"
+                stroke-dasharray="24"
+                stroke-dashoffset="24"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2.7"
+                d="M5 11l6 6l10 -10"
+              >
+                <animate
+                  fill="freeze"
+                  attributeName="stroke-dashoffset"
+                  dur="0.96s"
+                  values="24;0"
+                />
+              </path>
+            </svg>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

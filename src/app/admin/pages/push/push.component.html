@@ -1,0 +1,1034 @@
+<!-- src/app/push/push.component.html -->
+<app-sidebar></app-sidebar>
+
+<section class="admin-page push-page ml-side section">
+  <div class="container mx-auto pt-[10px]">
+    <div
+      class="bg-main-trans2-gradient-90 header-tab flex items-center justify-between py-[10px] mb-[0px] rounded-[20px] w-[100%] pr-4"
+    >
+      <h2 class="title-tab text-2xl font-bold text-indigo-600">
+        Отправить ТГ сообщение или опрос
+      </h2>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="40"
+        height="40"
+        viewBox="0 0 24 24"
+      >
+        <g
+          fill="none"
+          stroke="#4f45e5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+        >
+          <path
+            fill="#4f45e5"
+            fill-opacity="0"
+            stroke-dasharray="72"
+            stroke-dashoffset="72"
+            d="M3 19.5v-15.5c0 -0.55 0.45 -1 1 -1h16c0.55 0 1 0.45 1 1v12c0 0.55 -0.45 1 -1 1h-14.5Z"
+          >
+            <animate
+              fill="freeze"
+              attributeName="fill-opacity"
+              begin="0.7s"
+              dur="0.15s"
+              values="0;0.3"
+            />
+            <animate
+              fill="freeze"
+              attributeName="stroke-dashoffset"
+              dur="0.6s"
+              values="72;0"
+            />
+          </path>
+          <path stroke-dasharray="10" stroke-dashoffset="10" d="M8 7h8">
+            <animate
+              fill="freeze"
+              attributeName="stroke-dashoffset"
+              begin="0.85s"
+              dur="0.2s"
+              values="10;0"
+            />
+          </path>
+          <path stroke-dasharray="10" stroke-dashoffset="10" d="M8 10h8">
+            <animate
+              fill="freeze"
+              attributeName="stroke-dashoffset"
+              begin="1.15s"
+              dur="0.2s"
+              values="10;0"
+            />
+          </path>
+          <path stroke-dasharray="6" stroke-dashoffset="6" d="M8 13h4">
+            <animate
+              fill="freeze"
+              attributeName="stroke-dashoffset"
+              begin="1.45s"
+              dur="0.2s"
+              values="6;0"
+            />
+          </path>
+        </g>
+      </svg>
+    </div>
+
+    <div class="collapse-wrapper flex flex-col gap-2 mt-[30px]">
+      <div class="collapse hover-shadow border">
+        <input
+          type="radio"
+          name="my-accordion-3"
+          checked="checked"
+          class="peer"
+        />
+        <div
+          class="collapse-title text-xl font-medium peer-checked:bg-gradient flex justify-between items-center"
+        >
+          <label
+            class="block text-2xl text-gray-600 font-bold mb-1 text-center"
+          >
+            👇 Выберите тип ТГ-уведомления 👇
+          </label>
+        </div>
+        <div class="collapse-content peer-checked:bg-white">
+          <div class="content-choice flex gap-2 mb-4 justify-center">
+            <div
+              class="message-mode btn-block shadow-2xl px-5 py-8 mx-2 my-4 rounded-3xl cursor-pointer hover-shadow"
+              [ngClass]="{
+                'bg-gradient-to-r from-indigo-500 to-blue-500 text-white':
+                  contentMode === 'message'
+              }"
+              (click)="setContentMode('message')"
+            >
+              <p class="text-xl">Отправить TG уведомление</p>
+            </div>
+            <div
+              class="poll-mode btn-block shadow-2xl px-5 py-8 mx-2 my-4 rounded-3xl cursor-pointer hover-shadow"
+              [ngClass]="{
+                'bg-gradient-to-r from-indigo-500 to-blue-500 text-white':
+                  contentMode === 'poll'
+              }"
+              (click)="setContentMode('poll')"
+            >
+              <p class="text-xl">Создать опрос</p>
+            </div>
+          </div>
+
+          <ng-container *ngIf="contentMode">
+            <!-- Форма для отправки сообщения -->
+            <div
+              *ngIf="contentMode === 'message'"
+              class="message-form mb-5 pt-2 pb-8"
+            >
+              <h3
+                class="text-xl font-bold py-4 text-center flex justify-center items-center"
+              >
+                👇 Отправить TG уведомление 😎 👇
+                <div class="formating-tips">
+                  <div
+                    class="tooltip tooltip-right tooltip-success"
+                    data-tip="Подсказка форматов текста"
+                  >
+                    <div class="dropdown dropdown-start text-indigo-600">
+                      <div
+                        tabindex="0"
+                        role="button"
+                        class="btn btn-circle btn-ghost m-1 hover-shadow hover:bg-base-200"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="30"
+                          height="30"
+                          viewBox="0 0 24 24"
+                          class="fill-success text-success"
+                        >
+                          <path
+                            fill="currentColor"
+                            d="M12 17q.425 0 .713-.288T13 16v-4q0-.425-.288-.712T12 11t-.712.288T11 12v4q0 .425.288.713T12 17m0-8q.425 0 .713-.288T13 8t-.288-.712T12 7t-.712.288T11 8t.288.713T12 9m0 13q-2.075 0-3.9-.788t-3.175-2.137T2.788 15.9T2 12t.788-3.9t2.137-3.175T8.1 2.788T12 2t3.9.788t3.175 2.137T21.213 8.1T22 12t-.788 3.9t-2.137 3.175t-3.175 2.138T12 22m0-2q3.35 0 5.675-2.325T20 12t-2.325-5.675T12 4T6.325 6.325T4 12t2.325 5.675T12 20m0-8"
+                          />
+                        </svg>
+                      </div>
+                      <ul
+                        tabindex="0"
+                        class="dropdown-content menu bg-base-100 hover-shadow rounded-box z-10 w-[380px] p-2 shadow-sm"
+                      >
+                        <li
+                          *ngFor="let tag of formatTags; let i = index"
+                          class="flex items-center"
+                        >
+                          <a
+                            class="flex items-center justify-between w-full"
+                            (click)="
+                              copyTagContent(i); $event.stopPropagation()
+                            "
+                          >
+                            <span>{{
+                              tag.tag +
+                                (tag.tag !== "[Name]"
+                                  ? tag.content + tag.tag.replace("[", "[/")
+                                  : "") +
+                                " — " +
+                                tag.description
+                            }}</span>
+                            <span
+                              *ngIf="!copiedStates[i]"
+                              class="copy icon-hover"
+                            >
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="24"
+                                height="24"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  fill="currentColor"
+                                  d="M9.116 17q-.691 0-1.153-.462T7.5 15.385V4.615q0-.69.463-1.153T9.116 3h7.769q.69 0 1.153.462t.462 1.153v10.77q0 .69-.462 1.152T16.884 17zm-3 3q-.691 0-1.153-.462T4.5 18.385V6.615h1v11.77q0 .23.192.423t.423.192h8.77v1z"
+                                />
+                              </svg>
+                            </span>
+                            <span *ngIf="copiedStates[i]" class="copy-success">
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="24"
+                                height="24"
+                                viewBox="0 0 24 24"
+                              >
+                                <g
+                                  fill="none"
+                                  stroke="#1b8a1b"
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                  stroke-width="2"
+                                >
+                                  <path
+                                    fill="#1b8a1b"
+                                    fill-opacity="0"
+                                    d="M3 12c0 -4.97 4.03 -9 9 -9c4.97 0 9 4.03 9 9c0 4.97 -4.03 9 -9 9c-4.97 0 -9 -4.03 -9 -9Z"
+                                  >
+                                    <animate
+                                      fill="freeze"
+                                      attributeName="fill-opacity"
+                                      dur="0.15s"
+                                      values="0;0.3"
+                                    />
+                                  </path>
+                                  <path
+                                    stroke-dasharray="14"
+                                    stroke-dashoffset="14"
+                                    d="M8 12l3 3l5 -5"
+                                  >
+                                    <animate
+                                      fill="freeze"
+                                      attributeName="stroke-dashoffset"
+                                      begin="0.15s"
+                                      dur="0.2s"
+                                      values="14;0"
+                                    />
+                                  </path>
+                                </g>
+                              </svg>
+                            </span>
+                          </a>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </h3>
+              <div class="form-group mb-[10px]">
+                <label class="block text-sm text-indigo-400 font-bold mb-1">
+                  URL изображения (необязательно):
+                  <span
+                    *ngIf="
+                      imageUrl &&
+                      !urlValidationService.isValidImageUrl(imageUrl)
+                    "
+                    class="text-red-500 text-sm mt-2 block pt-0 w-full"
+                  >
+                    Неверный домен, вставьте изображение с начальным доменом<br />https://1xjet.jp/tgadmin/image/example.png
+                    или https://1xjet.netlify.app/example.png
+                  </span>
+                </label>
+                <input
+                  [(ngModel)]="imageUrl"
+                  (ngModelChange)="saveFormData(); checkFormValidity()"
+                  (blur)="refreshImage()"
+                  class="input w-full mb-4 border border-gray-300 rounded-lg px-4 py-2.5 focus:ring focus:ring-blue-300 focus:ring-opacity-40"
+                  placeholder="https://example.com/image.jpg"
+                />
+              </div>
+              <div class="form-group mb-[15px] relative">
+                <label class="block text-sm text-indigo-400 font-bold mb-1"
+                  >Текст сообщения (обязательно):</label
+                >
+                <textarea
+                  [(ngModel)]="pushText"
+                  (ngModelChange)="saveFormData(); checkFormValidity()"
+                  placeholder="Введите сообщение"
+                  [disabled]="isSending"
+                  class="w-full h-[24dvh] border rounded-lg px-4 py-2 focus:ring focus:ring-blue-300 focus:ring-opacity-40"
+                ></textarea>
+              </div>
+              <h3 class="text-sm font-bold text-indigo-400 mb-1 mt-5">
+                Кнопка сообщения (необязательно):
+              </h3>
+              <div
+                class="header-tab flex items-center justify-between px-[40px] py-[20px] radius-30 w-[100%] gap-4 mx-auto tracking-wide nj-toast-gradient mb-[0px]"
+              >
+                <div class="form-group w-[45%]">
+                  <label class="block text-sm text-white font-bold"
+                    >Название кнопки:</label
+                  >
+                  <input
+                    [(ngModel)]="buttonName"
+                    (ngModelChange)="saveFormData(); checkFormValidity()"
+                    class="input w-full mt-2 mb-4 border border-gray-300 rounded-lg h-[40px] py-2.5 focus:ring focus:ring-blue-300 focus:ring-opacity-40 text-black"
+                    placeholder="Редактировать заголовок"
+                  />
+                </div>
+                <div class="form-group w-[45%]">
+                  <label class="block text-sm text-white font-bold"
+                    >Ссылка на ресурс:</label
+                  >
+                  <input
+                    [(ngModel)]="buttonUrl"
+                    (ngModelChange)="saveFormData(); checkFormValidity()"
+                    class="input w-full mt-2 mb-4 border border-gray-300 rounded-lg py-2.5 focus:ring focus:ring-blue-300 focus:ring-opacity-40 h-[40px] text-black"
+                    placeholder="Редактировать URL кнопки"
+                  />
+                </div>
+              </div>
+              <div class="warning mt-4" *ngIf="emptyMessage">
+                <label
+                  class="block text-xl text-indigo-400 font-bold text-center"
+                >
+                  ❗️ОБЯЗАТЕЛЬНО убедитесь в правильности ТG сообщения /
+                  кнопки❗️
+                </label>
+              </div>
+            </div>
+
+            <!-- Форма для создания опроса -->
+            <div
+              *ngIf="contentMode === 'poll'"
+              class="poll-form mb-5 pt-2 pb-8"
+            >
+              <h3
+                class="text-xl font-bold py-4 text-center flex justify-center items-center"
+              >
+                👇 Создайте опрос 📊 👇
+                <div class="formating-tips">
+                  <div
+                    class="tooltip tooltip-right tooltip-success"
+                    data-tip="Подсказка форматов текста"
+                  >
+                    <div class="dropdown dropdown-start text-indigo-600">
+                      <div
+                        tabindex="0"
+                        role="button"
+                        class="btn btn-circle btn-ghost m-1 hover-shadow hover:bg-base-200"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="30"
+                          height="30"
+                          viewBox="0 0 24 24"
+                          class="fill-success text-success"
+                        >
+                          <path
+                            fill="currentColor"
+                            d="M12 17q.425 0 .713-.288T13 16v-4q0-.425-.288-.712T12 11t-.712.288T11 12v4q0 .425.288.713T12 17m0-8q.425 0 .713-.288T13 8t-.288-.712T12 7t-.712.288T11 8t.288.713T12 9m0 13q-2.075 0-3.9-.788t-3.175-2.137T2.788 15.9T2 12t.788-3.9t2.137-3.175T8.1 2.788T12 2t3.9.788t3.175 2.137T21.213 8.1T22 12t-.788 3.9t-2.137 3.175t-3.175 2.138T12 22m0-2q3.35 0 5.675-2.325T20 12t-2.325-5.675T12 4T6.325 6.325T4 12t2.325 5.675T12 20m0-8"
+                          />
+                        </svg>
+                      </div>
+                      <ul
+                        tabindex="0"
+                        class="dropdown-content menu bg-base-100 hover-shadow rounded-box z-10 w-[380px] p-2 shadow-sm"
+                      >
+                        <li
+                          *ngFor="let tag of formatTags; let i = index"
+                          class="flex items-center"
+                        >
+                          <a
+                            class="flex items-center justify-between w-full"
+                            (click)="
+                              copyTagContent(i); $event.stopPropagation()
+                            "
+                          >
+                            <span>{{
+                              tag.tag +
+                                (tag.tag !== "[Name]"
+                                  ? tag.content + tag.tag.replace("[", "[/")
+                                  : "") +
+                                " — " +
+                                tag.description
+                            }}</span>
+                            <span
+                              *ngIf="!copiedStates[i]"
+                              class="copy icon-hover"
+                            >
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="24"
+                                height="24"
+                                viewBox="0 0 24 24"
+                              >
+                                <path
+                                  fill="currentColor"
+                                  d="M9.116 17q-.691 0-1.153-.462T7.5 15.385V4.615q0-.69.463-1.153T9.116 3h7.769q.69 0 1.153.462t.462 1.153v10.77q0 .69-.462 1.152T16.884 17zm-3 3q-.691 0-1.153-.462T4.5 18.385V6.615h1v11.77q0 .23.192.423t.423.192h8.77v1z"
+                                />
+                              </svg>
+                            </span>
+                            <span *ngIf="copiedStates[i]" class="copy-success">
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="24"
+                                height="24"
+                                viewBox="0 0 24 24"
+                              >
+                                <g
+                                  fill="none"
+                                  stroke="#1b8a1b"
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                  stroke-width="2"
+                                >
+                                  <path
+                                    fill="#1b8a1b"
+                                    fill-opacity="0"
+                                    d="M3 12c0 -4.97 4.03 -9 9 -9c4.97 0 9 4.03 9 9c0 4.97 -4.03 9 -9 9c-4.97 0 -9 -4.03 -9 -9Z"
+                                  >
+                                    <animate
+                                      fill="freeze"
+                                      attributeName="fill-opacity"
+                                      dur="0.15s"
+                                      values="0;0.3"
+                                    />
+                                  </path>
+                                  <path
+                                    stroke-dasharray="14"
+                                    stroke-dashoffset="14"
+                                    d="M8 12l3 3l5 -5"
+                                  >
+                                    <animate
+                                      fill="freeze"
+                                      attributeName="stroke-dashoffset"
+                                      begin="0.15s"
+                                      dur="0.2s"
+                                      values="14;0"
+                                    />
+                                  </path>
+                                </g>
+                              </svg>
+                            </span>
+                          </a>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </h3>
+              <div class="form-group mb-[15px] relative">
+                <label class="block text-sm text-indigo-400 font-bold mb-1"
+                  >Вопрос:</label
+                >
+                <textarea
+                  [(ngModel)]="pollPayload.question"
+                  (ngModelChange)="checkPollValidity()"
+                  class="input w-full mb-4 border border-gray-300 rounded-lg px-4 py-2.5 focus:ring focus:ring-blue-300 focus:ring-opacity-40 h-[200px]"
+                  placeholder="Введите вопрос"
+                ></textarea>
+              </div>
+              <div class="form-group mb-[15px]">
+                <label class="block text-sm text-indigo-400 font-bold mb-1"
+                  >Варианты ответа (до 10):</label
+                >
+                <div
+                  *ngFor="
+                    let option of pollPayload.options;
+                    let i = index;
+                    trackBy: trackByOption
+                  "
+                  class="mb-2"
+                >
+                  <input
+                    [id]="'option-' + i"
+                    [name]="'option-' + i"
+                    [(ngModel)]="pollPayload.options[i]"
+                    (ngModelChange)="checkPollValidity()"
+                    class="input w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring focus:ring-blue-300 focus:ring-opacity-40"
+                    placeholder="Вариант {{ i + 1 }}"
+                  />
+                </div>
+                <button
+                  class="btn btn-sm btn-outline hover:fill-white"
+                  (click)="addPollOption()"
+                  *ngIf="pollPayload.options.length < 10"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                  >
+                    <path fill="#4f45e5" d="M11 13H5v-2h6V5h2v6h6v2h-6v6h-2z" />
+                  </svg>
+                  Добавить вариант
+                </button>
+              </div>
+              <div class="form-group mb-[15px]">
+                <label class="block text-sm text-indigo-400 font-bold mb-1"
+                  >Настройки опроса:</label
+                >
+                <div
+                  class="poll-type-choice flex items-center justify-center gap-4 py-2"
+                >
+                  <div
+                    class="regular-poll btn-block shadow-2xl px-5 py-4 mx-2 rounded-3xl cursor-pointer hover-shadow"
+                    [ngClass]="{
+                      'bg-gradient-to-r from-indigo-500 to-blue-500 text-white':
+                        pollMode === 'regular'
+                    }"
+                    (click)="setPollMode('regular')"
+                  >
+                    <p class="text-lg">Обычный опрос</p>
+                  </div>
+                  <div
+                    class="quiz-poll btn-block shadow-2xl px-5 py-4 mx-2 rounded-3xl cursor-pointer hover-shadow"
+                    [ngClass]="{
+                      'bg-gradient-to-r from-indigo-500 to-blue-500 text-white':
+                        pollMode === 'quiz'
+                    }"
+                    (click)="setPollMode('quiz')"
+                  >
+                    <p class="text-lg">Викторина</p>
+                  </div>
+                </div>
+                <label
+                  class="flex items-center mt-2"
+                  *ngIf="pollMode === 'regular'"
+                >
+                  <input
+                    type="checkbox"
+                    id="is-anonymous"
+                    name="is-anonymous"
+                    class="checkbox checkbox-neutral"
+                    [(ngModel)]="pollPayload.isAnonymous"
+                  />
+                  Анонимное голосование
+                </label>
+                <label
+                  class="flex items-center mt-2"
+                  *ngIf="pollMode === 'regular'"
+                >
+                  <input
+                    type="checkbox"
+                    id="allows-multiple"
+                    name="allows-multiple"
+                    class="checkbox checkbox-success"
+                    [(ngModel)]="pollPayload.allowsMultipleAnswers"
+                  />
+                  Множественный выбор
+                </label>
+                <!-- Секция создания викторины -->
+                <div
+                  *ngIf="pollMode === 'quiz'"
+                  class="w-full flex gap-6 items-baseline mt-16"
+                >
+                  <label
+                    class="block text-xl font-bold mb-1 nj-toast-grad-access"
+                  >
+                    Правильный ответ:
+                  </label>
+                  <select
+                    class="select select-primary"
+                    id="correct-option"
+                    name="correct-option"
+                    [(ngModel)]="pollPayload.correctOptionId"
+                    (ngModelChange)="checkPollValidity()"
+                  >
+                    <option
+                      class="text-lg"
+                      *ngIf="!pollPayload.options"
+                      disabled
+                      selected
+                    >
+                      Выберите правильный ответ
+                    </option>
+                    <option
+                      *ngFor="
+                        let option of pollPayload.options;
+                        let i = index;
+                        trackBy: trackByOption
+                      "
+                      [value]="i"
+                      class="text-lg font-bold"
+                      [disabled]="!option.trim()"
+                    >
+                      {{ option.trim() ? option : "Пустой вариант" }}
+                    </option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </ng-container>
+        </div>
+      </div>
+
+      <div class="collapse hover-shadow border">
+        <input type="radio" name="my-accordion-3" class="peer" />
+        <div
+          class="collapse-title text-xl font-medium peer-checked:bg-gradient"
+        >
+          <label class="block text-xl text-indigo-400 font-bold text-center">
+            ❗️ОБЯЗАТЕЛЬНО❗️ Для отправки ТГ уведомления выберите группу(ы)
+          </label>
+        </div>
+        <div class="collapse-content peer-checked:bg-white">
+          <div class="users-groups flex flex-col pt-[10px]">
+            <div class="users-all-wrapper pb-3">
+              <p class="text-gray-500 opacity-50 font-bold text-xl">
+                Всем юзерам:
+              </p>
+              <div
+                class="flex flex-col items-start btn btn-ghost btn-access w-fit mb-2 rounded-[35px]"
+              >
+                <label class="label cursor-pointer">
+                  <span class="block text-lg pr-1">All users</span>
+                  <input
+                    type="checkbox"
+                    class="checkbox checkbox-success"
+                    [(ngModel)]="sendToAll"
+                    (ngModelChange)="onSendToAllChange()"
+                  />
+                </label>
+              </div>
+            </div>
+            <div class="users-group pb-3">
+              <p class="text-gray-500 opacity-50 text-lg font-bold">
+                Группы юзеров:
+              </p>
+              <div class="users-group-wrapper flex gap-4">
+                <div
+                  *ngFor="let category of categories"
+                  class="flex flex-col items-start btn btn-ghost btn-access w-fit mb-2 rounded-[35px]"
+                >
+                  <label class="label cursor-pointer">
+                    <span class="block text-lg font-bold pr-1">{{
+                      category.name
+                    }}</span>
+                    <input
+                      type="checkbox"
+                      class="checkbox checkbox-success"
+                      [value]="category.id"
+                      [checked]="selectedCategoryIds.includes(category.id)"
+                      (change)="onCategoryChange($event)"
+                    />
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="btn-wrapper w-full flex items-center justify-center py-[20px]"
+          >
+            <button
+              class="btn btn-accent w-[50%] text-white text-xl rounded-[35px] min-h-[70px]"
+              (click)="contentMode === 'message' ? sendPush() : sendPoll()"
+              [disabled]="
+                isSending ||
+                (contentMode === 'message' && emptyMessage) ||
+                (contentMode === 'poll' && !isPollValid())
+              "
+            >
+              {{ isSending ? "Отправка..." : "Отправить" }}
+              <span>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="40"
+                  height="40"
+                  viewBox="0 0 24 24"
+                >
+                  <mask id="lineMdEmailCheck0">
+                    <g
+                      fill="none"
+                      stroke="#fff"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                    >
+                      <path
+                        stroke-dasharray="64"
+                        stroke-dashoffset="64"
+                        d="M4 5h16c0.55 0 1 0.45 1 1v12c0 0.55 -0.45 1 -1 1h-16c-0.55 0 -1 -0.45 -1 -1v-12c0 -0.55 0.45 -1 1 -1Z"
+                      >
+                        <animate
+                          fill="freeze"
+                          attributeName="stroke-dashoffset"
+                          dur="0.6s"
+                          values="64;0"
+                        />
+                      </path>
+                      <path
+                        stroke-dasharray="24"
+                        stroke-dashoffset="24"
+                        d="M3 6.5l9 5.5l9 -5.5"
+                      >
+                        <animate
+                          fill="freeze"
+                          attributeName="stroke-dashoffset"
+                          begin="0.6s"
+                          dur="0.2s"
+                          values="24;0"
+                        />
+                      </path>
+                      <path
+                        fill="#000"
+                        fill-opacity="0"
+                        stroke="none"
+                        d="M19 13c3.31 0 6 2.69 6 6c0 3.31 -2.69 6 -6 6c-3.31 0 -6 -2.69 -6 -6c0 -3.31 2.69 -6 6 -6Z"
+                      >
+                        <set
+                          fill="freeze"
+                          attributeName="fill-opacity"
+                          begin="0.8s"
+                          to="1"
+                        />
+                      </path>
+                      <path
+                        stroke-dasharray="10"
+                        stroke-dashoffset="10"
+                        d="M16 19l1.75 1.75l3.75 -3.75"
+                      >
+                        <animate
+                          fill="freeze"
+                          attributeName="stroke-dashoffset"
+                          begin="0.8s"
+                          dur="0.2s"
+                          values="10;0"
+                        />
+                      </path>
+                    </g>
+                  </mask>
+                  <rect
+                    width="24"
+                    height="24"
+                    fill="currentColor"
+                    mask="url(#lineMdEmailCheck0)"
+                  />
+                </svg>
+              </span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Секция результатов опросов -->
+      <div class="collapse hover-shadow border bg-acacent">
+        <input type="radio" name="my-accordion-3" class="peer" />
+        <div
+          class="collapse-title text-xl font-medium peer-checked:bg-gradient"
+        >
+          <h2 class="text-xl text-white font-bold">Результаты опросов</h2>
+        </div>
+        <div class="collapse-content peer-checked:bg-white px-0">
+          <div>
+            <!-- Режим отображения всех опросов -->
+            <div
+              *ngIf="
+                viewMode === 'all' && getPollResults().length > 0;
+                else noPollResults
+              "
+              class="overflow-x-auto"
+            >
+              <table class="table table-xs w-full">
+                <thead>
+                  <tr class="bg-gray-100 text-gray-600">
+                    <th class="p-2">#</th>
+                    <th class="p-2 font-semibold">Вопрос</th>
+                    <th class="p-2 font-semibold">Варианты</th>
+                    <th class="p-2 font-semibold">Кол-во голосов</th>
+                    <th class="p-2 font-semibold">Дата</th>
+                    <th class="p-2">Просмотреть</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr
+                    *ngFor="let poll of getPollResults(); let i = index"
+                    class="hover:bg-gray-50 cursor-pointer transition-colors"
+                    (click)="showPollDetails(poll)"
+                  >
+                    <th class="p-2">{{ i + 1 }}</th>
+                    <td class="p-2 text-md">
+                      <strong>{{ poll.question }}</strong>
+                    </td>
+                    <td class="p-2">
+                      <ul class="list-decimal pl-4">
+                        <li
+                          *ngFor="let option of poll.options; let j = index"
+                          class="py-1"
+                        >
+                          <strong>{{ option }}</strong>
+                        </li>
+                      </ul>
+                    </td>
+                    <td class="p-2">
+                      {{
+                        poll.results.length ? poll.results[0].count : "Анонимно"
+                      }}
+                    </td>
+                    <td class="p-2">{{ poll.createdAt }}</td>
+                    <th class="p-2">
+                      <div class="flex items-center">
+                        Просмотреть
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="30"
+                          height="30"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            fill="#00aa6f"
+                            d="m12 16l4-4l-4-4l-1.4 1.4l1.6 1.6H8v2h4.2l-1.6 1.6zm0 6q-2.075 0-3.9-.788t-3.175-2.137T2.788 15.9T2 12t.788-3.9t2.137-3.175T8.1 2.788T12 2t3.9.788t3.175 2.137T21.213 8.1T22 12t-.788 3.9t-2.137 3.175t-3.175 2.138T12 22"
+                          />
+                        </svg>
+                      </div>
+                    </th>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Режим отображения одного опроса -->
+            <div
+              *ngIf="viewMode === 'single' && selectedPoll"
+              class="p-2 bg-gray-50 rounded-lg shadow-sm"
+            >
+              <button
+                class="btn btn-circle btn-ghost m-1 mb-4 hover-shadow hover:bg-base-200"
+                (click)="goBackToAllPolls()"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="30"
+                  height="30"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    fill="#4f45e5"
+                    d="m7.825 13l4.9 4.9q.3.3.288.7t-.313.7q-.3.275-.7.288t-.7-.288l-6.6-6.6q-.15-.15-.213-.325T4.426 12t.063-.375t.212-.325l6.6-6.6q.275-.275.688-.275t.712.275q.3.3.3.713t-.3.712L7.825 11H19q.425 0 .713.288T20 12t-.288.713T19 13z"
+                  />
+                </svg>
+              </button>
+              <div class="mb-6">
+                <h3 class="text-3xl font-bold text-indigo-600 mb-2">
+                  {{ selectedPoll.question }}
+                </h3>
+                <p class="text-sm text-gray-500">
+                  ID опроса: {{ selectedPoll.pollId }}
+                </p>
+              </div>
+              <div class="overflow-x-auto">
+                <table
+                  class="table table-xs table-pin-rows table-pin-cols w-full"
+                >
+                  <thead>
+                    <tr class="bg-gray-100 text-gray-700">
+                      <th class="p-2"></th>
+                      <td class="p-2 font-semibold">ID</td>
+                      <td class="p-2 font-semibold">Варианты</td>
+                      <td class="p-2 font-semibold">Ответы</td>
+                      <td class="p-2 font-semibold">Дата</td>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr
+                      *ngFor="let result of selectedPoll.results; let i = index"
+                      class="hover:bg-gray-50"
+                    >
+                      <th class="p-2">{{ i + 1 }}</th>
+                      <td class="p-2">
+                        {{
+                          result.userIds.length > 0
+                            ? result.userIds.join(", ")
+                            : "Анонимно"
+                        }}
+                      </td>
+                      <td class="p-2">
+                        <p
+                          *ngFor="
+                            let option of selectedPoll.options;
+                            let i = index
+                          "
+                          class="py-1"
+                        >
+                          {{ i + 1 }}) {{ option }}
+                        </p>
+                      </td>
+                      <td class="p-2">
+                        <div class="flex items-center h-full">
+                          <svg
+                            *ngIf="result.userIds.length > 0"
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="20"
+                            height="20"
+                            viewBox="0 0 24 24"
+                            class="mr-2"
+                          >
+                            <path
+                              fill="#75f163"
+                              d="m9.55 15.15l8.475-8.475q.3-.3.7-.3t.7.3t.3.713t-.3.712l-9.175 9.2q-.3.3-.7.3t-.7-.3L4.55 13q-.3-.3-.288-.712t.313-.713t.713-.3t.712.3z"
+                            />
+                          </svg>
+                          {{ result.optionText }}
+                        </div>
+                      </td>
+                      <td class="p-2">{{ result.timestamp }}</td>
+                    </tr>
+                  </tbody>
+                  <tfoot>
+                    <tr class="bg-gray-100 text-gray-700">
+                      <th class="p-2"></th>
+                      <td class="p-2 font-semibold">ID</td>
+                      <td class="p-2 font-semibold">Варианты</td>
+                      <td class="p-2 font-semibold">Ответы</td>
+                      <td class="p-2 font-semibold">Дата</td>
+                    </tr>
+                  </tfoot>
+                </table>
+              </div>
+            </div>
+
+            <ng-template #noPollResults>
+              <p class="text-gray-500 absolute"></p>
+            </ng-template>
+          </div>
+        </div>
+      </div>
+
+      <!-- Секция статусов отправки -->
+      <div class="collapse hover-shadow border">
+        <input type="radio" name="my-accordion-3" class="peer" />
+        <div
+          class="collapse-title text-xl font-medium peer-checked:bg-gradient"
+        >
+          <h2 class="text-xl text-indigo-400 font-bold">Статусы отправки</h2>
+        </div>
+        <div class="collapse-content peer-checked:bg-white">
+          <div class="p-4">
+            <div
+              *ngIf="filteredPushStatuses.length; else noStatuses"
+              class="overflow-x-auto"
+            >
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>User ID</th>
+                    <th>Username</th>
+                    <th>Сообщение</th>
+                    <th>Статус</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr
+                    *ngFor="let status of filteredPushStatuses; let i = index"
+                    [ngClass]="{
+                      hover: i % 2 === 1,
+                      'font-bold': !status.userId || status.userId === 0
+                    }"
+                  >
+                    <th *ngIf="status.userId && status.userId !== 0">
+                      {{ i + 1 }}
+                    </th>
+                    <th *ngIf="!status.userId || status.userId === 0"></th>
+                    <td>
+                      {{
+                        status.userId && status.userId !== 0
+                          ? status.userId
+                          : currentDate
+                      }}
+                    </td>
+                    <td>{{ status.Username || "N/A" }}</td>
+                    <td>
+                      <span *ngIf="status.userId && status.userId !== 0">{{
+                        status.message
+                      }}</span>
+                      <span *ngIf="!status.userId || status.userId === 0">{{
+                        status.message
+                      }}</span>
+                    </td>
+                    <td>
+                      <span
+                        *ngIf="status.userId && status.userId !== 0"
+                        [ngClass]="
+                          status.success ? 'text-green-600' : 'text-red-600'
+                        "
+                      >
+                        {{ status.success ? "Успешно" : "Ошибка" }}
+                      </span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <button
+                class="btn btn-sm btn-outline mt-4"
+                (click)="clearStatuses()"
+              >
+                Очистить статусы
+              </button>
+            </div>
+            <ng-template #noStatuses>
+              <p class="text-gray-500">Статусы отсутствуют</p>
+            </ng-template>
+          </div>
+        </div>
+      </div>
+
+      <div class="fixed h-full w-full top-0 left-0" *ngIf="resultMessage">
+        <div class="overlay-popup">
+          <span class="flex justify-end absolute top-0 w-full">
+            <svg
+              (click)="cancelMessage()"
+              xmlns="http://www.w3.org/2000/svg"
+              width="30"
+              height="30"
+              viewBox="0 0 24 24"
+              class="bg-red-400 transition-all rounded-[25px] cursor-pointer hover:scale-125 active:scale-100"
+            >
+              <g
+                fill="none"
+                stroke="#000"
+                stroke-dasharray="16"
+                stroke-dashoffset="16"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+              >
+                <path d="M7 7l10 10">
+                  <animate
+                    fill="freeze"
+                    attributeName="stroke-dashoffset"
+                    dur="0.4s"
+                    values="16;0"
+                  />
+                </path>
+                <path d="M17 7l-10 10">
+                  <animate
+                    fill="freeze"
+                    attributeName="stroke-dashoffset"
+                    begin="0.4s"
+                    dur="0.4s"
+                    values="16;0"
+                  />
+                </path>
+              </g>
+            </svg>
+          </span>
+          {{ resultMessage }}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

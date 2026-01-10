@@ -1,0 +1,87 @@
+<app-sidebar></app-sidebar>
+
+<section class="admin-page ml-side section">
+  <div class="container mx-auto pt-[10px]">
+    <div
+      class="bg-main-trans2-gradient-90 header-tab flex items-center justify-between py-[10px] mb-[0px] rounded-[20px] w-[100%] pr-4"
+    >
+      <h2 class="title-tab text-2xl font-bold text-indigo-600">Add Images</h2>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="40"
+        height="40"
+        viewBox="0 0 24 24"
+      >
+        <g
+          fill="none"
+          stroke="#4f45e5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+        >
+          <path
+            stroke-dasharray="72"
+            stroke-dashoffset="72"
+            d="M3 14v-9h18v14h-18v-5"
+          >
+            <animate
+              fill="freeze"
+              attributeName="stroke-dashoffset"
+              dur="0.6s"
+              values="72;0"
+            />
+          </path>
+          <path
+            stroke-dasharray="24"
+            stroke-dashoffset="24"
+            stroke-width="1"
+            d="M3 16l4 -3l3 2l6 -5l5 4"
+          >
+            <animate
+              fill="freeze"
+              attributeName="stroke-dashoffset"
+              begin="0.6s"
+              dur="0.4s"
+              values="24;0"
+            />
+          </path>
+        </g>
+        <g fill="#4f45e5" fill-opacity="0">
+          <circle cx="7.5" cy="9.5" r="1.5">
+            <animate
+              fill="freeze"
+              attributeName="fill-opacity"
+              begin="1s"
+              dur="0.2s"
+              values="0;1"
+            />
+          </circle>
+          <path d="M3 16l4 -3l3 2l6 -5l5 4V19H3Z">
+            <animate
+              fill="freeze"
+              attributeName="fill-opacity"
+              begin="1.3s"
+              dur="0.15s"
+              values="0;0.3"
+            />
+          </path>
+        </g>
+      </svg>
+    </div>
+
+    <div class="carousel carousel-vertical rounded-box h-[90vh] w-full">
+      <div class="carousel-item h-full w-full">
+        <app-image-upload
+          (imageUploaded)="onImageUploaded($event)"
+          class="w-full"
+        ></app-image-upload>
+      </div>
+      <div class="carousel-item h-full w-full overflow-y-scroll">
+        <app-images-table
+          [images]="uploadedImages"
+          class="w-full"
+        ></app-images-table>
+      </div>
+    </div>
+  </div>
+</section>

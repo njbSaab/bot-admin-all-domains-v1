@@ -1,0 +1,12 @@
+.all-users-email {
+  height: fit-content;
+  max-height: 250px;
+  overflow-y: auto;
+  border-radius: 22px;
+  ul {
+    padding: 20px;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(100px, 1fr));
+    gap: 0 10px;
+  }
+}

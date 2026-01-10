@@ -1,0 +1,38 @@
+  // // Отправка email
+  // sendEmails(): void {
+  //   if (!this.emailSubject.trim() || !this.emailContent.trim()) {
+  //     this.resultMessage = 'Введите тему и содержимое письма';
+  //     return;
+  //   }
+
+  //   // Фильтруем пользователей с email
+  //   const emails = this.users
+  //     .map((user) => user.email)
+  //     .filter((email): email is string => !!email);
+  //   console.log('Отправляемые email:', emails);
+  //   // Проверяем, есть ли email для отправки
+      
+  //   if (emails.length === 0) {
+  //     this.resultMessage = 'Нет пользователей с email для отправки';
+  //     return;
+  //   }
+
+  //   this.isSending = true;
+  //   this.resultMessage = '';
+
+  //   this.usersService.sendBulkEmail(emails, this.emailSubject, this.emailContent).subscribe({
+  //     next: (response) => {
+  //       this.resultMessage = 'Письма успешно отправлены!';
+  //       this.isSending = false;
+  //       // Очищаем поля
+  //       this.emailSubject = '';
+  //       this.emailContent = '';
+  //       console.log('Ответ сервера:', response);
+  //     },
+  //     error: (err) => {
+  //       console.error('Ошибка при отправке писем:', err);
+  //       this.resultMessage = 'Ошибка при отправке писем';
+  //       this.isSending = false;
+  //     },
+  //   });
+  // }

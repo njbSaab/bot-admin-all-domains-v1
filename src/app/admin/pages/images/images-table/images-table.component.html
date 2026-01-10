@@ -1,0 +1,169 @@
+<div class="overflow-x-auto rounded-box border border-base-300 bg-base-100 w-full pt-6 pb-10">
+  <!-- Табы + поиск -->
+  <div class="flex flex-col md:flex-row justify-start items-start md:items-center gap-4 mb-6 px-4 rounded-[35px]">
+    <div class="tabs tabs-boxed">
+      <button 
+        class="tab rounded-[35px]" 
+        [class.tab-active]="activeTab === 'all'"
+        (click)="setTab('all')"
+      >
+        Все
+      </button>
+      <button 
+        class="tab rounded-[35px]" 
+        [class.tab-active]="activeTab === 'logo'"
+        (click)="setTab('logo')"
+      >
+        Лого
+      </button>
+      <button 
+        class="tab rounded-[35px]" 
+        [class.tab-active]="activeTab === 'image'"
+        (click)="setTab('image')"
+      >
+        Изображения
+      </button>
+    </div>
+
+    <div class="form-control w-full max-w-xs">
+      <input 
+        type="text" 
+        placeholder="Поиск по названию..." 
+        class="input input-bordered focus:ring focus:ring-blue-300 rounded-[35px] w-[350px]"
+        [(ngModel)]="searchTerm"
+        (input)="onSearch($event)"
+      />
+    </div>
+  </div>
+
+  <!-- Таблица -->
+  <table class="table table-zebra w-full">
+    <thead>
+      <tr>
+        <th class="w-12">#</th>
+        <th>Превью</th>
+        <th>Название</th>
+        <th>Тип</th>
+        <th>Ссылка</th>
+        <th class="w-16">Действия</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let image of displayedImages; let i = index">
+        <td>{{ i + 1 }}</td>
+        <td>
+          <a [href]="baseUrl + image" target="_blank">
+            <img [src]="baseUrl + image" alt="preview" class="max-h-16 rounded">
+          </a>
+        </td>
+        <td class="font-medium">{{ getImageName(image) }}</td>
+        <td>
+          <div class="badge" [ngClass]="{
+            'badge-success': getImageType(image) === 'Лого',
+            'badge-info': getImageType(image) === 'Изображение'
+          }">
+            {{ getImageType(image) }}
+          </div>
+        </td>
+        <td class="max-w-xs truncate">
+          <div class="flex items-center gap-2">
+              <span
+            class="copy btn btn-ghost btn-circle"
+                        (click)="copyImageUrl(image, i)"
+
+            *ngIf="!copiedStates[i]"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="32"
+              height="32"
+              viewBox="0 0 24 24"
+            >
+              <path
+                fill="currentColor"
+                d="M9.116 17q-.691 0-1.153-.462T7.5 15.385V4.615q0-.69.463-1.153T9.116 3h7.769q.69 0 1.153.462t.462 1.153v10.77q0 .69-.462 1.152T16.884 17zm-3 3q-.691 0-1.153-.462T4.5 18.385V6.615h1v11.77q0 .23.192.423t.423.192h8.77v1z"
+              />
+            </svg>
+          </span>
+          <span class="copy-success" *ngIf="copiedStates[i]">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="44"
+              height="44"
+              viewBox="0 0 24 24"
+            >
+              <g
+                fill="none"
+                stroke="#1b8a1b"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+              >
+                <path
+                  fill="#1b8a1b"
+                  fill-opacity="0"
+                  d="M3 12c0 -4.97 4.03 -9 9 -9c4.97 0 9 4.03 9 9c0 4.97 -4.03 9 -9 9c-4.97 0 -9 -4.03 -9 -9Z"
+                >
+                  <animate
+                    fill="freeze"
+                    attributeName="fill-opacity"
+                    dur="0.15s"
+                    values="0;0.3"
+                  />
+                </path>
+                <path
+                  stroke-dasharray="14"
+                  stroke-dashoffset="14"
+                  d="M8 12l3 3l5 -5"
+                >
+                  <animate
+                    fill="freeze"
+                    attributeName="stroke-dashoffset"
+                    begin="0.15s"
+                    dur="0.2s"
+                    values="14;0"
+                  />
+                </path>
+              </g>
+            </svg>
+          </span>
+            <span>{{ baseUrl }}{{ image }}</span>
+          </div>
+        </td>
+        <td>
+<button
+            class="btn bg-white hover:btn-error btn-circle hover:text-white"
+            title="Delete User"
+            (click)="deleteImage(image, i)"
+            title="Удалить изображение"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="32"
+              height="32"
+              viewBox="0 0 24 24"
+            >
+              <path
+                fill="currentColor"
+                d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6zm2.46-7.12l1.41-1.41L12 12.59l2.12-2.12l1.41 1.41L13.41 14l2.12 2.12l-1.41 1.41L12 15.41l-2.12 2.12l-1.41-1.41L10.59 14zM15.5 4l-1-1h-5l-1 1H5v2h14V4z"
+              />
+            </svg>
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Пустое состояние -->
+  <div *ngIf="displayedImages.length === 0" class="alert alert-info mt-6">
+    Нет изображений по выбранным фильтрам
+  </div>
+
+  <!-- Сообщения -->
+  <div *ngIf="successMessage" class="alert alert-success mt-6">
+    {{ successMessage }}
+  </div>
+  <div *ngIf="errorMessage" class="alert alert-error mt-6">
+    {{ errorMessage }}
+  </div>
+</div>

@@ -1,0 +1,153 @@
+<app-sidebar></app-sidebar>
+
+<section class="admin-page ml-side">
+  <div class="container mx-auto pt-[10px]">
+    <div
+      class="bg-main-trans2-gradient-90 header-tab flex items-center justify-between py-[10px] mb-[0px] rounded-[20px] w-[100%] pr-4"
+    >
+      <h2 class="title-tab text-2xl font-bold text-indigo-600">
+        Редактирование контента
+      </h2>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="40"
+        height="40"
+        viewBox="0 0 24 24"
+      >
+        <g
+          fill="none"
+          stroke="#4f45e5"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+        >
+          <path stroke-dasharray="20" stroke-dashoffset="20" d="M3 21h18">
+            <animate
+              fill="freeze"
+              attributeName="stroke-dashoffset"
+              dur="0.2s"
+              values="20;0"
+            />
+          </path>
+          <path
+            fill="#4e46e553"
+            fill-opacity="0"
+            stroke-dasharray="48"
+            stroke-dashoffset="48"
+            d="M7 17v-4l10 -10l4 4l-10 10h-4"
+          >
+            <animate
+              fill="freeze"
+              attributeName="fill-opacity"
+              begin="1.1s"
+              dur="0.5s"
+              values="0;1"
+            />
+            <animate
+              fill="freeze"
+              attributeName="stroke-dashoffset"
+              begin="0.2s"
+              dur="0.6s"
+              values="48;0"
+            />
+          </path>
+          <path stroke-dasharray="8" stroke-dashoffset="8" d="M14 6l4 4">
+            <animate
+              fill="freeze"
+              attributeName="stroke-dashoffset"
+              begin="0.8s"
+              dur="0.2s"
+              values="8;0"
+            />
+          </path>
+        </g>
+      </svg>
+      <!-- <p
+        class="text-right text-indigo-600 flex gap-2 items-center rounded-[20px] bg-main px-[15px] py-[5px]"
+      >
+        Всего постов:
+      </p> -->
+    </div>
+    <div role="tablist" class="tabs tabs-lifted">
+      <input
+        type="radio"
+        name="my_tabs_2"
+        role="tab"
+        class="tab tabs-title-input"
+        aria-label="Приветствие бота"
+      />
+      <div
+        role="tabpanel"
+        class="tab-content bg-base-100 border-base-300 rounded-box h-[82dvh]"
+      >
+        <div class="tabpanel-wrapper">
+          <app-greeting-bot></app-greeting-bot>
+        </div>
+      </div>
+
+      <input
+        type="radio"
+        name="my_tabs_2"
+        role="tab"
+        class="tab tabs-title-input"
+        aria-label="Посты бота"
+        checked="checked"
+      />
+      <div
+        role="tabpanel"
+        class="tab-content bg-base-100 border-base-300 rounded-box h-[82dvh]"
+      >
+        <div class="tabpanel-wrapper">
+          <app-posts-bot></app-posts-bot>
+        </div>
+      </div>
+
+      <input
+        type="radio"
+        name="my_tabs_2"
+        role="tab"
+        class="tab tabs-title-input"
+        aria-label="Главное меню бота"
+      />
+      <div
+        role="tabpanel"
+        class="tab-content bg-base-100 border-base-300 rounded-box h-[82dvh]"
+      >
+        <div class="tabpanel-wrapper">
+          <app-menu-buttons></app-menu-buttons>
+        </div>
+      </div>
+
+      <!-- <input
+        type="radio"
+        name="my_tabs_2"
+        role="tab"
+        class="tab tabs-title-input"
+        aria-label="Кнопки постов"
+      /> -->
+      <div
+        role="tabpanel"
+        class="tab-content bg-base-100 border-base-300 rounded-box h-[82dvh]"
+      >
+        <div class="tabpanel-wrapper">
+          <app-inline-buttons></app-inline-buttons>
+        </div>
+      </div>
+      <input
+        type="radio"
+        name="my_tabs_2"
+        role="tab"
+        class="tab tabs-title-input"
+        aria-label="Новости"
+      />
+      <div
+        role="tabpanel"
+        class="tab-content bg-base-100 border-base-300 rounded-box h-[82dvh]"
+      >
+        <div class="tabpanel-wrapper">
+          <app-news-bot></app-news-bot>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

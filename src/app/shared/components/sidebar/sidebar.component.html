@@ -1,0 +1,607 @@
+<div
+  class="flex flex-shrink-0 transition-all h-full fixed inset-y-0 z-10 sidebar"
+>
+  <!-- Sidebar button -->
+  <div class="sidebar-button inset-y-0 z-100 w-16 bg-white border-r-2 relative">
+    <!-- Toggle Sidebar -->
+    <button
+      class="tooltip tooltip-right tooltip-primary menu-button p-2 transition-colors rounded-lg shadow-md hover:bg-primary hover:text-white focus:outline-none focus:ring focus:ring-indigo-600 focus:ring-offset-white focus:ring-offset-2"
+      data-tip="Open Sidenav"
+      [ngClass]="{
+        'text-white bg-indigo-600':
+          isSidebarOpen && currentSidebarTab === 'linksTab',
+        'text-gray-500 bg-white': !(
+          isSidebarOpen && currentSidebarTab === 'linksTab'
+        )
+      }"
+      (mouseenter)="openSidebar('linksTab')"
+    >
+      <span class="sr-only">Toggle sidebar</span>
+      <svg
+        aria-hidden="true"
+        class="w-6 h-6"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M4 6h16M4 12h16M4 18h7"
+        />
+      </svg>
+    </button>
+    <!-- Admin Button -->
+    <div class="tooltip tooltip-right tooltip-primary" data-tip="Edit TG Bot">
+      <button
+        class="menu-button p-2 transition-colors rounded-lg shadow-md hover:bg-primary hover:text-white focus:outline-none focus:ring focus:ring-indigo-600 focus:ring-offset-white focus:ring-offset-2"
+        routerLink="/admin"
+        routerLinkActive="bg-indigo-600 text-white"
+        [routerLinkActiveOptions]="{ exact: true }"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="32"
+          height="32"
+          viewBox="0 0 24 24"
+          class="w-6 h-6"
+        >
+          <path
+            fill="currentColor"
+            d="M3 10h11v2H3zm0-2h11V6H3zm0 8h7v-2H3zm15.01-3.13l.71-.71a.996.996 0 0 1 1.41 0l.71.71c.39.39.39 1.02 0 1.41l-.71.71zm-.71.71l-5.3 5.3V21h2.12l5.3-5.3z"
+          />
+        </svg>
+      </button>
+    </div>
+    <!-- Push -->
+    <div
+      class="tooltip tooltip-right tooltip-primary"
+      data-tip="Send TG notification"
+    >
+      <button
+        class="menu-button p-2 transition-colors rounded-lg shadow-md hover:bg-primary hover:text-white focus:outline-none focus:ring focus:ring-indigo-600 focus:ring-offset-white focus:ring-offset-2"
+        routerLink="/admin/push"
+        routerLinkActive="bg-indigo-600 text-white"
+      >
+        <svg
+          _ngcontent-ng-c869363523=""
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          class="w-6 h-6"
+        >
+          <path
+            _ngcontent-ng-c869363523=""
+            fill="currentColor"
+            d="M11 14h2v-3h3V9h-3V6h-2v3H8v2h3zm-9 8V4q0-.825.588-1.412T4 2h16q.825 0 1.413.588T22 4v12q0 .825-.587 1.413T20 18H6z"
+          ></path>
+        </svg>
+      </button>
+    </div>
+    <!-- Email-Sent -->
+    <div class="tooltip tooltip-right tooltip-primary" data-tip="Send Email">
+      <button
+        class="menu-button p-2 transition-colors rounded-lg shadow-md hover:bg-primary hover:text-white focus:outline-none focus:ring focus:ring-indigo-600 focus:ring-offset-white focus:ring-offset-2"
+        routerLink="/admin/email-sent"
+        routerLinkActive="bg-indigo-600 text-white"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          class="w-6 h-6"
+        >
+          <path
+            fill="currentColor"
+            d="M12 19a6.995 6.995 0 0 1 10-6.32V6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h8.08c-.05-.33-.08-.66-.08-1M4 6l8 5l8-5v2l-8 5l-8-5zm13.34 16l-3.54-3.54l1.41-1.41l2.12 2.12l4.24-4.24L23 16.34z"
+          />
+        </svg>
+      </button>
+    </div>
+    <!-- Users -->
+    <div class="tooltip tooltip-right tooltip-primary" data-tip="TG Users">
+      <button
+        class="menu-button p-2 transition-colors rounded-lg shadow-md hover:bg-primary hover:text-white focus:outline-none focus:ring focus:ring-indigo-600 focus:ring-offset-white focus:ring-offset-2"
+        routerLink="/admin/users"
+        routerLinkActive="bg-indigo-600 text-white"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          class="w-6 h-6"
+        >
+          <path
+            fill="currentColor"
+            d="M12 6c1.1 0 2 .9 2 2s-.9 2-2 2s-2-.9-2-2s.9-2 2-2m0 10c2.7 0 5.8 1.29 6 2H6c.23-.72 3.31-2 6-2m0-12C9.79 4 8 5.79 8 8s1.79 4 4 4s4-1.79 4-4s-1.79-4-4-4m0 10c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4"
+          />
+        </svg>
+      </button>
+    </div>
+    <div class="tooltip tooltip-right tooltip-primary" data-tip="Site Users">
+      <button
+        class="menu-button p-2 transition-colors rounded-lg shadow-md hover:bg-primary hover:text-white focus:outline-none focus:ring focus:ring-indigo-600 focus:ring-offset-white focus:ring-offset-2"
+        routerLink="/admin/site-users"
+        routerLinkActive="bg-indigo-600 text-white"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          class="w-6 h-6"
+        >
+          <path
+            fill="currentColor"
+            d="M0 18v-1.575q0-1.075 1.1-1.75T4 14q.325 0 .625.013t.575.062q-.35.525-.525 1.1t-.175 1.2V18zm6 0v-1.625q0-.8.438-1.463t1.237-1.162T9.588 13T12 12.75q1.325 0 2.438.25t1.912.75t1.225 1.163t.425 1.462V18zm13.5 0v-1.625q0-.65-.162-1.225t-.488-1.075q.275-.05.563-.062T20 14q1.8 0 2.9.663t1.1 1.762V18zM4 13q-.825 0-1.412-.587T2 11q0-.85.588-1.425T4 9q.85 0 1.425.575T6 11q0 .825-.575 1.413T4 13m16 0q-.825 0-1.412-.587T18 11q0-.85.588-1.425T20 9q.85 0 1.425.575T22 11q0 .825-.575 1.413T20 13m-8-1q-1.25 0-2.125-.875T9 9q0-1.275.875-2.137T12 6q1.275 0 2.138.863T15 9q0 1.25-.862 2.125T12 12"
+          />
+        </svg>
+      </button>
+    </div>
+    <!-- Images -->
+    <div class="tooltip tooltip-right tooltip-primary" data-tip="Images">
+      <button
+        class="menu-button p-2 transition-colors rounded-lg shadow-md hover:bg-primary hover:text-white focus:outline-none focus:ring focus:ring-indigo-600 focus:ring-offset-white focus:ring-offset-2"
+        routerLink="/admin/images"
+        routerLinkActive="bg-indigo-600 text-white"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          class="w-6 h-6"
+        >
+          <g
+            fill="none"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+          >
+            <path
+              stroke-dasharray="72"
+              stroke-dashoffset="72"
+              d="M3 14v-9h18v14h-18v-5"
+            >
+              <animate
+                fill="freeze"
+                attributeName="stroke-dashoffset"
+                dur="0.6s"
+                values="72;0"
+              />
+            </path>
+            <path
+              stroke-dasharray="24"
+              stroke-dashoffset="24"
+              stroke-width="1"
+              d="M3 16l4 -3l3 2l6 -5l5 4"
+            >
+              <animate
+                fill="freeze"
+                attributeName="stroke-dashoffset"
+                begin="0.6s"
+                dur="0.4s"
+                values="24;0"
+              />
+            </path>
+          </g>
+          <g fill="currentColor" fill-opacity="0">
+            <circle cx="7.5" cy="9.5" r="1.5">
+              <animate
+                fill="freeze"
+                attributeName="fill-opacity"
+                begin="1s"
+                dur="0.2s"
+                values="0;1"
+              />
+            </circle>
+            <path d="M3 16l4 -3l3 2l6 -5l5 4V19H3Z">
+              <animate
+                fill="freeze"
+                attributeName="fill-opacity"
+                begin="1.3s"
+                dur="0.15s"
+                values="0;0.3"
+              />
+            </path>
+          </g>
+        </svg>
+      </button>
+    </div>
+
+    <!-- events sites -->
+    <div class="tooltip tooltip-right tooltip-primary" data-tip="Event Sites">
+      <button
+        class="menu-button p-2 transition-colors rounded-lg shadow-md hover:bg-primary hover:text-white focus:outline-none focus:ring focus:ring-indigo-600 focus:ring-offset-white focus:ring-offset-2"
+        routerLink="/admin/events"
+        routerLinkActive="bg-indigo-600 text-white"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="20"
+          height="20"
+          viewBox="0 0 2048 2048"
+          class="w-6 h-6"
+        >
+          <path
+            fill="currentColor"
+            d="M1024 0q141 0 272 36t245 103t207 160t160 208t103 245t37 272q0 141-36 272t-103 245t-160 207t-208 160t-245 103t-272 37q-141 0-272-36t-245-103t-207-160t-160-208t-103-244t-37-273q0-141 36-272t103-245t160-207t208-160T751 37t273-37m0 1920q123 0 237-32t214-90t182-141t140-181t91-214t32-238q0-123-32-237t-90-214t-141-182t-181-140t-214-91t-238-32q-123 0-237 32t-214 90t-182 141t-140 181t-91 214t-32 238q0 123 32 237t90 214t141 182t181 140t214 91t238 32m597-880l48-144h75l-85 256h-75l-48-144l-48 144h-75l-85-256h75l48 144l48-144h74zm-464-144h75l-85 256h-75l-48-144l-48 144h-75l-85-256h75l48 144l48-144h74l48 144zm-512 0h75l-85 256h-75l-48-144l-48 144h-75l-85-256h75l48 144l48-144h74l48 144z"
+          />
+        </svg>
+      </button>
+    </div>
+    <!-- Tutorials Button -->
+    <div class="tooltip tooltip-right tooltip-primary" data-tip="Tutorials">
+      <button
+        class="menu-button p-2 transition-colors rounded-lg shadow-md hover:bg-primary hover:text-white focus:outline-none focus:ring focus:ring-indigo-600 focus:ring-offset-white focus:ring-offset-2"
+        routerLink="/admin/tutorials"
+        routerLinkActive="bg-indigo-600 text-white"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="32"
+          height="32"
+          viewBox="0 0 24 24"
+          class="w-6 h-6"
+        >
+          <path
+            fill="currentColor"
+            d="M7.92 7.54c-.8-.34-1.14-1.33-.66-2.05C8.23 4.05 9.85 3 11.99 3c2.35 0 3.96 1.07 4.78 2.41c.7 1.15 1.11 3.3.03 4.9c-1.2 1.77-2.35 2.31-2.97 3.45c-.15.27-.24.49-.3.94c-.09.73-.69 1.3-1.43 1.3c-.87 0-1.58-.75-1.48-1.62c.06-.51.18-1.04.46-1.54c.77-1.39 2.25-2.21 3.11-3.44c.91-1.29.4-3.7-2.18-3.7c-1.17 0-1.93.61-2.4 1.34c-.35.57-1.08.75-1.69.5M14 20c0 1.1-.9 2-2 2s-2-.9-2-2s.9-2 2-2s2 .9 2 2"
+          />
+        </svg>
+      </button>
+    </div>
+    <!-- Add Button -->
+    <div class="tooltip tooltip-right tooltip-primary" data-tip="Add">
+      <button
+        class="menu-button p-2 transition-colors rounded-lg shadow-md hover:bg-primary hover:text-white focus:outline-none focus:ring focus:ring-indigo-600 focus:ring-offset-white focus:ring-offset-2"
+        routerLink="/admin/add-button"
+        routerLinkActive="bg-indigo-600 text-white"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="32"
+          height="32"
+          viewBox="0 0 24 24"
+          class="w-6 h-6"
+        >
+          <path
+            fill="currentColor"
+            d="M19 12.998h-6v6h-2v-6H5v-2h6v-6h2v6h6z"
+          />
+        </svg>
+      </button>
+    </div>
+    <!-- Exit -->
+    <button
+      class="menu-button p-2 transition-colors rounded-lg shadow-md hover:bg-primary hover:text-white focus:outline-none focus:ring focus:ring-indigo-600 focus:ring-offset-white focus:ring-offset-2 absolute bottom-4 left-0 tooltip tooltip-right tooltip-primary"
+      routerLink=""
+      data-tip="Exit"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="32"
+        height="32"
+        viewBox="0 0 24 24"
+        class="w-6 h-6"
+      >
+        <path
+          fill="currentColor"
+          d="M10.09 15.59L11.5 17l5-5l-5-5l-1.41 1.41L12.67 11H3v2h9.67zM19 3H5a2 2 0 0 0-2 2v4h2V5h14v14H5v-4H3v4a2 2 0 0 0 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2"
+        />
+      </svg>
+    </button>
+  </div>
+
+  <!-- Sidebar -->
+  <div
+    [class.hidden]="!isSidebarOpen"
+    class="sidebar-menu fixed inset-y-0 z-10 flex-shrink-0 w-64 bg-white border-r-2 border-indigo-100 shadow-lg left-16 sm:w-72"
+    (mouseenter)="clearCloseTimeout()"
+    (mouseleave)="startCloseTimeout()"
+  >
+    <nav aria-label="Main" class="flex flex-col h-full">
+      <div
+        class="relative flex-1 px-4 space-y-2 overflow-hidden hover:overflow-auto pt-[62px] flex flex-col gap-[11px] cursor-pointer"
+      >
+        <span
+          class="text-3xl font-bold text-indigo-600 absolute top-[20px] left-[50%] translate-x-[-50%]"
+          >Admin</span
+        >
+        <!-- edit -->
+        <div
+          routerLink="/admin"
+          routerLinkActive="bg-indigo-600 text-white"
+          [routerLinkActiveOptions]="{ exact: true }"
+          class="nav-item mt-0 flex items-center w-full space-x-2 text-indigo-600 transition-colors rounded-lg group hover:bg-primary hover:text-white cursor-pointer"
+        >
+          <span
+            aria-hidden="true"
+            class="p-2 transition-colors rounded-lg group-hover:bg-primary group-hover:text-white"
+          >
+            <svg
+              class="w-6 h-6"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
+              />
+            </svg>
+          </span>
+          <span>Edit</span>
+        </div>
+        <!-- message-send -->
+        <div
+          routerLink="/admin/push"
+          routerLinkActive="bg-indigo-600 text-white"
+          [routerLinkActiveOptions]="{ exact: true }"
+          class="nav-item mt-0 flex items-center space-x-2 text-indigo-600 transition-colors rounded-lg group hover:bg-primary hover:text-white"
+        >
+          <span
+            aria-hidden="true"
+            class="p-2 transition-colors rounded-lg group-hover:bg-primary group-hover:text-white"
+          >
+            <svg
+              _ngcontent-ng-c869363523=""
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+            >
+              <path
+                _ngcontent-ng-c869363523=""
+                fill="currentColor"
+                d="M11 14h2v-3h3V9h-3V6h-2v3H8v2h3zm-9 8V4q0-.825.588-1.412T4 2h16q.825 0 1.413.588T22 4v12q0 .825-.587 1.413T20 18H6z"
+              ></path>
+            </svg>
+          </span>
+          <span>TG send notification</span>
+        </div>
+        <!-- email-sent -->
+        <div
+          routerLink="/admin/email-sent"
+          routerLinkActive="bg-indigo-600 text-white"
+          [routerLinkActiveOptions]="{ exact: true }"
+          class="nav-item mt-0 flex items-center space-x-2 text-indigo-600 transition-colors rounded-lg group hover:bg-primary hover:text-white"
+        >
+          <span
+            aria-hidden="true"
+            class="p-2 transition-colors rounded-lg group-hover:bg-primary group-hover:text-white"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+            >
+              <path
+                fill="currentColor"
+                d="M12 19a6.995 6.995 0 0 1 10-6.32V6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h8.08c-.05-.33-.08-.66-.08-1M4 6l8 5l8-5v2l-8 5l-8-5zm13.34 16l-3.54-3.54l1.41-1.41l2.12 2.12l4.24-4.24L23 16.34z"
+              />
+            </svg>
+          </span>
+          <span>Send e-mail</span>
+        </div>
+        <!-- users -->
+        <div
+          routerLink="/admin/users"
+          routerLinkActive="bg-indigo-600 text-white"
+          [routerLinkActiveOptions]="{ exact: true }"
+          class="nav-item mt-0 flex items-center space-x-2 text-indigo-600 transition-colors rounded-lg group hover:bg-primary hover:text-white"
+        >
+          <span
+            aria-hidden="true"
+            class="p-2 transition-colors rounded-lg group-hover:bg-primary group-hover:text-white"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+            >
+              <path
+                fill="currentColor"
+                d="M12 6c1.1 0 2 .9 2 2s-.9 2-2 2s-2-.9-2-2s.9-2 2-2m0 10c2.7 0 5.8 1.29 6 2H6c.23-.72 3.31-2 6-2m0-12C9.79 4 8 5.79 8 8s1.79 4 4 4s4-1.79 4-4s-1.79-4-4-4m0 10c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4"
+              />
+            </svg>
+          </span>
+          <span>TG Users</span>
+        </div>
+        <!-- site-users -->
+        <div
+          routerLink="/admin/site-users"
+          routerLinkActive="bg-indigo-600 text-white"
+          [routerLinkActiveOptions]="{ exact: true }"
+          class="nav-item mt-0 flex items-center space-x-2 text-indigo-600 transition-colors rounded-lg group hover:bg-primary hover:text-white"
+        >
+          <span
+            aria-hidden="true"
+            class="p-2 transition-colors rounded-lg group-hover:bg-primary group-hover:text-white"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+            >
+              <path
+                fill="currentColor"
+                d="M0 18v-1.575q0-1.075 1.1-1.75T4 14q.325 0 .625.013t.575.062q-.35.525-.525 1.1t-.175 1.2V18zm6 0v-1.625q0-.8.438-1.463t1.237-1.162T9.588 13T12 12.75q1.325 0 2.438.25t1.912.75t1.225 1.163t.425 1.462V18zm13.5 0v-1.625q0-.65-.162-1.225t-.488-1.075q.275-.05.563-.062T20 14q1.8 0 2.9.663t1.1 1.762V18zM4 13q-.825 0-1.412-.587T2 11q0-.85.588-1.425T4 9q.85 0 1.425.575T6 11q0 .825-.575 1.413T4 13m16 0q-.825 0-1.412-.587T18 11q0-.85.588-1.425T20 9q.85 0 1.425.575T22 11q0 .825-.575 1.413T20 13m-8-1q-1.25 0-2.125-.875T9 9q0-1.275.875-2.137T12 6q1.275 0 2.138.863T15 9q0 1.25-.862 2.125T12 12"
+              />
+            </svg>
+          </span>
+          <span>Site Users</span>
+        </div>
+        <!-- images -->
+        <div
+          routerLink="/admin/images"
+          routerLinkActive="bg-indigo-600 text-white"
+          [routerLinkActiveOptions]="{ exact: true }"
+          class="nav-item mt-0 flex items-center space-x-2 text-indigo-600 transition-colors rounded-lg group hover:bg-primary hover:text-white"
+        >
+          <span
+            aria-hidden="true"
+            class="p-2 transition-colors rounded-lg group-hover:bg-primary group-hover:text-white"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+            >
+              <g
+                fill="none"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+              >
+                <path
+                  stroke-dasharray="72"
+                  stroke-dashoffset="72"
+                  d="M3 14v-9h18v14h-18v-5"
+                >
+                  <animate
+                    fill="freeze"
+                    attributeName="stroke-dashoffset"
+                    dur="0.6s"
+                    values="72;0"
+                  />
+                </path>
+                <path
+                  stroke-dasharray="24"
+                  stroke-dashoffset="24"
+                  stroke-width="1"
+                  d="M3 16l4 -3l3 2l6 -5l5 4"
+                >
+                  <animate
+                    fill="freeze"
+                    attributeName="stroke-dashoffset"
+                    begin="0.6s"
+                    dur="0.4s"
+                    values="24;0"
+                  />
+                </path>
+              </g>
+              <g fill="currentColor" fill-opacity="0">
+                <circle cx="7.5" cy="9.5" r="1.5">
+                  <animate
+                    fill="freeze"
+                    attributeName="fill-opacity"
+                    begin="1s"
+                    dur="0.2s"
+                    values="0;1"
+                  />
+                </circle>
+                <path d="M3 16l4 -3l3 2l6 -5l5 4V19H3Z">
+                  <animate
+                    fill="freeze"
+                    attributeName="fill-opacity"
+                    begin="1.3s"
+                    dur="0.15s"
+                    values="0;0.3"
+                  />
+                </path>
+              </g>
+            </svg>
+          </span>
+          <span>Images</span>
+        </div>
+
+        <!-- events -->
+        <div
+          routerLink="/admin/events"
+          routerLinkActive="bg-indigo-600 text-white"
+          [routerLinkActiveOptions]="{ exact: true }"
+          class="nav-item mt-0 flex items-center space-x-2 text-indigo-600 transition-colors rounded-lg group hover:bg-primary hover:text-white"
+        >
+          <span
+            aria-hidden="true"
+            class="p-2 transition-colors rounded-lg group-hover:bg-primary group-hover:text-white"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 2048 2048"
+              class="w-6 h-6"
+            >
+              <path
+                fill="currentColor"
+                d="M1024 0q141 0 272 36t245 103t207 160t160 208t103 245t37 272q0 141-36 272t-103 245t-160 207t-208 160t-245 103t-272 37q-141 0-272-36t-245-103t-207-160t-160-208t-103-244t-37-273q0-141 36-272t103-245t160-207t208-160T751 37t273-37m0 1920q123 0 237-32t214-90t182-141t140-181t91-214t32-238q0-123-32-237t-90-214t-141-182t-181-140t-214-91t-238-32q-123 0-237 32t-214 90t-182 141t-140 181t-91 214t-32 238q0 123 32 237t90 214t141 182t181 140t214 91t238 32m597-880l48-144h75l-85 256h-75l-48-144l-48 144h-75l-85-256h75l48 144l48-144h74zm-464-144h75l-85 256h-75l-48-144l-48 144h-75l-85-256h75l48 144l48-144h74l48 144zm-512 0h75l-85 256h-75l-48-144l-48 144h-75l-85-256h75l48 144l48-144h74l48 144z"
+              />
+            </svg>
+          </span>
+          <span>Sites events</span>
+        </div>
+
+        <!-- guid-btn -->
+        <div
+          routerLink="/admin/tutorials"
+          routerLinkActive="bg-indigo-600 text-white"
+          [routerLinkActiveOptions]="{ exact: true }"
+          class="nav-item mt-0 flex items-center space-x-2 text-indigo-600 transition-colors rounded-lg group hover:bg-primary hover:text-white"
+        >
+          <span
+            aria-hidden="true"
+            class="p-2 transition-colors rounded-lg group-hover:bg-primary group-hover:text-white"
+          >
+            <svg
+              class="w-6 h-6"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                fill="currentColor"
+                d="M7.92 7.54c-.8-.34-1.14-1.33-.66-2.05C8.23 4.05 9.85 3 11.99 3c2.35 0 3.96 1.07 4.78 2.41c.7 1.15 1.11 3.3.03 4.9c-1.2 1.77-2.35 2.31-2.97 3.45c-.15.27-.24.49-.3.94c-.09.73-.69 1.3-1.43 1.3c-.87 0-1.58-.75-1.48-1.62c.06-.51.18-1.04.46-1.54c.77-1.39 2.25-2.21 3.11-3.44c.91-1.29.4-3.7-2.18-3.7c-1.17 0-1.93.61-2.4 1.34c-.35.57-1.08.75-1.69.5M14 20c0 1.1-.9 2-2 2s-2-.9-2-2s.9-2 2-2s2 .9 2 2"
+              />
+            </svg>
+          </span>
+          <span>Tutorials</span>
+        </div>
+        <!-- add-btn -->
+        <div
+          routerLink="/admin/add-button"
+          routerLinkActive="bg-indigo-600 text-white"
+          [routerLinkActiveOptions]="{ exact: true }"
+          class="nav-item mt-0 flex items-center space-x-2 text-indigo-600 transition-colors rounded-lg group hover:bg-primary hover:text-white"
+        >
+          <span
+            aria-hidden="true"
+            class="p-2 transition-colors rounded-lg group-hover:bg-primary group-hover:text-white"
+          >
+            <svg
+              class="w-6 h-6"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"
+              />
+            </svg>
+          </span>
+          <span>Create</span>
+        </div>
+      </div>
+    </nav>
+  </div>
+</div>

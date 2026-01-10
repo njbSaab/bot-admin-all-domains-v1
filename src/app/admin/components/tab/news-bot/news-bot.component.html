@@ -1,0 +1,747 @@
+<section class="news-bot w-full pb-[25px]">
+  <!-- Заголовок -->
+  <div class="title-group relative">
+    <div
+      class="header-tab flex items-center justify-between px-[20px] py-[20px] my-[40px] mb-0 rounded-[20px] w-[70%] mx-auto bg-gradient-to-r from-indigo-500 to-purple-500 iten"
+    >
+      <h2 class="text-xl font-bold text-white">News bot</h2>
+      <div class="flex items-center gap-4">
+        <p class="text-right text-white flex gap-2 items-center">
+          Всего новостей:
+          <span class="font-bold text-2xl">{{ newsItems.length }}</span>
+        </p>
+      </div>
+    </div>
+
+    <div
+      class="tooltip tooltip-bottom tooltip-ghost absolute top-0 right-[10%]"
+      data-tip="Сортировать по дате"
+    >
+      <button
+        class="mt-3 hover-shadow rounded-xl"
+        (click)="toggleSortOrder()"
+        title="{{
+          ascending
+            ? 'Сортировать: старые → новые'
+            : 'Сортировать: новые → старые'
+        }}"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="45"
+          height="45"
+          viewBox="0 0 24 24"
+          [ngClass]="{ 'rotate-180': ascending }"
+          class="transition-transform duration-300"
+        >
+          <path
+            fill="currentColor"
+            d="M8.734 18.308q-2.667 0-4.527-1.867t-1.86-4.534T4.208 7.37T8.733 5.5t4.532 1.867t1.87 4.534t-1.867 4.537t-4.534 1.87m10.65.692l-2.692-2.692l.714-.708l1.479 1.479V5h1v12.085l1.484-1.485l.708.708zm-8.345-4.02l.727-.707l-2.516-2.54v-3.54h-1v4z"
+          />
+        </svg>
+      </button>
+    </div>
+  </div>
+  <div
+    class="flex items-center justify-center my-5 gap-2 cursor-pointer w-fit mx-auto hover:scale-105 active:scale-100 transition-all ease-in duration-300 hover-shadow p-2 rounded-lg"
+    (click)="openCreateModal()"
+  >
+    <span class="text-2xl text-indigo-600">Create news</span>
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="60"
+      height="60"
+      viewBox="0 0 24 24"
+      class="transition-all ease-in duration-300"
+      [ngClass]="{ 'rotate-45': isOpen }"
+    >
+      <g
+        fill="none"
+        stroke="#4f45e5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+      >
+        <path
+          stroke-dasharray="64"
+          stroke-dashoffset="64"
+          d="M3 12c0 -4.97 4.03 -9 9 -9c4.97 0 9 4.03 9 9c0 4.97 -4.03 9 -9 9c-4.97 0 -9 -4.03 -9 -9Z"
+        >
+          <animate
+            fill="freeze"
+            attributeName="stroke-dashoffset"
+            dur="0.6s"
+            values="64;0"
+          />
+        </path>
+        <path stroke-dasharray="12" stroke-dashoffset="12" d="M7 12h10">
+          <animate
+            fill="freeze"
+            attributeName="stroke-dashoffset"
+            begin="0.6s"
+            dur="0.2s"
+            values="12;0"
+          />
+        </path>
+        <path stroke-dasharray="12" stroke-dashoffset="12" d="M12 7v10">
+          <animate
+            fill="freeze"
+            attributeName="stroke-dashoffset"
+            begin="0.8s"
+            dur="0.2s"
+            values="12;0"
+          />
+        </path>
+      </g>
+    </svg>
+  </div>
+  <!-- Форма создания новости -->
+  <div
+    *ngIf="isOpen"
+    class="w-[70%] mx-auto p-4 shadow-lg rounded-lg mb-8 hover-shadow"
+  >
+    <h3 class="text-xl font-bold mb-4">Создать новую новость</h3>
+    <div class="mb-4">
+      <label class="block text-lg text-indigo-400 font-bold mb-0"
+        >Заголовок:</label
+      >
+      <input
+        type="text"
+        [(ngModel)]="newNews.post_title"
+        class="input w-full mt-1 mb-4 border border-gray-300 rounded-lg px-4 py-2.5 focus:ring focus:ring-blue-300 focus:ring-opacity-40"
+        placeholder="Введите заголовок"
+      />
+    </div>
+    <div class="mb-4">
+      <label class="block text-lg text-indigo-400 font-bold mb-0"
+        >Контент:</label
+      >
+      <textarea
+        [(ngModel)]="newNews.post_content"
+        class="input w-full mt-1 mb-4 border h-[200px] border-gray-300 rounded-lg px-4 py-2.5 focus:ring focus:ring-blue-300 focus:ring-opacity-40"
+        placeholder="Введите контент"
+      ></textarea>
+    </div>
+    <div class="mb-4">
+      <label class="block text-lg text-indigo-400 font-bold mb-0"
+        >URL изображения:
+        <span
+          *ngIf="
+            newNews.post_image_url &&
+            !urlValidationService.isValidImageUrl(newNews.post_image_url)
+          "
+          class="text-red-500 text-sm mt-2 block pt-2"
+        >
+          <!-- Вывод сообщения об ошибке, если домен неверный -->
+          Неверный домен, вставьте изображение с начальним доменом
+          <br />
+          https://1xjet.jp/tgadmin/image/example.png или
+          https://1xjet.netlify.app/example.png
+        </span>
+      </label>
+      <input
+        type="text"
+        [(ngModel)]="newNews.post_image_url"
+        class="input w-full mt-1 mb-4 border border-gray-300 rounded-lg px-4 py-2.5 focus:ring focus:ring-blue-300 focus:ring-opacity-40"
+        placeholder="https://image.com"
+      />
+    </div>
+    <div class="mb-4">
+      <label class="block text-lg text-indigo-400 font-bold mb-0"
+        >Название кнопки:</label
+      >
+      <input
+        [(ngModel)]="newNews.btn_title"
+        class="input w-full mt-1 mb-4 border border-gray-300 rounded-lg px-4 py-2.5 focus:ring focus:ring-blue-300 focus:ring-opacity-40"
+        placeholder="Кнопа"
+      />
+    </div>
+    <div class="mb-4">
+      <label class="block text-lg text-indigo-400 font-bold mb-0"
+        >Ссылка на новость</label
+      >
+      <input
+        type="text"
+        [(ngModel)]="newNews.news_url"
+        class="input w-full mt-1 mb-4 border border-gray-300 rounded-lg px-4 py-2.5 focus:ring focus:ring-blue-300 focus:ring-opacity-40"
+        placeholder="https://example.com"
+      />
+    </div>
+    <div class="mb-4">
+      <label class="block text-lg text-indigo-400 font-bold mb-0"
+        >Категория:</label
+      >
+      <select
+        [(ngModel)]="newNewsCategoryId"
+        class="select select-bordered w-full mt-1 mb-4 border border-gray-300 rounded-lg px-4 py-2.5 focus:ring focus:ring-blue-300 focus:ring-opacity-40"
+      >
+        <option value="" disabled selected class="text-lg text-gray-700">
+          Выберите категорию
+        </option>
+        <option class="text-lg" *ngFor="let cat of categories" [value]="cat.id">
+          {{ cat.name }}
+        </option>
+      </select>
+    </div>
+    <button
+      (click)="createNews()"
+      [disabled]="!urlValidationService.isValidImageUrl(newNews.post_image_url)"
+      class="btn pr-0 text-success mx-auto flex items-center my-3"
+    >
+      Сохранить
+      <span class="btn btn-accent">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="30"
+          height="30"
+          viewBox="0 0 24 24"
+        >
+          <path
+            fill="none"
+            stroke="#fff"
+            stroke-dasharray="24"
+            stroke-dashoffset="24"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2.7"
+            d="M5 11l6 6l10 -10"
+          >
+            <animate
+              fill="freeze"
+              attributeName="stroke-dashoffset"
+              dur="0.96s"
+              values="24;0"
+            />
+          </path>
+        </svg>
+      </span>
+    </button>
+  </div>
+
+  <!-- Список новостей -->
+  <div *ngIf="!loading; else loadingTemplate">
+    <div
+      *ngFor="let news of newsItems | sortNews : ascending; index as i"
+      class="news-card mb-8 mt-4"
+    >
+      <div
+        class="flex items-center justify-between w-[70%] mx-auto pt-[20px] mb-[20px]"
+      >
+        <p class="text-lg font-bold text-indigo-600 nj-toast-gradient">
+          📝 Новость №{{ i + 1 }}
+        </p>
+        <div class="card-date flex items-center gap-2">
+          <p class="text-xs text-gray-500">
+            Дата обновления: {{ news.created_at | date : "medium" }}
+          </p>
+        </div>
+      </div>
+
+      <div
+        *ngIf="!news.isEditing; else editMode"
+        class="card-body news-body hover-shadow m-[20px] rounded-[20px] p-0"
+      >
+        <div
+          class="img-wrapper w-full h-[350px] relative"
+          *ngIf="news.post_image_url"
+        >
+          <figure *ngIf="news.post_image_url">
+            <img
+              [src]="news.post_image_url"
+              alt="Post Image"
+              class="rounded-[20px]"
+            />
+          </figure>
+        </div>
+        <div
+          class="card-content-wrapp p-[40px] pt-[20px] bg-white z-10 rounded-[20px]"
+        >
+          <div class="card-header flex justify-around items-center">
+            <p class="text-lg text-gray-600 font-bold flex-[80%]">
+              Категория:
+              <span
+                class="nj-toast-gradient bg-gradient-to-r from-indigo-500 to-purple-500 iten"
+                >{{ news?.category?.name }}</span
+              >
+            </p>
+            <p
+              class="w-fit text-gray-400 text-sm flex items-center justify-center"
+            >
+              isActive:
+
+              <svg
+                *ngIf="news.isActive"
+                class=""
+                xmlns="http://www.w3.org/2000/svg"
+                width="30"
+                height="30"
+                viewBox="0 0 24 24"
+              >
+                <g
+                  fill="none"
+                  stroke="#3f9f52cb"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                >
+                  <path
+                    stroke-dasharray="64"
+                    stroke-dashoffset="64"
+                    d="M3 12c0 -4.97 4.03 -9 9 -9c4.97 0 9 4.03 9 9c0 4.97 -4.03 9 -9 9c-4.97 0 -9 -4.03 -9 -9Z"
+                  >
+                    <animate
+                      fill="freeze"
+                      attributeName="stroke-dashoffset"
+                      dur="0.6s"
+                      values="64;0"
+                    />
+                  </path>
+                  <path
+                    stroke-dasharray="14"
+                    stroke-dashoffset="14"
+                    d="M8 12l3 3l5 -5"
+                  >
+                    <animate
+                      fill="freeze"
+                      attributeName="stroke-dashoffset"
+                      begin="0.6s"
+                      dur="0.2s"
+                      values="14;0"
+                    />
+                  </path>
+                </g>
+              </svg>
+              <svg
+                *ngIf="!news.isActive"
+                xmlns="http://www.w3.org/2000/svg"
+                width="30"
+                height="30"
+                viewBox="0 0 24 24"
+              >
+                <g
+                  fill="none"
+                  stroke="#ff4400"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                >
+                  <path
+                    stroke-dasharray="64"
+                    stroke-dashoffset="64"
+                    d="M12 3c4.97 0 9 4.03 9 9c0 4.97 -4.03 9 -9 9c-4.97 0 -9 -4.03 -9 -9c0 -4.97 4.03 -9 9 -9Z"
+                  >
+                    <animate
+                      fill="freeze"
+                      attributeName="stroke-dashoffset"
+                      dur="0.6s"
+                      values="64;0"
+                    />
+                  </path>
+                  <path
+                    stroke-dasharray="8"
+                    stroke-dashoffset="8"
+                    d="M12 12l4 4M12 12l-4 -4M12 12l-4 4M12 12l4 -4"
+                  >
+                    <animate
+                      fill="freeze"
+                      attributeName="stroke-dashoffset"
+                      begin="0.6s"
+                      dur="0.2s"
+                      values="8;0"
+                    />
+                  </path>
+                </g>
+              </svg>
+            </p>
+          </div>
+          <h3
+            class="collapse-title text-indigo-400 bg-reg peer-checked:bg-primary peer-checked:text-white font-bold text-xl pl-0 pb-4 pt-5 min-h-2"
+          >
+            <!-- <span class="text-xs text-gray-400"> Заголовок:</span>
+          <br /> -->
+            {{ news.post_title }}
+          </h3>
+          <p class="text-sm py-2">
+            <!-- <span class="text-xs text-gray-400">Тело новсти:</span>
+          <br /> -->
+            {{ news.post_content }}
+          </p>
+          <div class="text-right flex items-center gap-1 justify-end my-3">
+            <button class="btn btn-error mb-0" (click)="deleteNews(news.id)">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+              >
+                <g
+                  fill="none"
+                  stroke="#fff"
+                  stroke-dasharray="24"
+                  stroke-dashoffset="24"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                >
+                  <path d="M5 5l14 14">
+                    <animate
+                      fill="freeze"
+                      attributeName="stroke-dashoffset"
+                      dur="0.4s"
+                      values="24;0"
+                    />
+                  </path>
+                  <path d="M19 5l-14 14">
+                    <animate
+                      fill="freeze"
+                      attributeName="stroke-dashoffset"
+                      begin="0.4s"
+                      dur="0.4s"
+                      values="24;0"
+                    />
+                  </path>
+                </g>
+              </svg>
+            </button>
+
+            <button class="btn btn-ghost pr-0" (click)="toggleEdit(news)">
+              Редактировать
+              <span class="btn btn-primary">
+                <app-edit-icon></app-edit-icon>
+              </span>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="!news.isEditing" class="btn-news w-main px-6">
+        <p class="text-lg text-black my-2 font-bold">Кнопка новости:</p>
+        <div
+          *ngIf="news.news_url"
+          class="flex items-center justify-between gap-2 nj-toast-gradient text-white"
+        >
+          <div class="flex items-center gap-2">
+            <span class="text-lg text-white text-nowrap">
+              Название кнопки:</span
+            >
+            <span class="text-lg text-white font-bold text-nowrap">
+              {{ news.btn_title }}
+            </span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="text-lg text-white font-bold text-nowrap">
+              Ссылка на новость</span
+            >
+            <a
+              [href]="news.news_url"
+              target="_blank"
+              class="underline text-sm text-nowrap overflow-x-auto"
+              >{{ news.news_url }}</a
+            >
+          </div>
+        </div>
+      </div>
+
+      <!-- Режим редактирования -->
+      <ng-template #editMode>
+        <div
+          class="card-body w-[70%] mx-auto hover-shadow rounded-xl px-[40px]"
+        >
+          <div
+            class="flex flex-col items-start btn btn-ghost btn-access w-fit mb-2"
+          >
+            <label class="label cursor-pointer">
+              <span class="block text-lg font-bold pr-1"> Is active ? </span>
+              <input
+                type="checkbox"
+                checked="checked"
+                class="checkbox checkbox-success"
+                [(ngModel)]="news.isActive"
+              />
+            </label>
+          </div>
+          <div class="">
+            <label class="block text-sm text-indigo-400 font-bold">
+              Название новости:</label
+            >
+            <input
+              [(ngModel)]="news.post_title"
+              class="input w-full mb-4 border border-gray-300 rounded-lg px-4 py-2.5 focus:ring focus:ring-blue-300 focus:ring-opacity-40"
+              placeholder="Название новости"
+            />
+          </div>
+          <div class="">
+            <label class="block text-sm text-indigo-400 font-bold">
+              Контент новости:</label
+            >
+            <textarea
+              [(ngModel)]="news.post_content"
+              class="w-full h-40 border rounded-lg px-4 py-2 focus:ring focus:ring-blue-300 focus:ring-opacity-40 focus-visible:no-underline text-sm"
+              placeholder="Контент новости"
+            ></textarea>
+          </div>
+          <div class="">
+            <label class="block text-sm text-indigo-400 font-bold">
+              Ссылка на изображение:
+            </label>
+            <input
+              [(ngModel)]="news.post_image_url"
+              class="input w-full mb-4 border border-gray-300 rounded-lg px-4 py-2.5 focus:ring focus:ring-blue-300 focus:ring-opacity-40 text-sm"
+              placeholder="URL изображения"
+            />
+            <div
+              class="img-wrapper w-[350px] h-auto relative"
+              *ngIf="news.post_image_url"
+            >
+              <span
+                *ngIf="
+                  !newNews.post_image_url &&
+                  !urlValidationService.isValidImageUrl(newNews.post_image_url)
+                "
+                class="text-red-500 text-sm mt-2 block w-full"
+              >
+                <!-- Вывод сообщения об ошибке, если домен неверный -->
+                Неверный домен, вставьте изображение с начальним доменом
+                <br />
+                https://1xjet.jp/tgadmin/image/example.png или
+                https://1xjet.netlify.app/example.png
+              </span>
+              <figure *ngIf="news.post_image_url">
+                <img
+                  [src]="news.post_image_url"
+                  alt="Post Image"
+                  class="rounded-[35px]"
+                />
+              </figure>
+            </div>
+          </div>
+          <div class="">
+            <label class="block text-sm text-indigo-400 font-bold">
+              Категория</label
+            >
+            <select
+              [(ngModel)]="news.category"
+              class="select select-bordered input w-full mb-4 border border-gray-300 rounded-lg px-4 py-2.5 focus:ring focus:ring-blue-300 focus:ring-opacity-40"
+            >
+              <option value="football">Football</option>
+              <option value="basketball">Basketball</option>
+              <option value="box">Box</option>
+              <option value="ufc">UFC</option>
+            </select>
+          </div>
+          <div class="">
+            <label class="block text-sm text-indigo-400 font-bold">
+              Название кнопки</label
+            >
+            <input
+              [(ngModel)]="news.btn_title"
+              class="input w-full mb-4 border border-gray-300 rounded-lg px-4 py-2.5 focus:ring focus:ring-blue-300 focus:ring-opacity-40"
+              placeholder="Кнопа"
+            />
+          </div>
+          <div class="">
+            <label class="block text-sm text-indigo-400 font-bold">
+              Ссылка на новость</label
+            >
+            <input
+              [(ngModel)]="news.news_url"
+              class="input w-full mb-4 border border-gray-300 rounded-lg px-4 py-2.5 focus:ring focus:ring-blue-300 focus:ring-opacity-40 text-sm"
+              placeholder="https://example.com"
+            />
+          </div>
+          <div class="flex justify-end items-center gap-4">
+            <button class="btn btn-danger" (click)="toggleEdit(news)">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="35"
+                height="40"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  fill="#fff"
+                  stroke="#fff"
+                  stroke-dasharray="12"
+                  stroke-dashoffset="12"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2.5"
+                  d="M12 12l7 7M12 12l-7 -7M12 12l-7 7M12 12l7 -7"
+                >
+                  <animate
+                    fill="freeze"
+                    attributeName="stroke-dashoffset"
+                    dur="0.3s"
+                    values="12;0"
+                  />
+                </path>
+              </svg>
+            </button>
+            <button
+              class="btn pr-0 text-success"
+              [disabled]="
+                !urlValidationService.isValidImageUrl(newNews.post_image_url)
+              "
+              (click)="saveChanges(news)"
+            >
+              Сохранить
+              <span class="btn btn-accent">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="30"
+                  height="30"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    fill="none"
+                    stroke="#fff"
+                    stroke-dasharray="24"
+                    stroke-dashoffset="24"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2.7"
+                    d="M5 11l6 6l10 -10"
+                  >
+                    <animate
+                      fill="freeze"
+                      attributeName="stroke-dashoffset"
+                      dur="0.96s"
+                      values="24;0"
+                    />
+                  </path>
+                </svg>
+              </span>
+            </button>
+          </div>
+        </div>
+      </ng-template>
+    </div>
+  </div>
+
+  <!-- Шаблон загрузки -->
+  <ng-template #loadingTemplate>
+    <div class="isLoading fixed z-10">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="300"
+        height="300"
+        viewBox="0 0 24 24"
+        class=""
+      >
+        <defs>
+          <radialGradient id="gradient1" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="oklch(51.01% 0.274 263.83)" />
+            <stop offset="100%" stop-color="#4f45e5" />
+          </radialGradient>
+          <radialGradient id="gradient2" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="oklch(47.66% 0.246 305.88)" />
+            <stop offset="100%" stop-color="#818cf8" />
+          </radialGradient>
+          <radialGradient id="gradient3" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#4f45e5" />
+            <stop offset="100%" stop-color="#8845e5" />
+          </radialGradient>
+        </defs>
+        <circle cx="12" cy="12" r="0" fill="url(#gradient1)">
+          <animate
+            id="svgSpinnersPulseMultiple0"
+            fill="freeze"
+            attributeName="r"
+            begin="0;svgSpinnersPulseMultiple2.end"
+            calcMode="spline"
+            dur="1.2s"
+            keySplines=".52,.6,.25,.99"
+            values="0;11"
+          />
+          <animate
+            fill="freeze"
+            attributeName="opacity"
+            begin="0;svgSpinnersPulseMultiple2.end"
+            calcMode="spline"
+            dur="1.2s"
+            keySplines=".52,.6,.25,.99"
+            values="1;0"
+          />
+        </circle>
+        <circle cx="12" cy="12" r="0" fill="url(#gradient2)">
+          <animate
+            id="svgSpinnersPulseMultiple1"
+            fill="freeze"
+            attributeName="r"
+            begin="svgSpinnersPulseMultiple0.begin+0.2s"
+            calcMode="spline"
+            dur="1.2s"
+            keySplines=".52,.6,.25,.99"
+            values="0;11"
+          />
+          <animate
+            fill="freeze"
+            attributeName="opacity"
+            begin="svgSpinnersPulseMultiple0.begin+0.2s"
+            calcMode="spline"
+            dur="1.2s"
+            keySplines=".52,.6,.25,.99"
+            values="1;0"
+          />
+        </circle>
+        <circle cx="12" cy="12" r="0" fill="url(#gradient3)">
+          <animate
+            id="svgSpinnersPulseMultiple2"
+            fill="freeze"
+            attributeName="r"
+            begin="svgSpinnersPulseMultiple0.begin+0.4s"
+            calcMode="spline"
+            dur="1.2s"
+            keySplines=".52,.6,.25,.99"
+            values="0;11"
+          />
+          <animate
+            fill="freeze"
+            attributeName="opacity"
+            begin="svgSpinnersPulseMultiple0.begin+0.4s"
+            calcMode="spline"
+            dur="1.2s"
+            keySplines=".52,.6,.25,.99"
+            values="1;0"
+          />
+        </circle>
+      </svg>
+    </div>
+  </ng-template>
+
+  <!-- Сообщения об успехе и ошибке -->
+  <div
+    *ngIf="successMessage"
+    class="alert alert-success mb-4 relative flex justify-between"
+  >
+    <b> {{ successMessage }} </b>
+    <span class="close" (click)="closeSuccessMessage()">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="36"
+        height="36"
+        viewBox="0 0 24 24"
+      >
+        <path
+          fill="currentColor"
+          d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10s10-4.47 10-10S17.53 2 12 2m0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8s8 3.59 8 8s-3.59 8-8 8m3.59-13L12 10.59L8.41 7L7 8.41L10.59 12L7 15.59L8.41 17L12 13.41L15.59 17L17 15.59L13.41 12L17 8.41z"
+        />
+      </svg>
+    </span>
+  </div>
+
+  <div *ngIf="errorMessage" class="alert alert-error relative">
+    {{ errorMessage }}
+    <span class="close" (click)="closeErrorMessage()">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="36"
+        height="36"
+        viewBox="0 0 24 24"
+      >
+        <path
+          fill="currentColor"
+          d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10s10-4.47 10-10S17.53 2 12 2m0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8s8 3.59 8 8s-3.59 8-8 8m3.59-13L12 10.59L8.41 7L7 8.41L10.59 12L7 15.59L8.41 17L12 13.41L15.59 17L17 15.59L13.41 12L17 8.41z"
+        />
+      </svg>
+    </span>
+  </div>
+</section>

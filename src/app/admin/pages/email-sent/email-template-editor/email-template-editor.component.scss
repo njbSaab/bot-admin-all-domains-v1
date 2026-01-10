@@ -1,0 +1,32 @@
+.controlls {
+  display: grid;
+  grid-template-columns:
+    minmax(100px, 1fr) minmax(100px, 1fr) minmax(100px, 1fr)
+    minmax(100px, 1fr);
+  gap: 0 10px;
+}
+.controlls label {
+  width: 130px;
+  height: fit-content;
+}
+.pos-absolute {
+  position: absolute;
+  left: 80px;
+  bottom: 34px;
+  z-index: 1;
+}
+.controlls input,
+.controlls select,
+.controlls option {
+  width: 130px;
+  border-radius: 15px;
+}
+
+input[type="color" i]::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+input[type="color" i]::-webkit-color-swatch {
+  border-radius: 20px;
+  color-scheme: light only;
+  border-color: rgba(119, 119, 119, 0.2);
+}

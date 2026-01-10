@@ -1,0 +1,97 @@
+<!-- Режим просмотра события -->
+<div class="card bg-base-100 mx-auto hover-shadow-white cursor-pointer w-[90%]">
+  <div class="card-primary-inner flex flex-col gap-6 items-center p-6">
+    <span class="text-lg text-gray-600 text-center">
+      <b>Event ID: </b>{{ event.id }} ({{ event.typeEventId }})
+    </span>
+
+    <div class="card-primary-text flex flex-col gap-2 items-center">
+      <h5 class="card-primary-title text-3xl font-bold">
+        {{ event.name }}
+      </h5>
+      <p class="card-primary-text text-center">
+        {{ event.type }}
+        <span class="card-primary-subtext block text-center">
+          {{ event.endAt | date: "dd/MM/yyyy HH:mm" }}
+        </span>
+      </p>
+    </div>
+
+    <div class="card-primary-image flex gap-8 items-center">
+      <!-- Команда A -->
+      <div class="mebmer flex flex-col items-center">
+        <picture>
+          <img
+            *ngIf="event.imageMemberA"
+            [src]="event.imageMemberA"
+            [alt]="event.memberA"
+            class="team-image"
+          />
+        </picture>
+        <p class="text-sm">{{ event.memberA }}</p>
+      </div>
+
+      <!-- Результат или VS -->
+      <div class="result">
+        <p class="text-5xl text-nowrap" *ngIf="event.result !== null">
+          {{
+            event.result === 1
+              ? event.memberA + " победил"
+              : event.result === 2
+              ? event.memberB + " победил"
+              : "Ничья"
+          }}
+        </p>
+        <picture *ngIf="event.result === null">
+          <img
+            class="vs-img bg-base-300 rounded-xl p-[10px]"
+            src="https://vietget.online/lp200/img/card-primary/VS.svg"
+            alt="VS"
+          />
+        </picture>
+      </div>
+
+      <!-- Команда B -->
+      <div class="mebmer flex flex-col items-center">
+        <picture>
+          <img
+            *ngIf="event.imageMemberB"
+            [src]="event.imageMemberB"
+            [alt]="event.memberB"
+            class="team-image"
+          />
+        </picture>
+        <p class="text-sm">{{ event.memberB }}</p>
+      </div>
+    </div>
+
+    <!-- Таймер -->
+    <div class="timer" *ngIf="event.status === 'active'">
+      <app-countdown-timer [endAt]="event.endAt" [status]="event.status"></app-countdown-timer>
+    </div>
+
+    <div class="timer" *ngIf="event.status !== 'active'">
+      <span class="text-lg text-gray-400">Событие завершено</span>
+    </div>
+
+    <!-- Призы -->
+    <div class="card-primary-image flex flex-col gap-4 items-center pb-6">
+      <div class="flex flex-col items-start btn btn-ghost btn-access w-fit my-4">
+        <h2 class="text-3xl font-bold">{{ event.grandPrize }}</h2>
+      </div>
+      <p class="text-xl">{{ event.everyoneForPrize }}</p>
+    </div>
+
+    <!-- Кнопка редактирования -->
+    <button
+    class="btn btn-ghost pr-0"
+    (click)="onEdit()"
+    [disabled]="event.status !== 'active'"
+    >
+    Редактировать
+    <span class="btn btn-primary">
+        <app-edit-icon></app-edit-icon>
+    </span>
+    </button>
+  </div>
+</div>

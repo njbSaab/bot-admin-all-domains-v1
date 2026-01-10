@@ -1,0 +1,190 @@
+<div *ngIf="structuredData.length > 0">
+  <div
+    *ngFor="let table of structuredData; let i = index"
+    class="w-[80%] mx-auto"
+  >
+    <div *ngIf="!table.isEditing">
+      <div
+        class="collapse hover-shadow card-body bg-reg my-4 rounded-xl p-[20px] pb-[10px] collapse-arrow hover-shadow"
+      >
+        <input type="checkbox" (click)="toggleClick(i)" />
+        <div
+          class="collapse-title text-xl font-medium flex items-center justify-between"
+          [ngClass]="{ 'bg-gradient': activeIndexes.has(i) }"
+        >
+          <h3 class="text-indigo-600">
+            <span class="text-indigo-600 pr-2">{{ table.order }}</span
+            >{{ table.name || "Unnamed" }}
+          </h3>
+          <span
+            *ngIf="activeIndexes.has(i)"
+            class="btn btn-outline hover:bg-regular absolute right-0 bg-reg text-indigo-400 z-10"
+            ><app-edit-icon></app-edit-icon>
+          </span>
+        </div>
+        <div class="collapse-content px-0">
+          <div class="flex justify-between py-4 items-center">
+            <span class="text-sm">
+              Level menu:
+              <span class="nj-toast">{{
+                table.isActive !== undefined ? (table.isActive ? 1 : 2) : "N/A"
+              }}</span>
+            </span>
+            <p class="text-end text-gray-400 text-xs flex-auto">
+              Last update
+              {{
+                table.updated_at
+                  ? (table.updated_at | date : "medium")
+                  : "Not Available"
+              }}
+            </p>
+          </div>
+
+          <div class="menu-post-item mb-[40px]">
+            <div class="card bg-base-100 mx-auto w-[100%] shadow-xl">
+              <div *ngIf="table.linked_post?.post_image_url">
+                <figure>
+                  <img
+                    [src]="
+                      table.linked_post?.post_image_url ||
+                      'path/to/fallback-image.jpg'
+                    "
+                    alt="Post Image"
+                  />
+                </figure>
+              </div>
+              <div class="card-body">
+                <p class="text-indigo-600">ID: {{ table.linked_post?.id }}</p>
+                <h3 class="text-xl text-indigo-400 font-bold">
+                  {{ table.linked_post?.post_title || "No Title" }}
+                </h3>
+                <p>{{ table.linked_post?.post_content || "No Content" }}</p>
+                <span
+                  class="btn btn-outline hover:bg-regular relative bg-reg text-indigo-400 z-10 w-fit ml-auto"
+                >
+                  <app-edit-icon></app-edit-icon>
+                </span>
+              </div>
+            </div>
+
+            <div *ngIf="table.buttons?.length" class="flex flex-col gap-2">
+              <h4 class="text-lg font-bold text-indigo-400 pt-4">
+                Кнопка(и) поста:
+              </h4>
+              <div
+                *ngFor="let button of table.linked_post.buttons"
+                class="collapse collapse-arrow card bg-base-100 mx-auto w-[100%] shadow-xl"
+              >
+                <input type="checkbox" class="peer" />
+                <div
+                  class="collapse-title text-indigo-400 bg-reg peer-checked:bg-primary peer-checked:text-white font-bold text-lg"
+                >
+                  {{ button.button.name || "Unnamed Button" }}
+
+                  <span
+                    class="text-gray-500 text-sm pl-4"
+                    *ngIf="table.title_for_client"
+                    >{{ button.button.title_for_client }}</span
+                  >
+                </div>
+                <div class="collapse-content bg-reg">
+                  <div
+                    class="sub-btn-date flex justify-between text-gray-400 text-xs py-2 px-4"
+                  >
+                    <span
+                      >Дата создания
+                      {{ button.button.created_at | date : "medium" }}</span
+                    >
+                    <span
+                      >Обновлена
+                      {{ button.button.updated_at | date : "medium" }}</span
+                    >
+                  </div>
+                  <div class="sub-btn-body-wrapper flex flex-col gap-2">
+                    <div class="sub-btn-body flex justify-between items-center">
+                      <div
+                        class="sub-btn-body-title text-lg font-bold text-indigo-400 flex gap-2"
+                      >
+                        <span>{{
+                          button.button.name || "Unnamed Button"
+                        }}</span>
+                        <span
+                          class="text-gray-500 text-sm pl-4"
+                          *ngIf="table.title_for_client"
+                          >{{ button.button.title_for_client }}</span
+                        >
+                      </div>
+                      <div
+                        class="sub-btn-body-order font-bold flex gap-4 items-center"
+                      >
+                        <div class="order">
+                          Order:
+                          <span class="nj-toast-trans">{{
+                            button.button.order
+                          }}</span>
+                        </div>
+                        <span
+                          (click)="selectButton(button.button.id)"
+                          class="btn btn-outline hover:bg-regular relative bg-reg text-indigo-400 z-10 w-fit ml-auto"
+                        >
+                          <app-edit-icon></app-edit-icon>
+                        </span>
+                      </div>
+                    </div>
+                    <div class="sub-btn-url" *ngIf="button.button.url">
+                      Url: {{ button.button.url }}
+                    </div>
+                  </div>
+                  <!-- Секция для отображения постов -->
+                </div>
+              </div>
+
+              <div *ngIf="subMenuPosts.length > 0">
+                <div
+                  *ngFor="let post of subMenuPosts; let i = index"
+                  class="card bg-base-100 mx-auto w-[100%] shadow-xl my-4"
+                >
+                  <div>
+                    <div *ngIf="post.post_image_url">
+                      <figure>
+                        <img
+                          [src]="
+                            post.post_image_url || 'path/to/fallback-image.jpg'
+                          "
+                          alt="Post Image"
+                        />
+                      </figure>
+                    </div>
+                    <div class="card-body">
+                      <p class="text-indigo-600">ID: {{ post.id }}</p>
+                      <h3 class="text-xl text-indigo-400 font-bold">
+                        {{ post.post_title || "No Title" }}
+
+                        <span
+                          class="text-gray-500 text-sm pl-4"
+                          *ngIf="table.title_for_client"
+                          >{{ post.title_for_client }}</span
+                        >
+                      </h3>
+                      <p>{{ post.post_content || "No Content" }}</p>
+                      <span
+                        class="btn btn-outline hover:bg-regular relative bg-reg text-indigo-400 z-10 w-fit ml-auto"
+                      >
+                        <app-edit-icon></app-edit-icon>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!--  -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #loading>
+    <app-loading></app-loading>
+  </ng-template>
+</div>

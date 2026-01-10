@@ -1,0 +1,74 @@
+.admin-page {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.tabpanel-wrapper {
+  height: 100%;
+}
+.title-tab {
+  position: relative;
+  padding-left: 10px;
+  &::after {
+    content: "";
+    position: absolute;
+    height: 100%;
+    width: 4px;
+    background: #4f45e5;
+    left: 0;
+    bottom: 0;
+  }
+}
+.tabs {
+  background: linear-gradient(90deg, #4f45e5, transparent);
+  border-radius: var(--rounded-box, 1rem);
+  padding-top: 5px;
+}
+.tabs-title-input {
+  width: fit-content;
+  text-wrap: nowrap;
+  color: #ffffff;
+  font-weight: bold;
+}
+.tab-content {
+  overflow: hidden;
+  overflow-y: auto;
+}
+.tab.tabs-title-input {
+  transition: 0.1s ease-in;
+  margin: 0px;
+  padding: 0 5px;
+  &:hover {
+    backdrop-filter: brightness(0.5);
+  }
+}
+.card-list {
+  .card {
+    cursor: pointer;
+    &:hover {
+      box-shadow: 0 0 15px rgba(78, 70, 229, 0.5);
+      backdrop-filter: blur(10px);
+      transition: all 0.3s ease-in-out;
+    }
+  }
+  .input-title {
+    border-radius: 20px 0 0 20px;
+  }
+  .input {
+    border-radius: 0 20px 20px 0;
+  }
+}
+.alert,
+.alert-success,
+.alert.alert-success {
+  top: 20px;
+  position: fixed;
+  z-index: 9999;
+  width: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0.7;
+  backdrop-filter: blur(10px);
+}

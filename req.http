@@ -1,0 +1,19 @@
+GET https://vi.devsmm.pro/users
+Accept: application/json
+
+GET https://vi.devsmm.pro/users-sites
+Accept: application/json
+
+
+POST https://vi.devsmm.pro/email-templates 
+Content-Type: application/json
+{"name":"Template 1","templateData":{"templateSocialLinks":{"facebook":"fb.com","twitter":"twitter.com"}}}
+
+
+GET https://vi.devsmm.pro/email-templates/1
+Content-Type: application/json
+
+
+PUT https://vi.devsmm.pro/email-templates/1
+Content-Type: application/json
+{"name":"Template 3","templateData":{"templateSocialLinks":{"tkk":"tik-tok","twitter":"twitter.com"}}}

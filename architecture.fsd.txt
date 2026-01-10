@@ -1,0 +1,95 @@
+src/
+├── app/                          # Глобальная "склейка" приложения
+│   ├── core/                     # Часто оставляют для глобальных singleton-сервисов
+│   │   ├── interceptors/
+│   │   ├── guards/
+│   │   └── initializers/         # APP_INITIALIZER, etc.
+│   ├── app.config.ts             # provideHttpClient, provideRouter...
+│   └── main.ts
+│
+├── processes/                    # (опционально) многоэтапные wizard-подобные процессы
+│   └── event-creation-full/      # создание события → лендинг → email/push → подтверждение
+│       ├── model/                # состояние процесса (обычно сигналы/store)
+│       └── ui/                   # шаги wizard'а как компоненты
+│
+├── pages/                        # Тонкие композиционные страницы
+│   ├── admin-dashboard/
+│   │   ├── index.ts
+│   │   ├── dashboard.page.ts
+│   │   └── api/                  # ← только если запросы уникальны для этой страницы!
+│   ├── events-sites/
+│   ├── email-sent-history/
+│   └── bot-settings-overview/
+│
+├── widgets/                      # Переиспользуемые крупные блоки
+│   ├── admin-sidebar/
+│   │   ├── index.ts
+│   │   ├── sidebar.component.ts
+│   │   └── model/                # состояние бокового меню (если динамическое)
+│   ├── data-table/
+│   │   ├── index.ts
+│   │   ├── generic-table/        # dumb-компонент
+│   │   └── smart-table/          # с пагинацией, сортировкой, фильтрами
+│   └── popup-edit-inline/
+│
+├── features/                     # Конкретные пользовательские сценарии — здесь много "толстого" кода
+│   ├── greeting-bot/
+│   │   ├── index.ts              # public API — только то, что используют другие
+│   │   ├── ui/                   # компоненты редактирования приветствия
+│   │   ├── model/                # типы, схемы валидации, сигналы состояния
+│   │   ├── api/                  # ← специфические запросы к приветствию
+│   │   │   ├── greeting.api.ts
+│   │   │   └── mappers.ts
+│   │   └── lib/                  # бизнес-логика (форматирование текста и т.д.)
+│   ├── event-edit/
+│   │   ├── index.ts
+│   │   ├── ui/                   # форма, превью лендинга
+│   │   ├── model/                # EventFormValue, validation schema
+│   │   ├── api/                  # ← обновление события, загрузка черновика
+│   │   └── lib/                  # helpers (генерация slug, валидация дат...)
+│   ├── email-template-editor/
+│   │   ├── index.ts
+│   │   ├── ui/                   # редактор, предпросмотр, выбор шаблона
+│   │   ├── model/                # TemplateStructure, Variables
+│   │   ├── api/                  # ← сохранение шаблона, получение списка
+│   │   └── lib/                  # парсинг переменных, preview rendering
+│   └── email-bulk-send/
+│       ├── index.ts
+│       ├── ui/                   # выбор получателей, режим отправки
+│       ├── model/                # SendOptions, PreviewRecipients
+│       └── api/                  # ← самая "тяжёлая" часть — массовая отправка!
+│
+├── entities/                     # Бизнес-сущности + базовый CRUD/API
+│   ├── event/
+│   │   ├── index.ts
+│   │   ├── model/                # Event, EventDto, LandingSettings, Statistics
+│   │   ├── api/                  # ← основной CRUD событий
+│   │   │   ├── events.crud.ts
+│   │   │   ├── events-by-status.api.ts
+│   │   │   └── mappers.dto.ts
+│   │   └── lib/                  # calculateEventStatus(), normalizeDates()
+│   ├── email-template/
+│   │   ├── model/                # EmailTemplate, TemplateVersion, VariableSchema
+│   │   └── api/                  # getTemplatesList, getTemplateById, saveDraft
+│   ├── user/
+│   │   ├── model/                # User, SiteUser, AdminPermissions
+│   │   └── api/                  # users.crud.ts, site-users.api.ts
+│   └── image-asset/
+│       ├── model/                # ImageAsset, UploadResponse
+│       └── api/                  # uploadImage, getImageList, deleteImage
+│
+└── shared/
+    ├── api/                      # инфраструктура для работы с бэкендом
+    │   ├── index.ts
+    │   ├── http-client.ts        # wrapper над HttpClient + base config
+    │   ├── interceptors/         # auth-token, logging, error-normalizer
+    │   ├── types/                # ApiResponse<T>, ApiError, Paginated<T>
+    │   └── utils/                # createParams(), handleHttpError()
+    ├── ui/                       # чистый UI-kit — Button, Card, Modal, Tabs...
+    ├── lib/                      # date-fns wrappers, string, array, validators...
+    ├── pipes/                    # dateFormat, sortBy, filterBy...
+    ├── directives/               # editOnClick, loading...
+    └── config/                   # app-constants, feature-flags
+
+
+    

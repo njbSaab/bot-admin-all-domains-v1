@@ -1,0 +1,206 @@
+<app-sidebar></app-sidebar>
+
+<section class="admin-page ml-side section">
+  <div class="container mx-auto pt-[10px]">
+    <div
+      class="bg-main-trans2-gradient-90 header-tab flex items-center justify-between py-[10px] mb-0 rounded-[20px] w-full pr-4"
+    >
+      <div class="title-group flex items-center gap-4">
+        <h2 class="title-tab text-2xl font-bold text-indigo-600">
+          <span class="text-black"> Пользователи сайта </span>
+          {{baseUrl}}
+        </h2>
+        <div class="title-tab text-main-trans font-bold">
+          <select
+            class="select select-primary text-xl w-fit rounded-[25px]"
+            [(ngModel)]="selectedSiteName"
+            (ngModelChange)="onSiteNameFilterChange()"
+          >
+            <option [ngValue]="null">Все сайты</option>
+            <option
+              *ngFor="let siteName of uniqueSiteNames"
+              [ngValue]="siteName"
+            >
+              {{ siteName }}
+            </option>
+          </select>
+        </div>
+      </div>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="40"
+        height="40"
+        viewBox="0 0 24 24"
+      >
+        <path
+          fill="#4f45e5"
+          d="M4 13.525L6.525 11L4 8.475L1.475 11zM17.5 13L20 9l2.5 4zM12 12q-1.25 0-2.125-.875T9 9q0-1.275.875-2.137T12 6q1.275 0 2.138.863T15 9q0 1.25-.862 2.125T12 12M0 18v-1.575q0-1.1 1.113-1.763T4 14q.325 0 .625.013t.575.062q-.35.5-.525 1.075T4.5 16.375V18zm6 0v-1.625q0-1.625 1.663-2.625t4.337-1q2.7 0 4.35 1T18 16.375V18zm14-4q1.8 0 2.9.663t1.1 1.762V18h-4.5v-1.625q0-.65-.162-1.225t-.488-1.075q.275-.05.563-.062T20 14"
+        />
+      </svg>
+    </div>
+
+    <!-- Индикатор загрузки -->
+    <div *ngIf="isLoading" class="text-center py-4">
+      <app-loading></app-loading>
+    </div>
+
+    <!-- Отображение ошибки -->
+    <div *ngIf="error" class="text-red-500 text-center">
+      {{ error }}
+    </div>
+
+    <!-- Таблица пользователей -->
+    <div *ngIf="!isLoading && users.length" class="overflow-x-auto mt-4">
+      <div class="overflow-x-auto">
+        <table class="table">
+          <!-- head -->
+          <thead>
+            <tr>
+              <th>#</th>
+              <th class="cursor-pointer">name</th>
+              <th (click)="toggleSort('email')" class="cursor-pointer">
+                Email
+                <span *ngIf="sortBy === 'email'">
+                  {{ ascending ? "↑" : "↓" }}
+                </span>
+              </th>
+              <th (click)="toggleSort('site_url')" class="cursor-pointer">
+                Site URL
+                <span *ngIf="sortBy === 'site_url'">
+                  {{ ascending ? "↑" : "↓" }}
+                </span>
+              </th>
+              <th>User Submit Data</th>
+              <th (click)="toggleSort('state')" class="cursor-pointer">
+                State
+                <span *ngIf="sortBy === 'state'">
+                  {{ ascending ? "↑" : "↓" }}
+                </span>
+              </th>
+              <th (click)="toggleSort('browser')" class="cursor-pointer">
+                Browser
+                <span *ngIf="sortBy === 'browser'">
+                  {{ ascending ? "↑" : "↓" }}
+                </span>
+              </th>
+              <th (click)="toggleSort('os')" class="cursor-pointer">
+                OS
+                <span *ngIf="sortBy === 'os'">
+                  {{ ascending ? "↑" : "↓" }}
+                </span>
+              </th>
+              <th (click)="toggleSort('screen')" class="cursor-pointer">
+                Screen
+                <span *ngIf="sortBy === 'screen'">
+                  {{ ascending ? "↑" : "↓" }}
+                </span>
+              </th>
+              <th (click)="toggleSort('language_code')" class="cursor-pointer">
+                Language
+                <span *ngIf="sortBy === 'language_code'">
+                  {{ ascending ? "↑" : "↓" }}
+                </span>
+              </th>
+              <th>JavaScript</th>
+              <th (click)="toggleSort('last_active')" class="cursor-pointer">
+                Last Active
+                <span *ngIf="sortBy === 'last_active'">
+                  {{ ascending ? "↑" : "↓" }}
+                </span>
+              </th>
+              <th (click)="toggleSort('updated_at')" class="cursor-pointer">
+                Updated At
+                <span *ngIf="sortBy === 'updated_at'">
+                  {{ ascending ? "↑" : "↓" }}
+                </span>
+              </th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              *ngFor="
+                let user of sortedUsers | filterBySiteName : selectedSiteName;
+                let i = index
+              "
+              [ngClass]="{ hover: i % 2 === 1 }"
+            >
+              <th>{{ i + 1 }}</th>
+              <td>{{ user.user_name || "-" }}</td>
+              <td>{{ user.email || "-" }}</td>
+              <td>
+                <a [href]="user.site_url" target="_blank">{{
+                  user.site_url || "-"
+                }}</a>
+              </td>
+<td>
+  <ng-container *ngIf="user.user_submit_data; else noData">
+    <div
+      *ngFor="let key of getUserSubmitDataKeys(user.user_submit_data)"
+    >
+      <span class="font-semibold">{{ formatKey(key) }}:</span>
+
+      <!-- Специальная обработка для ключа 'event' -->
+      <span *ngIf="key === 'event'; else regularValue">
+        {{ getEventTitle(user.user_submit_data[key]) }}
+      </span>
+
+      <!-- Обычное отображение для всех остальных значений -->
+      <ng-template #regularValue>
+        <span *ngIf="isUrl(user.user_submit_data[key])">
+          <a [href]="user.user_submit_data[key]" target="_blank" class="text-blue-600 hover:underline">
+            {{ user.user_submit_data[key] }}
+          </a>
+        </span>
+        <span *ngIf="!isUrl(user.user_submit_data[key])">
+          {{ displayValue(user.user_submit_data[key]) }}
+        </span>
+      </ng-template>
+    </div>
+  </ng-container>
+  <ng-template #noData>-</ng-template>
+</td>
+              <td>{{ user.state || "-" }}</td>
+              <td>{{ user.browser || "-" }}</td>
+              <td>{{ user.os || "-" }}</td>
+              <td>{{ user.screen || "-" }}</td>
+              <td>{{ user.language_code || "-" }}</td>
+              <td>{{ user.javascriptEnabled || "-" }}</td>
+              <td>{{ user.last_active?.slice(0, 16) || "-" }}</td>
+              <td>{{ user.updated_at.slice(0, 16) }}</td>
+              <td>
+                <button
+                  class="btn hover:btn-error btn-circle hover:text-white"
+                  (click)="deleteUser(user.id, user.email)"
+                  title="Delete User"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="32"
+                    height="32"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      fill="currentColor"
+                      d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6zm2.46-7.12l1.41-1.41L12 12.59l2.12-2.12l1.41 1.41L13.41 14l2.12 2.12l-1.41 1.41L12 15.41l-2.12 2.12l-1.41-1.41L10.59 14zM15.5 4l-1-1h-5l-1 1H5v2h14V4z"
+                    />
+                  </svg>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <!-- Сообщение, если пользователей нет -->
+    <div
+      *ngIf="
+        !isLoading &&
+        (sortedUsers | filterBySiteName : selectedSiteName).length === 0
+      "
+      class="text-center"
+    >
+      Пользователи не найдены.
+    </div>
+  </div>
+</section>

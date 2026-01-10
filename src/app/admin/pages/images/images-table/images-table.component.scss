@@ -1,0 +1,59 @@
+.img-hover {
+  transition: all 0.3s ease;
+  position: relative;
+  width: 100%;
+  max-width: 500px;
+  z-index: 0;
+  padding: 40px 0;
+  img {
+    max-height: 150px;
+    max-width: 500px;
+    position: relative;
+    z-index: 0;
+    transition: all 0.3s ease;
+    object-fit: contain;
+  }
+
+  .img-wrapp {
+    transition: all 0.3s ease;
+    position: relative;
+    cursor: pointer;
+    z-index: 0;
+    &::after {
+      content: none;
+      width: 500px;
+      height: 200px;
+      transition: all 0.3s ease;
+      scale: 2;
+      position: fixed;
+      left: 32vw;
+      top: 40%;
+      z-index: 0;
+      -webkit-backdrop-filter: blur(3px);
+      backdrop-filter: blur(3px);
+      background: rgba(0, 0, 0, 0.0470588235);
+      border-radius: 15px;
+    }
+  }
+  //   &:hover {
+  //     transition: all 0.3s ease;
+  //     //   z-index: 2;
+  //     .img-wrapp {
+  //       transition: all 0.3s ease;
+  //       z-index: 2;
+  //       left: 20vw;
+
+  //       // &::after {
+  //       //   content: "";
+  //       //   transition: all 0.3s ease;
+  //       // }
+
+  //       img {
+  //         scale: 2;
+  //         cursor: pointer;
+  //         transition: all 0.3s ease;
+  //         z-index: 2;
+  //       }
+  //     }
+  //   }
+}

@@ -1,0 +1,704 @@
+<section
+  class="menu-buttons bg-main-trans-gradient-0 pb-[30px] min-h-full h-fit"
+>
+  <div
+    class="bg-main-trans2-gradient-90 header-tab flex items-center justify-between px-[20px] py-[10px] my-[30px] rounded-[20px] w-[70%] mx-auto"
+  >
+    <h2 class="title-tab text-xl text-main-trans font-bold">
+      Главные кнопки меню
+    </h2>
+    <p
+      class="text-right flex gap-2 items-center rounded-[20px] bg-main px-[15px] py-[5px]"
+    >
+      Всего кнопок:
+      <span class="font-bold text-2xl">{{ menuTables.length }}</span>
+    </p>
+  </div>
+  <!-- Сообщения об успехе и ошибках -->
+  <div
+    *ngIf="successMessage"
+    class="alert alert-success mb-4 relative flex justify-between"
+  >
+    <b> {{ successMessage }} </b>
+    <span class="close" (click)="closeMessages()">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="36"
+        height="36"
+        viewBox="0 0 24 24"
+      >
+        <path
+          fill="currentColor"
+          d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10s10-4.47 10-10S17.53 2 12 2m0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8s8 3.59 8 8s-3.59 8-8 8m3.59-13L12 10.59L8.41 7L7 8.41L10.59 12L7 15.59L8.41 17L12 13.41L15.59 17L17 15.59L13.41 12L17 8.41z"
+        />
+      </svg>
+    </span>
+  </div>
+
+  <div *ngIf="errorMessage" class="alert alert-error relative">
+    {{ errorMessage }}
+    <span class="close" (click)="closeMessages()">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="36"
+        height="36"
+        viewBox="0 0 24 24"
+      >
+        <path
+          fill="currentColor"
+          d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10s10-4.47 10-10S17.53 2 12 2m0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8s8 3.59 8 8s-3.59 8-8 8m3.59-13L12 10.59L8.41 7L7 8.41L10.59 12L7 15.59L8.41 17L12 13.41L15.59 17L17 15.59L13.41 12L17 8.41z"
+        />
+      </svg>
+    </span>
+  </div>
+
+  <div *ngFor="let table of menuTables; let i = index" class="w-[80%] mx-auto">
+    <div *ngIf="!table.isEditing">
+      <div
+        class="collapse hover-shadow-white card-body bg-reg my-4 rounded-xl p-[20px] pb-0 collapse-arrow pt-[10px]"
+        *ngIf="!table.parentId"
+      >
+        <input type="checkbox" (click)="toggleClick(i)" />
+        <div
+          class="collapse-title text-xl font-medium flex items-center justify-between"
+          [ngClass]="{ 'bg-gradient': activeIndexes.has(i) }"
+        >
+          <h3 class="text-indigo-600">
+            <span class="text-indigo-600 pr-2">{{ table.order }}</span
+            >{{ table.name }}
+            <span
+              class="text-gray-500 text-sm pl-4"
+              *ngIf="table.title_for_client"
+              >{{ table.title_for_client }}</span
+            >
+          </h3>
+          <span
+            *ngIf="activeIndexes.has(i)"
+            (click)="togleEdit(table, i)"
+            class="btn btn-outline hover:bg-regular absolute right-0 bg-reg text-indigo-400 z-10"
+          >
+            <app-edit-icon></app-edit-icon>
+          </span>
+        </div>
+        <!-- collapse -->
+        <div class="collapse-content pb-0 px-0">
+          <span class="text-gray-500 text-sm" *ngIf="table.title_for_client">{{
+            table.title_for_client
+          }}</span>
+          <div class="flex justify-between pt-4 pb-0 items-center">
+            <span class="text-sm">
+              Level menu:
+              <span class="nj-toast">{{ table.isActive ? 1 : 2 }}</span>
+            </span>
+            <p class="text-end text-gray-400 text-xs flex-auto">
+              Last update {{ table.updated_at | date : "medium" }}
+            </p>
+          </div>
+
+          <div class="menu-post-item mb-[40px]">
+            <h3
+              class="text-xl text-indigo-600 font-bold py-4 text-center flex flex-col gap-2 items-center px-0"
+            >
+              <span class="nj-toast-gradient">After button click</span>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="40"
+                height="40"
+                viewBox="0 0 24 24"
+              >
+                <g
+                  fill="none"
+                  stroke="#5045e5ac"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                >
+                  <path
+                    stroke-dasharray="20"
+                    stroke-dashoffset="20"
+                    d="M12 3l0 17.5"
+                  >
+                    <animate
+                      fill="freeze"
+                      attributeName="stroke-dashoffset"
+                      dur="0.2s"
+                      values="20;0"
+                    />
+                  </path>
+                  <path
+                    stroke-dasharray="12"
+                    stroke-dashoffset="12"
+                    d="M12 21l7 -7M12 21l-7 -7"
+                  >
+                    <animate
+                      fill="freeze"
+                      attributeName="stroke-dashoffset"
+                      begin="0.2s"
+                      dur="0.2s"
+                      values="12;0"
+                    />
+                  </path>
+                </g>
+              </svg>
+            </h3>
+
+            <div class="card bg-base-100 mx-auto w-[100%] shadow-xl">
+              <figure *ngIf="table.linked_post?.post_image_url">
+                <img
+                  [src]="table.linked_post?.post_image_url"
+                  alt="Post Image"
+                />
+              </figure>
+              <div class="card-body p-[10px]" *ngIf="table.linked_post">
+                <p class="text-indigo-600">ID: {{ table?.linked_post?.id }}</p>
+                <h3 class="text-xl text-indigo-400 font-bold">
+                  {{ table?.linked_post?.post_title }}
+                </h3>
+                <p>{{ table?.linked_post?.post_content }}</p>
+                <div class="card-actions justify-center pt-[20px]"></div>
+              </div>
+              <p
+                *ngIf="!table.linked_post"
+                class="p-10 text-start text-xl text-indigo-400 font-bold"
+              >
+                <span
+                  class="text-gray-400 pb-[5px] text-lg block w-fit mx-auto"
+                >
+                  У кнопки нет поста,но есть дочерние кнопки
+                </span>
+                4. Sport <br />
+                5. Casino
+              </p>
+            </div>
+
+            <!-- btns -->
+            <div *ngIf="table.buttons?.length" class="flex flex-col gap-2">
+              <h4 class="text-lg font-bold text-indigo-400 pt-4">
+                Кнопка(и) поста:
+              </h4>
+              <div
+                *ngFor="let button of table.buttons"
+                class="collapse collapse-arrow card bg-base-100 mx-auto w-[100%] shadow-xl"
+              >
+                <input type="checkbox" class="peer" />
+                <div
+                  class="collapse-title text-indigo-400 bg-reg peer-checked:bg-primary peer-checked:text-white font-bold text-lg"
+                >
+                  {{ button.name }}
+                  <span
+                    class="text-gray-500 text-sm pl-4"
+                    *ngIf="table.title_for_client"
+                    >{{ button.title_for_client }}</span
+                  >
+                </div>
+                <div class="collapse-content bg-reg pb-0">
+                  <div
+                    *ngIf="!isEditing"
+                    class="sub-btn-date flex justify-between text-gray-400 text-xs py-2 px-4"
+                  >
+                    <span
+                      >Дата создания
+                      {{ button.created_at | date : "medium" }}</span
+                    >
+                    <span
+                      >Обновлена {{ button.updated_at | date : "medium" }}</span
+                    >
+                  </div>
+                  <div class="sub-btn-body-wrapper">
+                    <div
+                      *ngIf="!isEditing"
+                      class="sub-btn-body flex justify-between items-center"
+                    >
+                      <div
+                        class="sub-btn-body-title text-lg font-bold text-indigo-400 flex gap-2"
+                      >
+                        <span>{{ button.name }}</span>
+                        <span
+                          class="text-gray-500 text-sm pl-4"
+                          *ngIf="table.title_for_client"
+                          >{{ button.title_for_client }}</span
+                        >
+                      </div>
+                      <div
+                        class="sub-btn-body-order font-bold flex gap-4 items-center"
+                      >
+                        <div class="order">
+                          Order:
+                          <span class="nj-toast-trans">{{ button.order }}</span>
+                        </div>
+                      </div>
+                      <div class="sub-btn-url" *ngIf="button.url">
+                        Url: {{ button.url }}
+                      </div>
+                    </div>
+
+                    <!-- edit -->
+                    <div *ngIf="isEditing" class="flex items-center">
+                      <div
+                        class="form-group-wrapper flex flex-1 items-center gap-4 pt-4"
+                      >
+                        <div class="form-group w-[30%]">
+                          <label class="block text-sm text-indigo-400 font-bold"
+                            >Название поста:</label
+                          >
+                          <input
+                            [(ngModel)]="button.name"
+                            class="input w-full mt-2 mb-4 border border-gray-300 rounded-lg px-4 py-2.5 focus:ring focus:ring-blue-300 focus:ring-opacity-40"
+                            placeholder="Редактировать заголовок"
+                          />
+                        </div>
+                        <div class="form-group w-[50%]">
+                          <label class="block text-sm text-indigo-400 font-bold"
+                            >Ссылка на ресурс(необязательный параметр):</label
+                          >
+                          <input
+                            [(ngModel)]="button.url"
+                            class="input w-full mt-2 mb-4 border border-gray-300 rounded-lg px-4 py-2.5 focus:ring focus:ring-blue-300 focus:ring-opacity-40"
+                            placeholder="Редактировать URL кнопки"
+                          />
+                        </div>
+                        <div class="form-group w-[12.5%]">
+                          <label class="block text-sm text-indigo-400 font-bold"
+                            >Очередность:</label
+                          >
+                          <input
+                            disabled
+                            [(ngModel)]="button.order"
+                            class="input w-full mt-2 mb-4 border border-gray-300 rounded-lg px-4 py-2.5 focus:ring focus:ring-blue-300 focus:ring-opacity-40"
+                            placeholder=""
+                          />
+                        </div>
+                      </div>
+                      <!-- /edit -->
+                      <div class="btn-group flex items-center gap-2 pt-5">
+                        <span class="btn btn-accent">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="25"
+                            height="25"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              fill="none"
+                              stroke="#fff"
+                              stroke-dasharray="24"
+                              stroke-dashoffset="24"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              stroke-width="2.7"
+                              d="M5 11l6 6l10 -10"
+                            >
+                              <animate
+                                fill="freeze"
+                                attributeName="stroke-dashoffset"
+                                dur="0.96s"
+                                values="24;0"
+                              />
+                            </path>
+                          </svg>
+                        </span>
+                        <span class="btn btn-error">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="30"
+                            height="30"
+                            viewBox="0 0 24 24"
+                          >
+                            <g
+                              fill="none"
+                              stroke="#fffFFF"
+                              stroke-dasharray="16"
+                              stroke-dashoffset="16"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              stroke-width="2"
+                            >
+                              <path d="M7 7l10 10">
+                                <animate
+                                  fill="freeze"
+                                  attributeName="stroke-dashoffset"
+                                  dur="0.4s"
+                                  values="16;0"
+                                />
+                              </path>
+                              <path d="M17 7l-10 10">
+                                <animate
+                                  fill="freeze"
+                                  attributeName="stroke-dashoffset"
+                                  begin="0.4s"
+                                  dur="0.4s"
+                                  values="16;0"
+                                />
+                              </path>
+                            </g>
+                          </svg>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="isActive">
+        <div
+          class="collapse hover-shadow-white card-body bg-reg my-4 rounded-xl p-[20px] pb-0 collapse-arrow pt-[10px]"
+          *ngIf="table.parentId"
+        >
+          <input type="checkbox" (click)="toggleClick(i)" />
+          <div
+            class="collapse-title text-xl font-medium flex items-center justify-between"
+            [ngClass]="{ 'bg-gradient': activeIndexes.has(i) }"
+          >
+            <h3 class="text-indigo-600">
+              <span class="text-indigo-600 pr-2">{{ table.order }}</span
+              >{{ table.name }}
+              <span
+                class="text-gray-500 text-sm pl-4"
+                *ngIf="table.title_for_client"
+                >{{ table.title_for_client }}</span
+              >
+            </h3>
+            <span
+              *ngIf="activeIndexes.has(i)"
+              (click)="togleEdit(table, i)"
+              class="btn btn-outline hover:bg-regular absolute right-0 bg-reg text-indigo-400 z-10"
+            >
+              <app-edit-icon></app-edit-icon>
+            </span>
+          </div>
+          <!-- collapse -->
+          <div class="collapse-content pb-0 px-0">
+            <div class="flex justify-between pt-4 pb-0 items-center">
+              <span class="text-sm">
+                Level menu:
+                <span class="nj-toast">{{ table.isActive ? 1 : 2 }}</span>
+              </span>
+              <p class="text-end text-gray-400 text-xs flex-auto">
+                Last update {{ table.updated_at | date : "medium" }}
+              </p>
+            </div>
+
+            <div class="menu-post-item mb-[40px]">
+              <h3
+                class="text-xl text-indigo-600 font-bold py-4 text-center flex flex-col gap-2 items-center px-0"
+              >
+                <span class="nj-toast-gradient">After button click</span>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="40"
+                  height="40"
+                  viewBox="0 0 24 24"
+                >
+                  <g
+                    fill="none"
+                    stroke="#5045e5ac"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                  >
+                    <path
+                      stroke-dasharray="20"
+                      stroke-dashoffset="20"
+                      d="M12 3l0 17.5"
+                    >
+                      <animate
+                        fill="freeze"
+                        attributeName="stroke-dashoffset"
+                        dur="0.2s"
+                        values="20;0"
+                      />
+                    </path>
+                    <path
+                      stroke-dasharray="12"
+                      stroke-dashoffset="12"
+                      d="M12 21l7 -7M12 21l-7 -7"
+                    >
+                      <animate
+                        fill="freeze"
+                        attributeName="stroke-dashoffset"
+                        begin="0.2s"
+                        dur="0.2s"
+                        values="12;0"
+                      />
+                    </path>
+                  </g>
+                </svg>
+              </h3>
+
+              <div class="card bg-base-100 mx-auto w-[100%] shadow-xl">
+                <figure *ngIf="table.linked_post?.post_image_url">
+                  <img
+                    [src]="table.linked_post?.post_image_url"
+                    alt="Post Image"
+                  />
+                </figure>
+                <div class="card-body p-[10px]" *ngIf="table.linked_post">
+                  <p class="text-indigo-600">
+                    ID: {{ table?.linked_post?.id }}
+                  </p>
+                  <h3 class="text-xl text-indigo-400 font-bold">
+                    {{ table?.linked_post?.post_title }}
+                    <span
+                      class="text-gray-500 text-sm pl-4"
+                      *ngIf="table.title_for_client"
+                      >{{ table?.linked_post?.title_for_client }}</span
+                    >
+                  </h3>
+                  <p>{{ table?.linked_post?.post_content }}</p>
+                  <div class="card-actions justify-center pt-[20px]"></div>
+                </div>
+                <p *ngIf="!table.linked_post" class="p-10 text-center text-lg">
+                  У кнопки нет поста,а есть дочерние кнопки с родительским ID
+                  {{ table.parentId }}
+                </p>
+              </div>
+
+              <!-- btns -->
+              <div *ngIf="table.buttons?.length" class="flex flex-col gap-2">
+                <h4 class="text-lg font-bold text-indigo-400 pt-4">
+                  Кнопка(и) поста:
+                </h4>
+                <div
+                  *ngFor="let button of table.buttons"
+                  class="collapse collapse-arrow card bg-base-100 mx-auto w-[100%] shadow-xl"
+                >
+                  <input type="checkbox" class="peer" />
+                  <div
+                    class="collapse-title text-indigo-400 bg-reg peer-checked:bg-primary peer-checked:text-white font-bold text-lg"
+                  >
+                    {{ button.name }}
+                    <span
+                      class="text-gray-500 text-sm pl-4"
+                      *ngIf="table.title_for_client"
+                      >{{ button?.title_for_client }}</span
+                    >
+                  </div>
+                  <div class="collapse-content bg-reg pb-0">
+                    <div
+                      *ngIf="!isEditing"
+                      class="sub-btn-date flex justify-between text-gray-400 text-xs py-2 px-4"
+                    >
+                      <span
+                        >Дата создания
+                        {{ button.created_at | date : "medium" }}</span
+                      >
+                      <span
+                        >Обновлена
+                        {{ button.updated_at | date : "medium" }}</span
+                      >
+                    </div>
+                    <div class="sub-btn-body-wrapper">
+                      <div
+                        *ngIf="!isEditing"
+                        class="sub-btn-body flex justify-between items-center"
+                      >
+                        <div
+                          class="sub-btn-body-title text-lg font-bold text-indigo-400 flex gap-2"
+                        >
+                          <span>{{ button.name }}</span>
+                          <span
+                            class="text-gray-500 text-sm pl-4"
+                            *ngIf="table.title_for_client"
+                            >{{ button?.title_for_client }}</span
+                          >
+                        </div>
+                        <div
+                          class="sub-btn-body-order font-bold flex gap-4 items-center"
+                        >
+                          <div class="order">
+                            Order:
+                            <span class="nj-toast-trans">{{
+                              button.order
+                            }}</span>
+                          </div>
+                        </div>
+                        <div class="sub-btn-url" *ngIf="button.url">
+                          Url: {{ button.url }}
+                        </div>
+                      </div>
+
+                      <!-- edit -->
+                      <div *ngIf="isEditing" class="flex items-center">
+                        <div
+                          class="form-group-wrapper flex flex-1 items-center gap-4 pt-4"
+                        >
+                          <div class="form-group w-[30%]">
+                            <label
+                              class="block text-sm text-indigo-400 font-bold"
+                              >Название поста:</label
+                            >
+                            <input
+                              [(ngModel)]="button.name"
+                              class="input w-full mt-2 mb-4 border border-gray-300 rounded-lg px-4 py-2.5 focus:ring focus:ring-blue-300 focus:ring-opacity-40"
+                              placeholder="Редактировать заголовок"
+                            />
+                          </div>
+                          <div class="form-group w-[50%]">
+                            <label
+                              class="block text-sm text-indigo-400 font-bold"
+                              >Ссылка на ресурс(необязательный параметр):</label
+                            >
+                            <input
+                              [(ngModel)]="button.url"
+                              class="input w-full mt-2 mb-4 border border-gray-300 rounded-lg px-4 py-2.5 focus:ring focus:ring-blue-300 focus:ring-opacity-40"
+                              placeholder="Редактировать URL кнопки"
+                            />
+                          </div>
+                          <div class="form-group w-[12.5%]">
+                            <label
+                              class="block text-sm text-indigo-400 font-bold"
+                              >Очередность:</label
+                            >
+                            <input
+                              disabled
+                              [(ngModel)]="button.order"
+                              class="input w-full mt-2 mb-4 border border-gray-300 rounded-lg px-4 py-2.5 focus:ring focus:ring-blue-300 focus:ring-opacity-40"
+                              placeholder=""
+                            />
+                          </div>
+                        </div>
+                        <!-- /edit -->
+                        <div class="btn-group flex items-center gap-2 pt-5">
+                          <span class="btn btn-accent">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="25"
+                              height="25"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                fill="none"
+                                stroke="#fff"
+                                stroke-dasharray="24"
+                                stroke-dashoffset="24"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2.7"
+                                d="M5 11l6 6l10 -10"
+                              >
+                                <animate
+                                  fill="freeze"
+                                  attributeName="stroke-dashoffset"
+                                  dur="0.96s"
+                                  values="24;0"
+                                />
+                              </path>
+                            </svg>
+                          </span>
+                          <span class="btn btn-error">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="30"
+                              height="30"
+                              viewBox="0 0 24 24"
+                            >
+                              <g
+                                fill="none"
+                                stroke="#fffFFF"
+                                stroke-dasharray="16"
+                                stroke-dashoffset="16"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                              >
+                                <path d="M7 7l10 10">
+                                  <animate
+                                    fill="freeze"
+                                    attributeName="stroke-dashoffset"
+                                    dur="0.4s"
+                                    values="16;0"
+                                  />
+                                </path>
+                                <path d="M17 7l-10 10">
+                                  <animate
+                                    fill="freeze"
+                                    attributeName="stroke-dashoffset"
+                                    begin="0.4s"
+                                    dur="0.4s"
+                                    values="16;0"
+                                  />
+                                </path>
+                              </g>
+                            </svg>
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--  -->
+    <div
+      *ngIf="table.isEditing"
+      class="collapse hover-shadow collapse-plus card-body bg-reg my-4 rounded-xl p-[20px] pb-[10px]"
+    >
+      <label class="block text-sm text-indigo-400 font-bold"
+        >Название кнопки:</label
+      >
+      <input
+        [(ngModel)]="table.name"
+        class="input w-full mt-2 mb-4 border border-gray-300 rounded-lg px-4 py-2.5 focus:ring focus:ring-blue-300 focus:ring-opacity-40"
+        placeholder="Введите заголовок"
+      />
+      <label class="block text-sm text-indigo-400 font-bold"
+        >Позиция кнопки №</label
+      >
+      <input
+        disabled
+        [(ngModel)]="table.order"
+        class="input w-full mt-2 mb-4 border border-gray-300 rounded-lg px-4 py-2.5 focus:ring focus:ring-blue-300 focus:ring-opacity-40"
+        placeholder="Введите заголовок"
+      />
+
+      <label class="block text-sm text-indigo-400 font-bold"
+        >Контент поста:</label
+      >
+      <textarea
+        disabled
+        [(ngModel)]="table.description"
+        class="w-full h-40 border rounded-lg px-4 py-2 focus:ring focus:ring-blue-300 focus:ring-opacity-40"
+        placeholder="Введите контент поста"
+      ></textarea>
+
+      <div class="card-actions justify-center pt-4">
+        <button class="btn pr-0 text-success" (click)="saveChanges(table)">
+          Сохранить
+          <span class="btn btn-accent">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="30"
+              height="30"
+              viewBox="0 0 24 24"
+            >
+              <path
+                fill="none"
+                stroke="#fff"
+                stroke-dasharray="24"
+                stroke-dashoffset="24"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2.7"
+                d="M5 11l6 6l10 -10"
+              >
+                <animate
+                  fill="freeze"
+                  attributeName="stroke-dashoffset"
+                  dur="0.96s"
+                  values="24;0"
+                />
+              </path>
+            </svg>
+          </span>
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
