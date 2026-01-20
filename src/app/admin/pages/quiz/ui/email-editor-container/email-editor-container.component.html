@@ -1,0 +1,69 @@
+<!-- src/app/admin/pages/quiz/components/email-editor-container/email-editor-container.component.html -->
+
+<div class="email-editor-wrapper">
+  
+  <!-- Header -->
+  <div class="editor-header flex items-center justify-between p-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-t-xl">
+    <h2 class="text-xl font-bold flex items-center gap-3">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+        <polyline points="22,6 12,13 2,6"/>
+      </svg>
+      Редактор Email шаблона
+      <span *ngIf="mode === 'edit'" class="badge badge-warning text-xs">Редактирование</span>
+      <span *ngIf="mode === 'create'" class="badge badge-success text-xs">Новый</span>
+    </h2>
+    
+    <button class="btn btn-ghost btn-circle text-white hover:bg-white/20" (click)="onClose()">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="18" y1="6" x2="6" y2="18"/>
+        <line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Main Content -->
+  <div class="editor-content grid grid-cols-2 gap-0 bg-base-100 rounded-b-xl overflow-hidden">
+    
+    <!-- Left: Editor -->
+    <div class="editor-panel border-r border-base-300 p-6 overflow-y-auto" style="max-height: calc(90vh - 140px);">
+      <app-quiz-email-template-editor
+        [quizName]="quizName"
+        [grandPrize]="grandPrize"
+        [prizeForEveryOne]="prizeForEveryOne"
+        [initialConfig]="initialConfig"
+        [mode]="mode"
+        (configChange)="onConfigChange($event)"
+        (htmlChange)="onHtmlChange($event)">
+      </app-quiz-email-template-editor>
+    </div>
+
+    <!-- Right: Preview -->
+    <div class="preview-panel p-6 bg-base-200/50 overflow-y-auto" style="max-height: calc(90vh - 140px);">
+      <app-email-template-preview
+        [config]="currentConfig"
+        [variables]="previewVariables"
+        [html]="currentHtml">
+      </app-email-template-preview>
+    </div>
+  </div>
+
+  <!-- Footer Actions -->
+  <div class="editor-footer flex items-center justify-between p-4 bg-base-200 border-t border-base-300">
+    <div class="text-sm text-base-content/60">
+      💡 Изменения сохранятся при сохранении квиза
+    </div>
+    
+    <div class="flex gap-3">
+      <button class="btn btn-ghost" (click)="onClose()">
+        Закрыть
+      </button>
+      <button class="btn btn-primary gap-2" (click)="onClose()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="20 6 9 17 4 12"/>
+        </svg>
+        Готово
+      </button>
+    </div>
+  </div>
+</div>

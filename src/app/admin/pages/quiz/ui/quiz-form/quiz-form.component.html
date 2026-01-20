@@ -1,0 +1,504 @@
+<div class="flex flex-row gap-8 max-h-[100dvh] overflow-hidden py-[20px] bg-gradient-to-r from-indigo-800 via-indigo-500 to-indigo-200" *ngIf="form$ | async as form">
+
+  <div class="card h-[100dvh] bg-base-100 shadow-xl w-full max-w-5xl mx-auto rounded-2xl overflow-hidden border border-base-200/60">
+    <div class="card-body p-6 pb-[50px] h-full overflow-y-auto">
+      <!-- Заголовок -->
+      <h2 class="text-xl md:text-2xl font-bold text-center mb-6 bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent flex items-center gap-2 relative justify-center">
+        <button (click)="cancel.emit()" class="btn btn-ghost btn-circle absolute left-0 tooltip tooltip-right tooltip-primary "
+            data-tip="Назад к квизами">
+            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24"><g fill="none" stroke="#4f46e5" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path stroke-dasharray="16" d="M19 12h-13.5"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.3s" values="16;0"/></path><path stroke-dasharray="10" stroke-dashoffset="10" d="M5 12l5 5M5 12l5 -5"><animate fill="freeze" attributeName="stroke-dashoffset" begin="0.3s" dur="0.2s" to="0"/></path></g></svg>
+        </button>
+
+        {{ mode === 'create' ? 'Создать новый квиз' : 'Редактировать квиз #' + initialData?.id }}
+      </h2>
+
+      <!-- Ошибка -->
+      <div *ngIf="errorMessage" class="alert alert-error shadow-lg mb-10 rounded-2xl relative">
+        <span>{{ errorMessage }}</span>
+        <button class="btn btn-ghost btn-sm absolute right-2 top-2" (click)="errorMessage = ''">×</button>
+      </div>
+
+      
+      <!-- Основные настройки -->
+      <div class="head-controlls grid grid-cols-3 gap-4 mb-4">
+        <!-- Активен -->
+        <div class="w-full flex flex-row items-center justify-center h-fit mt-auto mb-2 gap-2">
+          <label class="block text-indigo-600 text-md">Активен квиз?</label>
+          <input type="checkbox" [(ngModel)]="form.isActive" class="checkbox checkbox-lg checkbox-success" />
+        </div>
+
+        <!-- Тип квиза -->
+        <div class="w-full flex flex-col items-center justify-center">
+          <label class="block text-lg text-indigo-600 font-medium mb-2">Тип квиза</label>
+          <select [(ngModel)]="form.type"
+                  class="select w-full bg-white border-2 border-indigo-200 focus:border-indigo-500 focus:ring focus:ring-indigo-300/40 rounded-xl p-[5px 10px] text-gray-800 text-md">
+            <option value="byScore">По баллам (isCorrect)</option>
+            <option value="byWeight">По весам (weight)</option>
+          </select>
+        </div>
+              <!-- Рейтинг -->
+        <div class="w-full flex flex-col items-center justify-center">
+          <label class="block text-lg text-indigo-600 font-medium mb-2">⭐️ Рейтинг:</label>
+          <input type="number" [(ngModel)]="form.rating" min="0" max="10" step="0.5"
+                class="input w-20 bg-white border-2 border-indigo-200 focus:border-indigo-500 focus:ring focus:ring-indigo-300/40 rounded-xl px-5 py-3 text-gray-800 placeholder-gray-500" />
+        </div>
+      </div>
+
+      <!-- Названия и ID -->
+      <div class="grid grid-cols-2 gap-4 shadow-xl p-4 rounded-xl">
+        <div>
+          <label class="block text-lg text-indigo-600 font-medium mb-2">
+            Уникальный ID квиза <span class="text-error font-bold">*</span>
+          </label>
+          <input type="text" [(ngModel)]="form.typeQuizId" required
+                class="input w-full bg-white border-2 border-indigo-200 focus:border-indigo-500 focus:ring focus:ring-indigo-300/40 rounded-xl px-5 py-3 text-gray-800 placeholder-gray-500" />
+        </div>
+
+        <div>
+          <label class="block text-lg text-indigo-600 font-medium mb-2">
+            Название (публичное) <span class="text-error font-bold">*</span>
+          </label>
+          <input type="text" [(ngModel)]="form.name" required (ngModelChange)="updateForm()"
+                class="input w-full bg-white border-2 border-indigo-200 focus:border-indigo-500 focus:ring focus:ring-indigo-300/40 rounded-xl px-5 py-3 text-gray-800 placeholder-gray-500" />
+        </div>
+
+        <div>
+          <label class="block text-lg text-indigo-600 font-medium mb-2">Название для админа</label>
+          <input type="text" [(ngModel)]="form.nameAdm"
+                class="input w-full bg-white border-2 border-indigo-200 focus:border-indigo-500 focus:ring focus:ring-indigo-300/40 rounded-xl px-5 py-3 text-gray-800 placeholder-gray-500" />
+        </div>
+
+        <div>
+          <label class="block text-lg text-indigo-600 font-medium mb-2">
+            Лендинг <span class="text-error font-bold">*</span>
+          </label>
+          <select [(ngModel)]="form.landingId" required
+                  class="select w-full bg-white border-2 border-indigo-200 focus:border-indigo-500 focus:ring focus:ring-indigo-300/40 rounded-xl px-5 py-3 text-gray-800">
+            <option value="0" disabled>Выберите лендинг</option>
+            <option *ngFor="let landing of landings" [value]="landing.id">
+              {{ landing.name }} — {{ landing.url }}
+            </option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Описания -->
+      <div class="grid grid-cols-2 gap-4 shadow-xl p-4 rounded-xl">
+        <div>
+          <label class="block text-lg text-indigo-600 font-medium mb-2">Описание (публичное)</label>
+          <textarea [(ngModel)]="form.description" (ngModelChange)="updateForm()"
+                    class="textarea w-full h-32 bg-white border-2 border-indigo-200 focus:border-indigo-500 focus:ring focus:ring-indigo-300/40 rounded-2xl px-5 py-3.5 text-gray-800 placeholder-gray-500 resize-y"></textarea>
+        </div>
+
+        <div>
+          <label class="block text-lg text-indigo-600 font-medium mb-2">Описание для админа</label>
+          <textarea [(ngModel)]="form.descriptionAdm"
+                    class="textarea w-full h-32 bg-white border-2 border-indigo-200 focus:border-indigo-500 focus:ring focus:ring-indigo-300/40 rounded-2xl px-5 py-3.5 text-gray-800 placeholder-gray-500 resize-y"></textarea>
+        </div>
+      </div>
+
+      <!-- Дата окончания -->
+      <div class="shadow-xl p-4 rounded-xl">
+        <label class="block text-lg text-indigo-600 font-medium mb-2">
+          Дата и время окончания <span class="text-error font-bold">*</span>
+        </label>
+        <input type="datetime-local" [(ngModel)]="form.endAt" required
+              class="input w-full max-w-sm bg-white border-2 border-indigo-200 focus:border-indigo-500 focus:ring focus:ring-indigo-300/40 rounded-xl px-5 py-3 text-gray-800" />
+      </div>
+
+      <!-- Визуальное оформление -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 shadow-xl p-4 rounded-xl">
+        <div>
+          <label class="block text-lg text-indigo-600 font-medium mb-2">Фон десктоп</label>
+          <input type="url" [(ngModel)]="form.imageBgDesk" (ngModelChange)="updateForm()"
+                class="input w-full bg-white border-2 border-indigo-200 focus:border-indigo-500 focus:ring focus:ring-indigo-300/40 rounded-xl px-5 py-3 text-gray-800 placeholder-gray-500" 
+                placeholder="https://" />
+        </div>
+
+        <div>
+          <label class="block text-lg text-indigo-600 font-medium mb-2">Фон мобильный</label>
+          <input type="url" [(ngModel)]="form.imageBgMob" (ngModelChange)="updateForm()"
+                class="input w-full bg-white border-2 border-indigo-200 focus:border-indigo-500 focus:ring focus:ring-indigo-300/40 rounded-xl px-5 py-3 text-gray-800 placeholder-gray-500" 
+                placeholder="https://" />
+        </div>
+
+        <div>
+          <label class="block text-lg text-indigo-600 font-medium mb-2">Hero изображение</label>
+          <input type="url" [(ngModel)]="form.imageHero" (ngModelChange)="updateForm()"
+                class="input w-full bg-white border-2 border-indigo-200 focus:border-indigo-500 focus:ring focus:ring-indigo-300/40 rounded-xl px-5 py-3 text-gray-800 placeholder-gray-500" 
+                placeholder="https://" />
+        </div>
+      </div>
+
+      <!-- Призы -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 shadow-xl p-4 rounded-xl">
+        <div>
+          <label class="block text-lg text-indigo-600 font-medium mb-2">Главный приз</label>
+          <input type="text" [(ngModel)]="form.grandPrize" (ngModelChange)="updateForm()"
+                class="input w-full bg-white border-2 border-indigo-200 focus:border-indigo-500 focus:ring focus:ring-indigo-300/40 rounded-xl px-5 py-3 text-gray-800 placeholder-gray-500"
+                placeholder="1000 фриспинов" />
+        </div>
+
+        <div>
+          <label class="block text-lg text-indigo-600 font-medium mb-2">Приз всем участникам</label>
+          <input type="text" [(ngModel)]="form.prizeForEveryOne" (ngModelChange)="updateForm()"
+                class="input w-full bg-white border-2 border-indigo-200 focus:border-indigo-500 focus:ring focus:ring-indigo-300/40 rounded-xl px-5 py-3 text-gray-800 placeholder-gray-500"
+                placeholder="+10 FS" />
+        </div>
+      </div>
+
+      <!-- Блок вопросов и ответов -->
+      <div class="mt-20">
+        <h3 class="text-2xl md:text-3xl text-center font-bold text-black mb-8">
+          Вопросы и ответы
+        </h3>
+
+        <div *ngFor="let q of form.questions; let i = index" class="mt-6 p-5 border rounded-xl bg-white shadow-xl">
+
+          <div class="flex justify-between items-center mb-4">
+            <div class="text-xl font-bold text-indigo-600">Вопрос {{i+1}}</div>
+            <button (click)="removeQuestion(i)" class="btn btn-ghost btn-error gap-2">
+              Удалить
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="#dc2626">
+                <path d="M6 19a2 2 0 002 2h8a2 2 0 002-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+              </svg>
+            </button>
+          </div>
+
+          <textarea [(ngModel)]="q.text" (ngModelChange)="updateForm()"
+                    class="input block w-full mb-4 border border-indigo-200 bg-white px-5 py-3 text-gray-800 focus:border-indigo-500 focus:ring focus:ring-indigo-300/40 rounded-xl"
+                    placeholder="Текст вопроса"></textarea>
+
+          <label class="block text-base text-indigo-500 mb-1.5">Изображение (опционально)</label>
+          <input [(ngModel)]="q.image" type="url" (ngModelChange)="updateForm()"
+                class="input block w-full border border-red-200 bg-white px-5 py-3 text-gray-800 focus:border-red-500 focus:ring focus:ring-red-300/40 rounded-xl"
+                placeholder="https://..."/>
+
+          <div class="mt-6">
+            <div class="text-lg font-semibold mb-3">Варианты ответов</div>
+
+            <div *ngFor="let a of q.answers; let j = index" class="flex flex-wrap gap-3 items-center mb-4 p-3  rounded-lg shadow-lg">
+
+              <input [(ngModel)]="a.text" required (ngModelChange)="updateForm()"
+                    class="input flex-1 border border-green-200 bg-white px-5 py-3 focus:border-green-500 focus:ring focus:ring-green-300/40 rounded-xl"
+                    placeholder="Вариант ответа"/>
+
+              <ng-container *ngIf="form.type === 'byScore'">
+                <div class="flex items-center gap-2 min-w-[110px]">
+                  <input type="checkbox" [(ngModel)]="a.isCorrect" class="checkbox checkbox-success checkbox-sm"/>
+                  <span class="text-sm">Правильно</span>
+                </div>
+                <input type="number" [(ngModel)]="a.points" min="0"
+                      class="input w-20 text-center border border-green-200 focus:border-green-500 rounded-xl px-3 py-2.5"/>
+              </ng-container>
+
+              <ng-container *ngIf="form.type === 'byWeight'">
+                <input type="number" [(ngModel)]="a.weight" step="0.1" min="0"
+                      class="input w-20 text-center border border-purple-200 focus:border-purple-500 rounded-xl px-3 py-2.5"
+                      placeholder="Вес"/>
+              </ng-container>
+
+              <button (click)="removeAnswer(i,j)" class="btn btn-circle btn-error btn-xs">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="white">
+                  <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                </svg>
+              </button>
+            </div>
+
+            <button (click)="addAnswer(i)" class="btn btn-outline mt-2">
+              + Добавить ответ
+            </button>
+          </div>
+        </div>
+
+        <div class="text-center mt-10">
+          <button (click)="addQuestion()" class="btn btn-success btn-lg">
+            + Добавить вопрос
+          </button>
+        </div>
+      </div>
+
+      <!-- Редактирование цветов темы -->
+      <div class="mt-12 p-6 border rounded-xl bg-base-200 shadow-xl">
+        <h3 class="text-xl font-bold text-center mb-6 text-indigo-600">
+          Редактирование цветов темы
+        </h3>
+        <div class="flex flex-col mb-4"> 
+          <h3 class="text-lg font-bold text-start text-gray-600">
+          Cтили верхней части контент
+          </h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <!-- Цвет заголовка  (--main-text)-->
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text">Цвет заголовка</span>
+                </label>
+                <div class="flex gap-3 items-center">
+                  <input type="color"
+                        [value]="getColorValue('main-text')"
+                        (input)="updateColor('main-text', $event)"
+                        class="w-12 h-10 p-1 border rounded cursor-pointer shadow-sm" />
+                  <span class="text-sm font-mono text-gray-600">{{ getColorValue('main-text') }}</span>
+                </div>
+              </div>
+              <!-- Градиент текста: начало (--text-gradient-start)-->
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text">Градиент текста начало</span>
+                </label>
+                <div class="flex gap-3 items-center">
+                  <input type="color"
+                        [value]="getColorValue('text-gradient-start')"
+                        (input)="updateColor('text-gradient-start', $event)"
+                        class="w-12 h-10 p-1 border rounded cursor-pointer shadow-sm" />
+                  <span class="text-sm font-mono text-gray-600">{{ getColorValue('text-gradient-start') }}</span>
+                </div>
+              </div>
+              <!-- Градиент текста: конец  (--text-gradient-end) -->
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text">Градиент текста конец</span>
+                </label>
+                <div class="flex gap-3 items-center">
+                  <input type="color"
+                        [value]="getColorValue('text-gradient-end')"
+                        (input)="updateColor('text-gradient-end', $event)"
+                        class="w-12 h-10 p-1 border rounded cursor-pointer shadow-sm" />
+                  <span class="text-sm font-mono text-gray-600">{{ getColorValue('text-gradient-end') }}</span>
+                </div>
+              </div>
+              <!-- Цвет текста описания  (--desc-color)-->
+              <div class="form-control">
+                <label class="label">
+                  <span class="label-text">Цвет текста описания</span>
+                </label>
+                <div class="flex gap-3 items-center">
+                  <input type="color"
+                        [value]="getColorValue('desc-color')"
+                        (input)="updateColor('desc-color', $event)"
+                        class="w-12 h-10 p-1 border rounded cursor-pointer shadow-sm" />
+                  <span class="text-sm font-mono text-gray-600">{{ getColorValue('desc-color') }}</span>
+                </div>
+              </div>
+              <!-- Тёмный для градиента -->
+              <!-- <div class="form-control">
+                <label class="label">
+                  <span class="label-text">Тёмный для градиента (--primary-dark)</span>
+                </label>
+                <div class="flex gap-3 items-center">
+                  <input type="color"
+                        [value]="getColorValue('primary-dark')"
+                        (input)="updateColor('primary-dark', $event)"
+                        class="w-12 h-10 p-1 border rounded cursor-pointer shadow-sm" />
+                  <span class="text-sm font-mono text-gray-600">{{ getColorValue('primary-dark') }}</span>
+                </div>
+              </div> -->
+
+              <!-- Прозрачность основного -->
+              <!-- <div class="form-control">
+                <label class="label">
+                  <span class="label-text">Прозрачность основного (--primary-opacity)</span>
+                </label>
+                <div class="flex gap-3 items-center">
+                  <input type="color"
+                        [value]="getColorValue('primary-opacity')"
+                        (input)="updateColor('primary-opacity', $event)"
+                        class="w-12 h-10 p-1 border rounded cursor-pointer shadow-sm" />
+                  <span class="text-sm font-mono text-gray-600">{{ getColorValue('primary-opacity') }}</span>
+                </div>
+              </div> -->
+
+              <!-- Максимальная прозрачность тёмного -->
+              <!-- <div class="form-control">
+            <label class="label">
+              <span class="label-text">Макс. прозрачность тёмного (--primary-dark-opacity-max)</span>
+            </label>
+            <div class="flex gap-3 items-center">
+              <input type="color"
+                    [value]="getColorValue('primary-dark-opacity-max')"
+                    (input)="updateColor('primary-dark-opacity-max', $event)"
+                    class="w-12 h-10 p-1 border rounded cursor-pointer shadow-sm" />
+              <span class="text-sm font-mono text-gray-600">{{ getColorValue('primary-dark-opacity-max') }}</span>
+            </div>
+          </div> -->
+          </div>
+        </div>
+        <div class="flex flex-col mb-4"> 
+          <h3 class="text-lg font-bold text-start text-gray-600">
+          Cтили квиз блока
+          </h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+            <!-- Яркий цвет декора страницы (--primary) -->
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text">Яркий цвет декора страницы</span>
+              </label>
+              <div class="flex gap-3 items-center">
+                <input type="color"
+                      [value]="getColorValue('primary')"
+                      (input)="updateColor('primary', $event)"
+                      class="w-12 h-10 p-1 border rounded cursor-pointer shadow-sm" />
+                <span class="text-sm font-mono text-gray-600">{{ getColorValue('primary') }}</span>
+              </div>
+            </div>
+
+            <!-- Цвет текста квиза  (--quiz-text)-->
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text">Цвет текста вопроса квиза</span>
+              </label>
+              <div class="flex gap-3 items-center">
+                <input type="color"
+                      [value]="getColorValue('quiz-text')"
+                      (input)="updateColor('quiz-text', $event)"
+                      class="w-12 h-10 p-1 border rounded cursor-pointer shadow-sm" />
+                <span class="text-sm font-mono text-gray-600">{{ getColorValue('quiz-text') }}</span>
+              </div>
+            </div>
+
+            <!-- Цвет текста кнопок квиза (--btn-text) -->
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text">Цвет текста кнопок </span> 
+              </label>
+              <div class="flex gap-3 items-center">
+                <input type="color"
+                      [value]="getColorValue('btn-text')"
+                      (input)="updateColor('btn-text', $event)"
+                      class="w-12 h-10 p-1 border rounded cursor-pointer shadow-sm" />
+                <span class="text-sm font-mono text-gray-600">{{ getColorValue('btn-text') }}</span>
+              </div>
+            </div>
+
+            <!-- Градиент кнопок: начало (--btn-color-gradient-start) -->
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text">Градиент кнопок цвет старт </span>
+              </label>
+              <div class="flex gap-3 items-center">
+                <input type="color"
+                      [value]="getColorValue('btn-color-gradient-start')"
+                      (input)="updateColor('btn-color-gradient-start', $event)"
+                      class="w-12 h-10 p-1 border rounded cursor-pointer shadow-sm" />
+                <span class="text-sm font-mono text-gray-600">{{ getColorValue('btn-color-gradient-start') }}</span>
+              </div>
+            </div>
+
+            <!-- Градиент кнопок: конец (--btn-color-gradient-end) -->
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text">Градиент кнопок цвет конец </span>
+              </label>
+              <div class="flex gap-3 items-center">
+                <input type="color"
+                      [value]="getColorValue('btn-color-gradient-end')"
+                      (input)="updateColor('btn-color-gradient-end', $event)"
+                      class="w-12 h-10 p-1 border rounded cursor-pointer shadow-sm" />
+                <span class="text-sm font-mono text-gray-600">{{ getColorValue('btn-color-gradient-end') }}</span>
+              </div>
+            </div>
+
+            <!-- Фон блока вопроса  (--quiz-bg)-->
+            <div class="form-control">
+                <label class="label">
+                  <span class="label-text">Фон блока вопроса</span>
+                </label>
+                <div class="flex gap-3 items-center">
+                  <input type="color"
+                        [value]="getColorValue('quiz-bg')"
+                        (input)="updateColor('quiz-bg', $event)"
+                        class="w-12 h-10 p-1 border rounded cursor-pointer shadow-sm" />
+                  <span class="text-sm font-mono text-gray-600">{{ getColorValue('quiz-bg') }}</span>
+                </div>
+            </div>
+          </div>
+        </div>
+        <div class="flex flex-col mb-4"> 
+          <h3 class="text-lg font-bold text-start text-gray-600">
+          Cтили блока подарки для всех
+          </h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <!-- Градиент описания: начало  (--desc-gradient-start)-->
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text">Градиент описания начало</span>
+              </label>
+              <div class="flex gap-3 items-center">
+                <input type="color"
+                      [value]="getColorValue('desc-gradient-start')"
+                      (input)="updateColor('desc-gradient-start', $event)"
+                      class="w-12 h-10 p-1 border rounded cursor-pointer shadow-sm" />
+                <span class="text-sm font-mono text-gray-600">{{ getColorValue('desc-gradient-start') }}</span>
+              </div>
+            </div>
+
+            <!-- Градиент описания: конец  (--desc-gradient-end)-->
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text">Градиент описания конец</span>
+              </label>
+              <div class="flex gap-3 items-center">
+                <input type="color"
+                      [value]="getColorValue('desc-gradient-end')"
+                      (input)="updateColor('desc-gradient-end', $event)"
+                      class="w-12 h-10 p-1 border rounded cursor-pointer shadow-sm" />
+                <span class="text-sm font-mono text-gray-600">{{ getColorValue('desc-gradient-end') }}</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- Редактор Email шаблона -->
+      <div class="mt-12">
+        <button class="btn btn-outline btn-primary gap-2 w-full" 
+                (click)="showEmailEditor = !showEmailEditor">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+            <polyline points="22,6 12,13 2,6"/>
+          </svg>
+          {{ showEmailEditor ? 'Скрыть' : 'Редактировать' }} Email шаблон
+        </button>
+      </div>
+
+
+<!-- Email Editor Modal -->
+<div *ngIf="showEmailEditor" 
+    class="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
+  <div class="w-full max-w-7xl h-[90vh]">
+    <app-email-editor-container
+      [quizName]="form.name"
+      [mode]="mode"
+      (configChange)="onEmailConfigChange($event)"
+      (htmlChange)="onEmailHtmlChange($event)"
+      (close)="showEmailEditor = false">
+    </app-email-editor-container>
+  </div>
+</div>
+
+
+      <!-- Кнопки сохранения -->
+      <div class="flex flex-col sm:flex-row justify-center gap-5 mt-16">
+        <button class="btn btn-ghost btn-error" (click)="cancel.emit()">
+          Отмена ❌
+        </button>
+        <button class="btn btn-success btn-ghost"
+                (click)="onSubmit()">
+          <span class="loading loading-spinner" *ngIf="loading"></span>
+          {{ mode === 'create' ? 'Создать квиз ✅' : 'Сохранить изменения ✅' }}
+        </button>
+      </div>
+    </div>
+  </div>
+    <!-- <div *ngIf="isEditLoad" class="text-center py-20 text-3xl font-bold text-indigo-700">
+      Загрузка...
+      <app-loading></app-loading>
+    </div> -->
+    <!-- Предпросмотр -->
+    <app-view-page [quizData]="form$ | async"></app-view-page>
+</div>
+
+
+<!-- Сообщение об успехе -->

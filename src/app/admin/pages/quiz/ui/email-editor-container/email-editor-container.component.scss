@@ -1,0 +1,43 @@
+// src/app/admin/pages/quiz/components/email-editor-container/email-editor-container.component.scss
+
+.email-editor-wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+}
+
+.editor-header {
+  flex-shrink: 0;
+}
+
+.editor-content {
+  flex: 1;
+  min-height: 0;
+}
+
+.editor-panel, .preview-panel {
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 3px;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+  }
+}
+
+.editor-footer {
+  flex-shrink: 0;
+}

@@ -9,6 +9,7 @@ import { EmailSentComponent } from './pages/email-sent/email-sent.component';
 import { SiteUsersComponent } from './pages/site-users/site-users.component';
 import { TutorialsComponent } from './pages/tutorials/tutorials.component';
 import { EventsSitesComponent } from './pages/events-sites/events-sites.component';
+import { QuizComponent } from './pages/quiz/quiz.component'
 
 const routes: Routes = [
   { path: '', component: AdminPageComponent },
@@ -19,8 +20,9 @@ const routes: Routes = [
   { path: 'site-users', component: SiteUsersComponent },
   { path: 'email-sent', component: EmailSentComponent },
   { path: 'events', component: EventsSitesComponent },
+  { path: 'quiz', component: QuizComponent },
   { path: 'tutorials', component: TutorialsComponent },
-    { path: '**', redirectTo: '', pathMatch: 'full' }
+  { path: '**', redirectTo: '', pathMatch: 'full' }
 ];
 
 @NgModule({

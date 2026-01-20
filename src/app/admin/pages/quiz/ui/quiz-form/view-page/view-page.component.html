@@ -1,0 +1,169 @@
+<div class="preview-wrapper rounded-2xl overflow-hidden relative"
+     style="max-height: 100vh; overflow-y: auto;">
+
+  <div class="drawer drawer-end z-10">
+    <input id="my-drawer-5" type="checkbox" class="drawer-toggle" />
+    <div class="drawer-content">
+      <!-- Page content here -->
+      <label for="my-drawer-5" class="drawer-button btn btn-accent w-[80%] flex items-center my-[10px] mx-auto">Open page</label>
+    </div>
+    <div class="drawer-side">
+      <label for="my-drawer-5" aria-label="close sidebar" class="drawer-overlay"></label>
+      <!-- Фон всего экрана -->
+      <div class="first_screen min-h-[100vh] bg-cover bg-center relative w-[90%] overflow-hidden"
+          [ngStyle]="{'background-image': 'url(' + (quizData?.imageBgDesk || 'https://via.placeholder.com/1920x1080/1a1a2e/16213e?text=Фон+квиза') + ')'}">
+
+
+        <div class="relative z-10 container mx-auto px-6 py-6 pb-0">
+
+          <!-- Логотип -->
+          <div class="header__wrapper">
+            <div class="logo w-[80px] h-[80px] mb-4 bg-contain bg-no-repeat bg-center flex items-center mx-auto"
+                style="background-image: url('https://vi.devsmm.pro/images/image-1755812695784-421049271.png')"></div>
+          </div>
+
+          <!-- Заголовок + главный приз -->
+          <h1 class="text-5xl font-bold text-center title mb-8 text-[var(--main-text)]">
+            {{ quizData?.name || 'Название квиза' }}
+            <br>
+            <span class="text-gradient-accent text-5xl block mt-4 accent-text"
+                  [ngStyle]="{'background-image': 'linear-gradient(90deg, var(--text-gradient-start), var(--text-gradient-end))', '-webkit-background-clip': 'text', '-webkit-text-fill-color': 'transparent'}">
+              {{ quizData?.grandPrize || 'Главный приз' }}
+            </span>
+          </h1>
+
+          <!-- Текущий вопрос -->
+          <div class="test_block max-w-4xl mx-auto mb-4" *ngIf="currentQuestion">
+            <div class="test_block__inner relative p-[1rem] rounded-3xl border border-[var(--primary)] shadow-2xl bg-[var(--quiz-bg)]"
+            [ngStyle]="{'background-image': 'url(https://vi.devsmm.pro/images/quiz-qeustions-bg-image-1768391344275-45020816.png)'}">
+
+              <img *ngIf="currentQuestion.image" class="flex mx-auto mb-6 w-full h-full rounded-3xl" [src]="currentQuestion.image" alt="">
+              <h2 class="text-3xl md:text-4xl font-bold text-center mb-6 text-[var(--quiz-text)] relative z-10"
+                  [innerHTML]="currentQuestion.text || '<em>Нет текста вопроса</em>'"></h2>
+              <div class="test_vars__block grid grid-cols-2 gap-6 relative z-10">
+                <div *ngFor="let answer of currentQuestion.answers || []"
+                    class="item btn btn-lg w-full text-lg font-bold text-[var(--btn-text)] uppercase tracking-wide"
+                    [ngStyle]="{'background-image': 'linear-gradient(90deg, var(--btn-color-gradient-start) 15%, var(--btn-color-gradient-end) 100%)'}">
+                  {{ answer.text || 'Вариант ответа' }}
+                </div>
+              </div>
+            </div>
+          </div>
+                <!-- Переключатель вопросов (DaisyUI join) -->
+          <div *ngIf="hasQuestions" class="flex justify-center text-white mb-4">
+            <div class="flex items-center gap-2">
+              <button *ngFor="let q of quizData?.questions; let i = index"
+                      class="join-item text-white btn btn-circle btn-outline"
+                      [class.btn-primary]="i === currentQuestionIndex"
+                      (click)="selectQuestion(i)">
+                {{ i + 1 }}
+              </button>
+            </div>
+          </div>
+
+          <!-- Описание + приз всем -->
+          <p class="desc text-xl text-center max-w-4xl mx-auto mb-4 p-8 rounded-3xl text-[var(--desc-color)]"
+          [ngStyle]="{'background': 'linear-gradient(90deg, var(--desc-gradient-start),  var(--desc-gradient-end))'}">
+            {{ quizData?.description || 'Описание квиза и условия участия' }}
+            <br>
+            <span class="font-bold mt-2 block">
+              {{ quizData?.prizeForEveryOne }}
+            </span>
+          </p>
+
+          <!-- Если нет вопросов -->
+          <div *ngIf="!hasQuestions" class="text-center text-xl text-white/70 mb-16">
+            Вопросы ещё не добавлены
+          </div>
+        </div>
+        <!-- Hero изображение -->
+        <div class="girl flex justify-end" *ngIf="quizData?.imageHero">
+          <img [src]="quizData?.imageHero"
+              alt="Hero персонаж"
+              class="">
+        </div>
+
+        <div *ngIf="!quizData?.imageHero" class="text-center text-gray-400">
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Фон всего экрана -->
+  <div class="first_screen min-h-[100vh] bg-cover bg-center relative z-0 rounded-xl"
+       [ngStyle]="{'background-image': 'url(' + (quizData?.imageBgDesk || '') + ')'}">
+
+      <div class="relative z-10 container mx-auto px-6 py-6 pb-0">
+
+        <!-- Логотип -->
+        <div class="header__wrapper">
+          <div class="logo w-[80px] h-[80px] bg-contain bg-no-repeat bg-center flex items-center mx-auto py-4"
+              style="background-image: url('https://vi.devsmm.pro/images/image-1755812695784-421049271.png')"></div>
+        </div>
+
+        <!-- Заголовок + главный приз -->
+        <h1 class="text-4xl font-bold text-center title mb-8 text-[var(--main-text)]">
+          {{ quizData?.name || 'Название квиза' }}
+          <br>
+          <span class="text-gradient-accent text-5xl block mt-4 accent-text"
+                [ngStyle]="{'background-image': 'linear-gradient(90deg, var(--text-gradient-start), var(--text-gradient-end))', '-webkit-background-clip': 'text', '-webkit-text-fill-color': 'transparent'}">
+            {{ quizData?.grandPrize || 'Главный приз' }}
+          </span>
+        </h1>
+
+        <!-- Текущий вопрос -->
+        <div class="test_block max-w-4xl mx-auto mb-4" *ngIf="currentQuestion">
+          <div class="test_block__inner relative p-[1rem] rounded-3xl border border-[var(--primary)] shadow-2xl bg-[var(--quiz-bg)]"
+          [ngStyle]="{'background-image': 'url(https://vi.devsmm.pro/images/quiz-qeustions-bg-image-1768391344275-45020816.png)'}">
+
+            <img *ngIf="currentQuestion.image" class="flex mx-auto mb-6 w-full h-full rounded-3xl" [src]="currentQuestion.image" alt="">
+            <h2 class="text-3xl md:text-4xl font-bold text-center mb-6 text-[var(--quiz-text)] relative z-10"
+                [innerHTML]="currentQuestion.text || '<em>Нет текста вопроса</em>'"></h2>
+            <div class="test_vars__block grid grid-cols-2 gap-6 relative z-10">
+              <div *ngFor="let answer of currentQuestion.answers || []"
+                  class="item btn btn-lg w-full text-lg font-bold text-[var(--btn-text)] uppercase tracking-wide"
+                  [ngStyle]="{'background-image': 'linear-gradient(90deg, var(--btn-color-gradient-start) 15%, var(--btn-color-gradient-end) 100%)'}">
+                {{ answer.text || 'Вариант ответа' }}
+              </div>
+            </div>
+          </div>
+        </div>
+              <!-- Переключатель вопросов (DaisyUI join) -->
+        <div *ngIf="hasQuestions" class="flex justify-center text-white mb-4">
+          <div class="flex items-center gap-2">
+            <button *ngFor="let q of quizData?.questions; let i = index"
+                    class="join-item text-white btn btn-circle btn-outline"
+                    [class.btn-primary]="i === currentQuestionIndex"
+                    (click)="selectQuestion(i)">
+              {{ i + 1 }}
+            </button>
+          </div>
+        </div>
+
+        <!-- Описание + приз всем -->
+        <p class="desc text-xl text-center max-w-4xl mx-auto mb-4 p-8 rounded-3xl text-[var(--desc-color)]"
+        [ngStyle]="{'background': 'linear-gradient(90deg, var(--desc-gradient-start),  var(--desc-gradient-end))'}">
+          {{ quizData?.description || 'Описание квиза и условия участия' }}
+          <br>
+          <span class="font-bold mt-2 block">
+            {{ quizData?.prizeForEveryOne }}
+          </span>
+        </p>
+
+        <!-- Если нет вопросов -->
+        <div *ngIf="!hasQuestions" class="text-center text-xl text-white/70 mb-16">
+          Вопросы ещё не добавлены
+        </div>
+      </div>
+      <!-- Hero изображение -->
+      <div class="girl flex justify-end" *ngIf="quizData?.imageHero">
+        <img [src]="quizData?.imageHero"
+            alt="Hero персонаж"
+            class="">
+      </div>
+
+      <div *ngIf="!quizData?.imageHero" class="text-center text-gray-400">
+      </div>
+  </div>
+</div>
+
+

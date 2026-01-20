@@ -1,0 +1,61 @@
+<!-- src/app/admin/pages/quiz/components/email-template-preview/email-template-preview.component.html -->
+
+<div class="email-preview-container">
+  
+  <!-- Header with view toggle -->
+  <div class="preview-header flex items-center justify-between mb-4 p-3 bg-base-200 rounded-lg">
+    <h3 class="font-bold text-lg flex items-center gap-2">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+        <polyline points="22,6 12,13 2,6"/>
+      </svg>
+      Превью письма
+    </h3>
+    
+    <div class="flex items-center gap-2">
+      <!-- View mode toggle -->
+      <div class="btn-group">
+        <button class="btn btn-sm" 
+                [class.btn-active]="viewMode === 'desktop'"
+                (click)="viewMode = 'desktop'">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+            <line x1="8" y1="21" x2="16" y2="21"/>
+            <line x1="12" y1="17" x2="12" y2="21"/>
+          </svg>
+        </button>
+        <button class="btn btn-sm" 
+                [class.btn-active]="viewMode === 'mobile'"
+                (click)="viewMode = 'mobile'">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="5" y="2" width="14" height="20" rx="2" ry="2"/>
+            <line x1="12" y1="18" x2="12.01" y2="18"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Preview Container -->
+  <div class="preview-wrapper" 
+       [class.desktop-view]="viewMode === 'desktop'"
+       [class.mobile-view]="viewMode === 'mobile'">
+    
+    <!-- Device Frame -->
+    <div class="device-frame">
+      <!-- Iframe for accurate email rendering -->
+      <iframe #previewFrame
+              class="preview-iframe"
+              [class.mobile]="viewMode === 'mobile'"
+              sandbox="allow-same-origin"
+              title="Email Preview">
+      </iframe>
+    </div>
+  </div>
+
+  <!-- Info -->
+  <div class="mt-4 text-center text-sm text-base-content/60">
+    <span *ngIf="viewMode === 'desktop'">📧 Вид на десктопе (600px)</span>
+    <span *ngIf="viewMode === 'mobile'">📱 Вид на мобильном (375px)</span>
+  </div>
+</div>

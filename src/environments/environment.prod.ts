@@ -10,7 +10,14 @@ export const environment = {
     apiUrlEventsStatistics: 'https://forecast-server.najib-saab.workers.dev/statistics',
     imageUrl: 'https://vi.devsmm.pro',
     secret:  'vietget-admin',
-    domenUrl: 'https://vietget.online/'
+    domenUrl: 'https://vietget.online/',
+    localQuiz: 'http://localhost:3110',
+    adminSecretQuiz: 'top4winner-admin-qusmm',
+    geo: 'vn',
+    emailServiceUrl: 'http://localhost:3500',
+    app: 'qusmm-vn',     
+    emailDomein: 'vietget.online'
+
 
     // kr
     // apiUrl: 'https://kr.devsmm.pro/api/',

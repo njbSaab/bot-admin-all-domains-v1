@@ -1,0 +1,38 @@
+.btn-outline.btn-primary{
+    color: white !important;
+	border: 1px solid !important;
+	border-color: blue !important;
+}
+.text-gradient-accent {
+//   background-image: linear-gradient(90deg, var(--primary), var(--primary-dark));
+//   -webkit-background-clip: text;
+//   -webkit-text-fill-color: transparent;
+}
+.title{
+    // color: var(--main-text);
+}
+
+.item {
+//   background-image: linear-gradient(90deg, var(--primary) 15%, var(--primary-dark) 100%);
+//   color: var(--btn-text); // ← используй переменную, если есть
+}
+.drawer .girl{
+	position: absolute;
+	right: -12%;
+	top: 35%;
+
+    img{
+        width: 850px;
+    }
+}
+.drawer .container{
+    max-width: 675px !important;
+    height: 100%;
+}
+.desc {
+//   background-image: linear-gradient(90deg, var(--primary-opacity) 15%, var(--primary-dark-opacity-max) 100%);
+//   color: var(--desc-color);
+}
+.collapse{
+  overflow: visible !important;
+}

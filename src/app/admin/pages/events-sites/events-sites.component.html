@@ -6,7 +6,7 @@
       class="bg-main-trans2-gradient-90 header-tab flex items-center justify-between py-[10px] mb-0 rounded-[20px] w-full pr-4 max-w-[1200px] mx-auto"
     >
       <div class="title-group flex items-center gap-4">
-        <h2 class="title-tab text-xl font-bold text-indigo-600 w-[30%]">
+        <h2 class="title-tab text-xl font-bold text-indigo-600 w-fit">
           Выберите сайт события: 👉
         </h2>
         <div class="title-tab text-main-trans font-bold w-fit">
@@ -125,6 +125,11 @@
           [siteUsers]="siteUsers"
         ></app-event-email-push>
       </div>
+    </div>
+
+    <div *ngIf="filteredEvents.length === 0" class="text-center py-20 text-3xl font-bold text-indigo-700">
+             Загрузка...
+      <app-loading></app-loading>
     </div>
   </div>
 </section>

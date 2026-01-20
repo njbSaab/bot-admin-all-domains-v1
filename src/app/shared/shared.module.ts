@@ -13,6 +13,7 @@ import { FilterBySiteNamePipe } from './pipes/filter-by-site-name.pipe';
 import { SortNewsPipe } from './pipes/news-sort.pipe';
 import { LoadingComponent } from './components/ui/loading/loading.component';
 import { ObjectValuesPipe } from './pipes/object-values.pipe';
+import { FilterByLandingPipe } from './pipes/filter-by-landing.pipe';
 
 
 
@@ -29,7 +30,8 @@ import { ObjectValuesPipe } from './pipes/object-values.pipe';
     FilterBySiteNamePipe, 
     SortNewsPipe, 
     LoadingComponent,
-    ObjectValuesPipe
+    ObjectValuesPipe,
+    FilterByLandingPipe
   ],
 
   imports: [
@@ -46,7 +48,8 @@ import { ObjectValuesPipe } from './pipes/object-values.pipe';
     FilterBySiteNamePipe,
     SortNewsPipe,
     LoadingComponent,
-    ObjectValuesPipe
+    ObjectValuesPipe,
+    FilterByLandingPipe
   ]
 })
 export class SharedModule { }

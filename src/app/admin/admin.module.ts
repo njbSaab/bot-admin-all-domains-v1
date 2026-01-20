@@ -33,8 +33,13 @@ import { EventCreateComponent } from './pages/events-sites/components/event-crea
 import { CountdownTimerComponent } from './pages/events-sites/components/app-countdown-timer/app-countdown-timer.component';
 import { UsersTableComponent } from './pages/email-sent/components/users-table/users-table.component';
 import { SendModeTabsComponent } from './pages/email-sent/components/send-mode-tabs/send-mode-tabs.component';
-
-
+import { QuizComponent } from './pages/quiz/quiz.component';
+import { QuizPreviewComponent } from './pages/quiz/quiz-preview/quiz-preview.component';
+import { QuizFormComponent } from './pages/quiz/ui/quiz-form/quiz-form.component';
+import { ViewPageComponent } from './pages/quiz/ui/quiz-form/view-page/view-page.component';
+import { EmailTemplatePreviewComponent } from './pages/quiz/ui/email-template-preview/email-template-preview.component';
+import { EmailEditorContainerComponent } from './pages/quiz/ui/email-editor-container/email-editor-container.component';
+import { QuizEmailTemplateEditorComponent } from './pages/quiz/ui/email-template-editor/email-template-editor.component';
 
 @NgModule({
   declarations: [
@@ -65,7 +70,16 @@ import { SendModeTabsComponent } from './pages/email-sent/components/send-mode-t
     EventEditComponent, 
     EventViewComponent, 
     EventCreateComponent, 
-    CountdownTimerComponent, UsersTableComponent, SendModeTabsComponent
+    CountdownTimerComponent,
+    UsersTableComponent,
+    SendModeTabsComponent,
+    QuizComponent,
+    QuizPreviewComponent,
+    QuizFormComponent,
+    ViewPageComponent,
+    EmailTemplatePreviewComponent,
+    EmailEditorContainerComponent,
+    QuizEmailTemplateEditorComponent
   ],
   imports: [
     CommonModule,

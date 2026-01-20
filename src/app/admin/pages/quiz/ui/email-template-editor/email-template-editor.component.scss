@@ -1,0 +1,57 @@
+// src/app/admin/pages/quiz/components/email-template-editor/email-template-editor.component.scss
+
+.email-editor-container {
+  max-height: calc(100vh - 200px);
+  overflow-y: auto;
+  padding-right: 8px;
+
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 3px;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+  }
+}
+
+.form-control {
+  .label {
+    padding-bottom: 4px;
+  }
+  
+  .label-text {
+    font-weight: 500;
+  }
+}
+
+input[type="color"] {
+  -webkit-appearance: none;
+  border: 2px solid #e2e8f0;
+  padding: 0;
+  
+  &::-webkit-color-swatch-wrapper {
+    padding: 2px;
+  }
+  
+  &::-webkit-color-swatch {
+    border: none;
+    border-radius: 4px;
+  }
+}
+
+.card {
+  border: 1px solid rgba(99, 102, 241, 0.1);
+}
+
+code {
+  font-family: 'Fira Code', 'Monaco', monospace;
+}
