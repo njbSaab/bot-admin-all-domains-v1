@@ -2,8 +2,19 @@
   background-color: rgba(255, 0, 0, 0.498) !important;
 }
 .btn.btn-ghost.btn-success {
-  background-color: rgba(1, 183, 1, 0.517) !important;
+  background-color: #00aa6f !important;
+  color: white !important;
 }
 .head-controlls.grid.grid-cols-3{
     grid-template-columns: 25% auto 15%;
+}
+.btn.email-btn.btn-outline.btn-success {
+	background-color: #00aa6f !important;
+  height: 5rem !important;
+  color: white !important;
+  font-size: 25px !important;
+}
+.btn.btn-ghost.btn-success:hover,
+.btn.email-btn.btn-outline.btn-success:hover{
+  background-color: rgba(1, 183, 1, 0.517) !important;
 }

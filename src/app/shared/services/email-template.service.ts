@@ -5,7 +5,15 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, throwError, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { environment } from '../../../environments/environment';
-import { EmailTemplateData, EmailTemplateConfig } from '../../admin/pages/quiz/interfaces/email-template.interface';
+import { 
+  EmailTemplateData, 
+  EmailTemplateConfig,
+  ChainTemplate,
+  ChainSettings,
+  ChainType,
+  ChainEmailStep,
+  DEFAULT_EMAIL_CONFIG,
+} from '../../admin/pages/quiz/interfaces/email-template.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -21,17 +29,12 @@ export class EmailTemplateService {
     });
   }
 
-  /**
-   * Получить шаблоны для клиента (или для конкретного квиза)
-   */
+  // ==================== STANDARD TEMPLATES (code/result) ====================
+
   getTemplates(domain: string, app?: string, quizId?: number): Observable<EmailTemplateData[]> {
     let url = `${this.apiUrl}/api/templates?domain=${encodeURIComponent(domain)}`;
-    if (app) {
-      url += `&app=${encodeURIComponent(app)}`;
-    }
-    if (quizId) {
-      url += `&quiz_id=${encodeURIComponent(quizId)}`;
-    }
+    if (app) url += `&app=${encodeURIComponent(app)}`;
+    if (quizId) url += `&quiz_id=${encodeURIComponent(quizId)}`;
 
     return this.http.get<any>(url, { headers: this.getHeaders() }).pipe(
       map(response => response.templates || []),
@@ -42,9 +45,6 @@ export class EmailTemplateService {
     );
   }
 
-  /**
-   * Получить шаблон по ID
-   */
   getTemplateById(id: number): Observable<EmailTemplateData | null> {
     return this.http.get<any>(`${this.apiUrl}/api/templates/${id}`, { headers: this.getHeaders() }).pipe(
       map(response => response.template || null),
@@ -55,9 +55,6 @@ export class EmailTemplateService {
     );
   }
 
-  /**
-   * Создать шаблон
-   */
   createTemplate(data: {
     domain: string;
     app?: string;
@@ -67,107 +64,195 @@ export class EmailTemplateService {
     html: string;
   }): Observable<{ success: boolean; id?: number; error?: string }> {
     return this.http.post<any>(`${this.apiUrl}/api/templates`, data, { headers: this.getHeaders() }).pipe(
-      map(response => ({
-        success: response.success,
-        id: response.id
-      })),
-      catchError(err => {
-        console.error('Ошибка создания шаблона:', err);
-        return of({ success: false, error: err.error?.error || err.message });
-      })
+      map(response => ({ success: response.success, id: response.id })),
+      catchError(err => of({ success: false, error: err.error?.error || err.message }))
     );
   }
 
-  /**
-   * Обновить шаблон по ID
-   */
   updateTemplate(id: number, data: { subject?: string; html?: string }): Observable<{ success: boolean; error?: string }> {
     return this.http.put<any>(`${this.apiUrl}/api/templates/${id}`, data, { headers: this.getHeaders() }).pipe(
       map(response => ({ success: response.success })),
-      catchError(err => {
-        console.error(`Ошибка обновления шаблона #${id}:`, err);
-        return of({ success: false, error: err.error?.error || err.message });
-      })
+      catchError(err => of({ success: false, error: err.error?.error || err.message }))
     );
   }
 
-  /**
-   * Обновить шаблон по domain + app + quiz_id + type (upsert)
-   */
   updateTemplateByClient(data: {
     domain: string;
     app?: string;
-    quiz_id?: number;  // NEW
+    quiz_id?: number;
     type: 'code' | 'result';
     subject?: string;
     html?: string;
   }): Observable<{ success: boolean; action?: 'created' | 'updated'; id?: number; error?: string }> {
     return this.http.put<any>(`${this.apiUrl}/api/templates/by-client`, data, { headers: this.getHeaders() }).pipe(
-      map(response => ({
-        success: response.success,
-        action: response.action,
-        id: response.id
-      })),
-      catchError(err => {
-        console.error('Ошибка обновления шаблона:', err);
-        return of({ success: false, error: err.error?.error || err.message });
-      })
+      map(response => ({ success: response.success, action: response.action, id: response.id })),
+      catchError(err => of({ success: false, error: err.error?.error || err.message }))
     );
   }
 
-  /**
-   * Удалить шаблон
-   */
   deleteTemplate(id: number): Observable<{ success: boolean; error?: string }> {
     return this.http.delete<any>(`${this.apiUrl}/api/templates/${id}`, { headers: this.getHeaders() }).pipe(
       map(response => ({ success: response.success })),
-      catchError(err => {
-        console.error(`Ошибка удаления шаблона #${id}:`, err);
-        return of({ success: false, error: err.error?.error || err.message });
-      })
+      catchError(err => of({ success: false, error: err.error?.error || err.message }))
     );
   }
 
   // ==================== CHAIN TEMPLATES ====================
 
   /**
-   * Получить шаблоны цепочек
+   * Получить шаблоны цепочки для квиза
    */
-  getChainTemplates(domain: string, app?: string): Observable<any[]> {
-    let url = `${this.apiUrl}/api/chain/templates?domain=${encodeURIComponent(domain)}`;
-    if (app) {
-      url += `&app=${encodeURIComponent(app)}`;
+  getChainTemplates(
+    app: string, 
+    quizId: number,
+    chainType?: ChainType
+  ): Observable<ChainTemplate[]> {
+    let url = `${this.apiUrl}/api/chain/templates?app=${encodeURIComponent(app)}&quizId=${encodeURIComponent(quizId)}`;
+    
+    if (chainType) {
+      url += `&chainType=${encodeURIComponent(chainType)}`;
     }
 
+    console.log('Fetching chain templates:', url);
+
     return this.http.get<any>(url, { headers: this.getHeaders() }).pipe(
-      map(response => response.templates || []),
+      map(response => {
+        const templates = response.templates || [];
+        console.log('Received chain templates:', templates);
+        return templates.map((t: any) => this.mapChainTemplate(t));
+      }),
       catchError(err => {
-        console.error('Ошибка загрузки шаблонов цепочек:', err);
+        console.error('Ошибка загрузки шаблонов цепочки:', err);
         return of([]);
       })
     );
   }
 
   /**
-   * Получить настройки цепочек
+   * Получить шаблон цепочки по ID
    */
-  getChainSettings(domain: string, app?: string): Observable<any | null> {
-    let url = `${this.apiUrl}/api/chain/settings?domain=${encodeURIComponent(domain)}`;
-    if (app) {
-      url += `&app=${encodeURIComponent(app)}`;
-    }
-
-    return this.http.get<any>(url, { headers: this.getHeaders() }).pipe(
-      map(response => response.settings || null),
+  getChainTemplateById(id: number): Observable<ChainTemplate | null> {
+    return this.http.get<any>(`${this.apiUrl}/api/chain/templates/${id}`, { headers: this.getHeaders() }).pipe(
+      map(response => response.template ? this.mapChainTemplate(response.template) : null),
       catchError(err => {
-        console.error('Ошибка загрузки настроек цепочек:', err);
+        console.error(`Ошибка загрузки шаблона цепочки #${id}:`, err);
         return of(null);
       })
     );
   }
 
   /**
-   * Обновить настройки цепочек
+   * Создать шаблон цепочки
+   */
+  createChainTemplate(data: {
+    domain: string;
+    app?: string;
+    chainType: ChainType;
+    quizId?: number | null;
+    step: number;
+    delayMinutes?: number;
+    subject: string;
+    html: string;
+  }): Observable<{ success: boolean; id?: number; error?: string }> {
+    return this.http.post<any>(`${this.apiUrl}/api/chain/templates`, data, { headers: this.getHeaders() }).pipe(
+      map(response => ({ success: response.success, id: response.id })),
+      catchError(err => of({ success: false, error: err.error?.error || err.message }))
+    );
+  }
+
+  /**
+   * Обновить шаблон цепочки по ID
+   */
+  updateChainTemplate(id: number, data: {
+    delayMinutes?: number;
+    subject?: string;
+    html?: string;
+    active?: boolean;
+  }): Observable<{ success: boolean; error?: string }> {
+    return this.http.put<any>(`${this.apiUrl}/api/chain/templates/${id}`, data, { headers: this.getHeaders() }).pipe(
+      map(response => ({ success: response.success })),
+      catchError(err => of({ success: false, error: err.error?.error || err.message }))
+    );
+  }
+
+  /**
+   * Upsert один шаблон цепочки по domain + app + quizId + chainType + step
+   */
+  upsertChainTemplate(data: {
+    domain: string;
+    app?: string;
+    chainType: ChainType;
+    quizId?: number | null;
+    step: number;
+    delayMinutes?: number;
+    subject: string;
+    html: string;
+  }): Observable<{ success: boolean; action?: 'created' | 'updated'; id?: number; error?: string }> {
+    return this.http.put<any>(`${this.apiUrl}/api/chain/templates/by-client`, data, { headers: this.getHeaders() }).pipe(
+      map(response => ({ success: response.success, action: response.action, id: response.id })),
+      catchError(err => of({ success: false, error: err.error?.error || err.message }))
+    );
+  }
+
+  /**
+   * Bulk upsert всей цепочки
+   */
+  upsertChainTemplatesBulk(data: {
+  app: string;
+  quizId: number;
+  chainType: ChainType;
+  templates: Array<{
+    step: number;
+    delayMinutes?: number;
+    subject: string;
+    html: string;
+  }>;
+  domain?: string;  // Опционально
+}): Observable<{ success: boolean; created?: number; updated?: number; ids?: number[]; error?: string }> {
+  return this.http.put<any>(`${this.apiUrl}/api/chain/templates/bulk`, data, { headers: this.getHeaders() }).pipe(
+    map(response => ({
+      success: response.success,
+      created: response.created,
+      updated: response.updated,
+      ids: response.ids,
+    })),
+    catchError(err => of({ success: false, error: err.error?.error || err.message }))
+  );
+}
+
+  /**
+   * Удалить шаблон цепочки
+   */
+  deleteChainTemplate(id: number): Observable<{ success: boolean; error?: string }> {
+    return this.http.delete<any>(`${this.apiUrl}/api/chain/templates/${id}`, { headers: this.getHeaders() }).pipe(
+      map(response => ({ success: response.success })),
+      catchError(err => of({ success: false, error: err.error?.error || err.message }))
+    );
+  }
+
+  // ==================== CHAIN SETTINGS ====================
+
+  /**
+   * Получить настройки цепочки
+   */
+  getChainSettings(domain: string, app?: string): Observable<ChainSettings | null> {
+    let url = `${this.apiUrl}/api/chain/settings?domain=${encodeURIComponent(domain)}`;
+    if (app) url += `&app=${encodeURIComponent(app)}`;
+
+    return this.http.get<any>(url, { headers: this.getHeaders() }).pipe(
+      map(response => {
+        if (!response.settings) return null;
+        return this.mapChainSettings(response.settings);
+      }),
+      catchError(err => {
+        console.error('Ошибка загрузки настроек цепочки:', err);
+        return of(null);
+      })
+    );
+  }
+
+  /**
+   * Обновить настройки цепочки
    */
   updateChainSettings(data: {
     domain: string;
@@ -179,21 +264,47 @@ export class EmailTemplateService {
   }): Observable<{ success: boolean; error?: string }> {
     return this.http.put<any>(`${this.apiUrl}/api/chain/settings`, data, { headers: this.getHeaders() }).pipe(
       map(response => ({ success: response.success })),
-      catchError(err => {
-        console.error('Ошибка обновления настроек цепочек:', err);
-        return of({ success: false, error: err.error?.error || err.message });
-      })
+      catchError(err => of({ success: false, error: err.error?.error || err.message }))
     );
   }
 
   // ==================== HELPERS ====================
 
+  private mapChainTemplate(raw: any): ChainTemplate {
+    return {
+      id: raw.id,
+      clientId: raw.client_id,
+      chainType: raw.chain_type,
+      quizId: raw.quiz_id,
+      app: raw.app,
+      step: raw.step,
+      delayMinutes: raw.delay_minutes,
+      subject: raw.subject,
+      html: raw.html,
+      active: Boolean(raw.active),
+      createdAt: raw.created_at,
+      updatedAt: raw.updated_at,
+    };
+  }
+
+  private mapChainSettings(raw: any): ChainSettings {
+    return {
+      id: raw.id,
+      clientId: raw.client_id,
+      defaultDelays: Array.isArray(raw.default_delays) 
+        ? raw.default_delays 
+        : JSON.parse(raw.default_delays || '[1440, 2880, 8640]'),
+      mergeWindowMinutes: raw.merge_window_minutes,
+      minQuizzesForGeneral: raw.min_quizzes_for_general,
+      enabled: Boolean(raw.enabled),
+    };
+  }
+
   /**
-   * Сгенерировать HTML из конфигурации
+   * Генерировать HTML из конфигурации
    */
   generateHtmlFromConfig(config: EmailTemplateConfig): string {
-    return `
-<!DOCTYPE html>
+    return `<!DOCTYPE html>
 <html lang="vi">
 <head>
   <meta charset="UTF-8">

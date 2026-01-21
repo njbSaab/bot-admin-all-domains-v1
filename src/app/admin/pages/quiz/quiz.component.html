@@ -53,7 +53,7 @@
           <!-- Режим редактирования (полноэкранный) -->
           <div 
             *ngIf="editingQuizId !== null"
-            class="fixed inset-0 bg-base-300/80 z-50 flex items-start justify-center overflow-hidden pb-16"
+            class="fixed inset-0 bg-base-300/80 z-50 flex items-start justify-center overflow-hidden pb-16 w-full"
           >
             <app-quiz-form
               [mode]="editingQuizId === -1 ? 'create' : 'edit'"
@@ -61,7 +61,8 @@
               [landings]="landings"
               (save)="saveQuiz($event)"
               (cancel)="cancelEdit()"
-               [isEditLoad]="isEditLoad"
+              [isEditLoad]="isEditLoad"
+              class="w-full"
             ></app-quiz-form>
           </div>
 

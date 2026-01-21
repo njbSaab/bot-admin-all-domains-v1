@@ -9,7 +9,7 @@
         <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
         <polyline points="22,6 12,13 2,6"/>
       </svg>
-      Редактор Email шаблона
+      Редактор Email шаблонов
       <span *ngIf="mode === 'edit'" class="badge badge-warning text-xs">Редактирование</span>
       <span *ngIf="mode === 'create'" class="badge badge-success text-xs">Новый</span>
     </h2>
@@ -22,48 +22,168 @@
     </button>
   </div>
 
+  <!-- Mode Switcher -->
+  <div class="mode-switcher flex items-center justify-center gap-4 p-3 bg-base-200 border-b">
+    <button 
+      class="btn gap-2"
+      [class.btn-primary]="editorMode === 'single'"
+      [class.btn-ghost]="editorMode !== 'single'"
+      (click)="switchEditorMode('single')">
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+        <polyline points="22,6 12,13 2,6"/>
+      </svg>
+      Одиночное письмо
+    </button>
+    
+    <button 
+      class="btn gap-2"
+      [class.btn-primary]="editorMode === 'chain'"
+      [class.btn-ghost]="editorMode !== 'chain'"
+      (click)="switchEditorMode('chain')">
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+        <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+      </svg>
+      Цепочка писем
+      <span *ngIf="existingChainTemplates.length > 0" class="badge badge-sm">
+        {{ existingChainTemplates.length }}
+      </span>
+    </button>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="flex items-center justify-center p-12">
+    <span class="loading loading-spinner loading-lg text-primary"></span>
+  </div>
+
+  <!-- Messages -->
+  <div *ngIf="errorMessage" class="alert alert-error m-4">
+    <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+    </svg>
+    <span>{{ errorMessage }}</span>
+  </div>
+
+  <div *ngIf="successMessage" class="alert alert-success m-4">
+    <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+    </svg>
+    <span>{{ successMessage }}</span>
+  </div>
+
   <!-- Main Content -->
-  <div class="editor-content grid grid-cols-2 gap-0 bg-base-100 rounded-b-xl overflow-hidden">
+  <div *ngIf="!loading" class="editor-content grid grid-cols-2 gap-0 bg-base-100 overflow-hidden">
     
     <!-- Left: Editor -->
-    <div class="editor-panel border-r border-base-300 p-6 overflow-y-auto" style="max-height: calc(90vh - 140px);">
-      <app-quiz-email-template-editor
-        [quizName]="quizName"
-        [grandPrize]="grandPrize"
-        [prizeForEveryOne]="prizeForEveryOne"
-        [initialConfig]="initialConfig"
-        [mode]="mode"
-        (configChange)="onConfigChange($event)"
-        (htmlChange)="onHtmlChange($event)">
-      </app-quiz-email-template-editor>
+    <div class="editor-panel border-r border-base-300 p-6 overflow-y-auto" style="max-height: calc(90vh - 200px);">
+      
+      <!-- Переключатель типа шаблона (только в single) -->
+      <div *ngIf="editorMode === 'single'" class="tabs tabs-boxed bg-base-200 mb-8 justify-center">
+        <!-- <a class="tab" 
+          [class.tab-active]="templateType === 'code'"
+          (click)="switchTemplateType('code')">
+          Код подтверждения 
+        </a> -->
+        <a class="tab" 
+          [class.tab-active]="templateType === 'result'"
+          (click)="switchTemplateType('result')">
+          Результаты квиза 
+        </a>
+      </div>
+
+      <!-- Single Email Editor -->
+      <!-- FIX: Теперь передаём currentConfig ВСЕГДА, а не только в create режиме -->
+      <ng-container *ngIf="editorMode === 'single'">
+        <app-quiz-email-template-editor
+          [quizName]="quizName"
+          [grandPrize]="grandPrize"
+          [prizeForEveryOne]="prizeForEveryOne"
+          [initialConfig]="currentConfig"
+          [mode]="mode"
+          (configChange)="onConfigChange($event)"
+          (htmlChange)="onHtmlChange($event)">
+        </app-quiz-email-template-editor>
+      </ng-container>
+
+      <!-- Chain Email Editor -->
+      <ng-container *ngIf="editorMode === 'chain'">
+        <app-chain-email-editor
+          [quizName]="quizName"
+          [quizId]="quizId"
+          [mode]="mode"
+          [chainType]="chainType"
+          [existingTemplates]="existingChainTemplates"
+          (stepsChange)="onChainStepsChange($event)"
+          (previewHtmlChange)="onChainPreviewChange($event)">
+          
+        </app-chain-email-editor>
+      </ng-container>
     </div>
 
     <!-- Right: Preview -->
-    <div class="preview-panel p-6 bg-base-200/50 overflow-y-auto" style="max-height: calc(90vh - 140px);">
-      <app-email-template-preview
-        [config]="currentConfig"
-        [variables]="previewVariables"
-        [html]="currentHtml">
-      </app-email-template-preview>
+    <div class="preview-panel p-6 bg-base-200/50 overflow-y-auto" style="max-height: calc(90vh - 200px);">
+        <app-email-template-preview
+          [config]="currentConfig"        
+          [variables]="previewVariables"
+          [html]="previewHtml">            
+        </app-email-template-preview>
     </div>
   </div>
 
   <!-- Footer Actions -->
-  <div class="editor-footer flex items-center justify-between p-4 bg-base-200 border-t border-base-300">
+  <div class="editor-footer flex items-center justify-between p-4 bg-base-200 border-t border-base-300 rounded-b-xl">
     <div class="text-sm text-base-content/60">
-      💡 Изменения сохранятся при сохранении квиза
+      <span *ngIf="editorMode === 'single'">
+        💡 Изменения сохранятся при сохранении квиза
+      </span>
+      <span *ngIf="editorMode === 'chain'">
+        💡 Цепочка: {{ chainSteps.length }} писем
+        <span *ngIf="hasDirtySteps" class="text-warning ml-2">• есть несохранённые изменения</span>
+      </span>
     </div>
     
     <div class="flex gap-3">
       <button class="btn btn-ghost" (click)="onClose()">
         Закрыть
       </button>
-      <button class="btn btn-primary gap-2" (click)="onClose()">
+      
+      <!-- Save SINGLE button -->
+      <button 
+        *ngIf="editorMode === 'single'"
+        class="btn btn-success gap-2" 
+        [disabled]="saving || !currentHtml"
+        (click)="saveSingleTemplate()">
+        <span *ngIf="saving" class="loading loading-spinner loading-sm"></span>
+        <svg *ngIf="!saving" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+          <polyline points="17 21 17 13 7 13 7 21"/>
+          <polyline points="7 3 7 8 15 8"/>
+        </svg>
+        Сохранить письмо
+      </button>
+
+      <!-- Save CHAIN button -->
+      <button 
+        *ngIf="editorMode === 'chain'"
+        class="btn btn-success gap-2" 
+        [disabled]="saving || chainSteps.length === 0"
+        (click)="saveChainTemplates()">
+        <span *ngIf="saving" class="loading loading-spinner loading-sm"></span>
+        <svg *ngIf="!saving" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+          <polyline points="17 21 17 13 7 13 7 21"/>
+          <polyline points="7 3 7 8 15 8"/>
+        </svg>
+        Сохранить цепочку
+      </button>
+      
+      <!-- <button class="btn btn-primary gap-2" (click)="onClose()">
         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <polyline points="20 6 9 17 4 12"/>
         </svg>
         Готово
-      </button>
+      </button> -->
     </div>
   </div>
 </div>

@@ -21,7 +21,7 @@ export class ViewPageComponent implements OnChanges {
       this.currentQuestionIndex = 0;
       this.applyTheme();
       this.parseThemeColors(this.quizData?.quizInfo || this.quizData?.theme || '');
-      console.log('Предпросмотр обновлён:', this.quizData);
+      // console.log('Предпросмотр обновлён:', this.quizData);
     }
   }
 
@@ -43,7 +43,7 @@ export class ViewPageComponent implements OnChanges {
       }
     });
 
-    console.log('Извлечённые цвета:', this.themeColors);
+    // console.log('Извлечённые цвета:', this.themeColors);
   }
 
   private applyTheme(): void {
@@ -54,10 +54,10 @@ export class ViewPageComponent implements OnChanges {
 
     const rawTheme = this.quizData?.theme || '';
 
-    console.log('[THEME] Исходная строка quizInfo/theme:', rawTheme);
+    // console.log('[THEME] Исходная строка quizInfo/theme:', rawTheme);
 
     if (!rawTheme.trim()) {
-      console.log('[THEME] Тема пустая — применяем дефолтные цвета');
+      // console.log('[THEME] Тема пустая — применяем дефолтные цвета');
       return;
     }
 
@@ -68,7 +68,7 @@ export class ViewPageComponent implements OnChanges {
       .replace(/;\s*;/g, ';')          // двойные ;; → ;
       .trim();
 
-    console.log('[THEME] После нормализации:', normalized);
+    // console.log('[THEME] После нормализации:', normalized);
 
     // 2. Разделяем на отдельные темы по "--primary:" (каждый новый набор начинается с него)
     const themes = normalized.split(/--primary:/);
@@ -87,7 +87,7 @@ export class ViewPageComponent implements OnChanges {
       lastThemePart = '--primary:' + lastThemePart;
     }
 
-    console.log('[THEME] Последний найденный набор переменных:', lastThemePart);
+    // console.log('[THEME] Последний найденный набор переменных:', lastThemePart);
 
     // 3. Формируем финальный CSS
     const cssContent = `:root { ${lastThemePart} }`;
@@ -98,7 +98,7 @@ export class ViewPageComponent implements OnChanges {
     this.renderer.appendChild(this.styleElement, this.renderer.createText(cssContent));
     this.renderer.appendChild(document.head, this.styleElement);
 
-    console.log('[THEME] Применён CSS в :root →', cssContent);
+    // console.log('[THEME] Применён CSS в :root →', cssContent);
   }
 
   get currentQuestion() {

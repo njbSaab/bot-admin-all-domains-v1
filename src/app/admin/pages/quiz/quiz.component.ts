@@ -22,6 +22,7 @@ export class QuizComponent implements OnInit {
   resultMessage: string = '';
   quizzesByLanding: { landing: QuizLandingPreview; quizzes: QuizPreview[] }[] = [];
   isEditLoad = false;
+
   constructor(
     private quizService: QuizAdminService,
     private cdr: ChangeDetectorRef
@@ -128,7 +129,7 @@ export class QuizComponent implements OnInit {
 
   // Запуск редактирования
   startEdit(preview: QuizPreview) {
-    console.log('startEdit вызван для quiz id:', preview.id);
+    // console.log('startEdit вызван для quiz id:', preview.id);
 
     this.isEditLoad = true;
     this.cdr.markForCheck(); // ← обновляем UI, показываем лоадер
@@ -148,7 +149,7 @@ export class QuizComponent implements OnInit {
 
           this.editingQuizId = preview.id; // ← важно! иногда забывают
 
-          console.log('editingQuiz установлен:', this.editingQuiz);
+          // console.log('editingQuiz установлен:', this.editingQuiz);
 
           this.isEditLoad = false;
           this.cdr.markForCheck(); // ← КРИТИЧЕСКИ важно после изменения состояния

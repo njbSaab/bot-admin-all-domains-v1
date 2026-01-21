@@ -1,14 +1,7 @@
-<!-- src/app/admin/pages/quiz/components/email-template-editor/email-template-editor.component.html -->
+<!-- src/app/admin/pages/quiz/ui/email-template-editor/email-template-editor.component.html -->
 
 <div class="email-editor-container" *ngIf="config$ | async as config">
-  
-  <!-- Info для edit режима -->
-  <div class="alert alert-info mb-4" *ngIf="mode === 'edit'">
-    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-    </svg>
-    <span>Редактируете шаблон для этого квиза. При сохранении будет создан новый HTML.</span>
-  </div>
+
 
   <!-- Tabs -->
   <div class="tabs tabs-boxed bg-base-200 mb-4">
@@ -32,6 +25,22 @@
   <!-- Content Section -->
   <div *ngIf="activeSection === 'content'" class="space-y-4">
     
+    <!-- Subject (Тема письма) - всегда видимо -->
+    <div class="form-control">
+      <label class="label">
+        <span class="label-text font-medium">📧 Тема письма (Subject)</span>
+        <span class="label-text-alt text-info" ngNonBindable>{{name}}, {{score}}</span>
+      </label>
+      <input type="text" 
+             [value]="config.subject"
+             (input)="updateConfig('subject', $any($event.target).value)"
+             class="input input-bordered w-full input-primary"
+             [placeholder]="subjectPlaceholder" />
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Logo URL - всегда видимо -->
     <div class="form-control">
       <label class="label">
         <span class="label-text font-medium">URL логотипа</span>
@@ -43,6 +52,7 @@
              placeholder="https://..." />
     </div>
 
+    <!-- Greeting - всегда видимо -->
     <div class="form-control">
       <label class="label">
         <span class="label-text font-medium">Приветствие</span>
@@ -55,6 +65,7 @@
              placeholder="Xin chào" />
     </div>
 
+    <!-- Title - всегда видимо -->
     <div class="form-control">
       <label class="label">
         <span class="label-text font-medium">Заголовок в шапке</span>
@@ -66,74 +77,152 @@
              placeholder="Chúc mừng bạn!" />
     </div>
 
-    <div class="form-control">
-      <label class="label">
-        <span class="label-text font-medium">Текст под баллами</span>
-        <span class="label-text-alt text-info" ngNonBindable>{{score}} = баллы</span>
-      </label>
-      <textarea 
-             [value]="config.highlightText"
-             (input)="updateConfig('highlightText', $any($event.target).value)"
-             class="textarea textarea-bordered w-full h-20"
-             placeholder="Số câu đúng: X / Y"></textarea>
-    </div>
+    <!-- ===================== TOGGLEABLE BLOCKS ===================== -->
 
-    <div class="form-control">
-      <label class="label">
-        <span class="label-text font-medium">Текст о призе (опционально)</span>
-      </label>
-      <textarea 
-             [value]="config.prizeText"
-             (input)="updateConfig('prizeText', $any($event.target).value)"
-             class="textarea textarea-bordered w-full h-20"
-             placeholder="Bạn nhận được phần thưởng đặc biệt!"></textarea>
-    </div>
-
-    <div class="form-control">
-      <label class="label">
-        <span class="label-text font-medium">Описание</span>
-      </label>
-      <textarea 
-             [value]="config.descriptionText"
-             (input)="updateConfig('descriptionText', $any($event.target).value)"
-             class="textarea textarea-bordered w-full h-24"
-             placeholder="Cảm ơn bạn đã tham gia..."></textarea>
-    </div>
-
-    <div class="form-control">
-      <label class="label">
-        <span class="label-text font-medium">Призыв к действию</span>
-      </label>
-      <input type="text" 
-             [value]="config.callToAction"
-             (input)="updateConfig('callToAction', $any($event.target).value)"
-             class="input input-bordered w-full"
-             placeholder="Nhận phần thưởng của bạn ngay!" />
-    </div>
-
-    <div class="grid grid-cols-2 gap-4">
-      <div class="form-control">
-        <label class="label">
-          <span class="label-text font-medium">Текст кнопки</span>
+    <!-- Highlight Block (Баллы) -->
+    <div class="card bg-base-200 p-4">
+      <div class="flex items-center justify-between mb-3">
+        <span class="font-medium">📊 Блок с баллами</span>
+        <label class="label cursor-pointer gap-2">
+          <span class="label-text text-sm">{{ config.showHighlight ? 'Вкл' : 'Выкл' }}</span>
+          <input type="checkbox" 
+                 [checked]="config.showHighlight"
+                 (change)="toggleBlock('showHighlight')"
+                 class="toggle toggle-success toggle-sm" />
         </label>
-        <input type="text" 
-               [value]="config.btnText"
-               (input)="updateConfig('btnText', $any($event.target).value)"
-               class="input input-bordered w-full"
-               placeholder="Nhận phần thưởng" />
       </div>
-      <div class="form-control">
-        <label class="label">
-          <span class="label-text font-medium">Ссылка кнопки</span>
-        </label>
-        <input type="url" 
-               [value]="config.btnLink"
-               (input)="updateConfig('btnLink', $any($event.target).value)"
-               class="input input-bordered w-full"
-               placeholder="https://..." />
+      <div [class.opacity-50]="!config.showHighlight" [class.pointer-events-none]="!config.showHighlight">
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text text-sm">Текст под баллами</span>
+            <span class="label-text-alt text-info text-xs" ngNonBindable>{{score}} = баллы</span>
+          </label>
+          <textarea 
+                 [value]="config.highlightText"
+                 (input)="updateConfig('highlightText', $any($event.target).value)"
+                 class="textarea textarea-bordered w-full h-16 text-sm"
+                 [placeholder]="scorePlaceholder"></textarea>
+        </div>
       </div>
     </div>
 
+    <!-- Prize Block -->
+    <div class="card bg-base-200 p-4">
+      <div class="flex items-center justify-between mb-3">
+        <span class="font-medium">🎁 Блок с призом</span>
+        <label class="label cursor-pointer gap-2">
+          <span class="label-text text-sm">{{ config.showPrize ? 'Вкл' : 'Выкл' }}</span>
+          <input type="checkbox" 
+                 [checked]="config.showPrize"
+                 (change)="toggleBlock('showPrize')"
+                 class="toggle toggle-warning toggle-sm" />
+        </label>
+      </div>
+      <div [class.opacity-50]="!config.showPrize" [class.pointer-events-none]="!config.showPrize">
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text text-sm">Текст о призе</span>
+          </label>
+          <textarea 
+                 [value]="config.prizeText"
+                 (input)="updateConfig('prizeText', $any($event.target).value)"
+                 class="textarea textarea-bordered w-full h-16 text-sm"
+                 placeholder="Bạn nhận được phần thưởng đặc biệt!"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- Description Block -->
+    <div class="card bg-base-200 p-4">
+      <div class="flex items-center justify-between mb-3">
+        <span class="font-medium">📝 Блок описания</span>
+        <label class="label cursor-pointer gap-2">
+          <span class="label-text text-sm">{{ config.showDescription ? 'Вкл' : 'Выкл' }}</span>
+          <input type="checkbox" 
+                 [checked]="config.showDescription"
+                 (change)="toggleBlock('showDescription')"
+                 class="toggle toggle-info toggle-sm" />
+        </label>
+      </div>
+      <div [class.opacity-50]="!config.showDescription" [class.pointer-events-none]="!config.showDescription">
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text text-sm">Описание</span>
+          </label>
+          <textarea 
+                 [value]="config.descriptionText"
+                 (input)="updateConfig('descriptionText', $any($event.target).value)"
+                 class="textarea textarea-bordered w-full h-20 text-sm"
+                 placeholder="Cảm ơn bạn đã tham gia..."></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- CTA Block -->
+    <div class="card bg-base-200 p-4">
+      <div class="flex items-center justify-between mb-3">
+        <span class="font-medium">📢 Призыв к действию</span>
+        <label class="label cursor-pointer gap-2">
+          <span class="label-text text-sm">{{ config.showCTA ? 'Вкл' : 'Выкл' }}</span>
+          <input type="checkbox" 
+                 [checked]="config.showCTA"
+                 (change)="toggleBlock('showCTA')"
+                 class="toggle toggle-accent toggle-sm" />
+        </label>
+      </div>
+      <div [class.opacity-50]="!config.showCTA" [class.pointer-events-none]="!config.showCTA">
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text text-sm">Текст призыва</span>
+          </label>
+          <input type="text" 
+                 [value]="config.callToAction"
+                 (input)="updateConfig('callToAction', $any($event.target).value)"
+                 class="input input-bordered input-sm w-full"
+                 placeholder="Nhận phần thưởng của bạn ngay!" />
+        </div>
+      </div>
+    </div>
+
+    <!-- Button Block -->
+    <div class="card bg-base-200 p-4">
+      <div class="flex items-center justify-between mb-3">
+        <span class="font-medium">🔘 Кнопка</span>
+        <label class="label cursor-pointer gap-2">
+          <span class="label-text text-sm">{{ config.showButton ? 'Вкл' : 'Выкл' }}</span>
+          <input type="checkbox" 
+                 [checked]="config.showButton"
+                 (change)="toggleBlock('showButton')"
+                 class="toggle toggle-primary toggle-sm" />
+        </label>
+      </div>
+      <div [class.opacity-50]="!config.showButton" [class.pointer-events-none]="!config.showButton">
+        <div class="grid grid-cols-2 gap-3">
+          <div class="form-control">
+            <label class="label">
+              <span class="label-text text-sm">Текст кнопки</span>
+            </label>
+            <input type="text" 
+                   [value]="config.btnText"
+                   (input)="updateConfig('btnText', $any($event.target).value)"
+                   class="input input-bordered input-sm w-full"
+                   placeholder="Nhận thưởng" />
+          </div>
+          <div class="form-control">
+            <label class="label">
+              <span class="label-text text-sm">Ссылка</span>
+            </label>
+            <input type="url" 
+                   [value]="config.btnLink"
+                   (input)="updateConfig('btnLink', $any($event.target).value)"
+                   class="input input-bordered input-sm w-full"
+                   placeholder="https://..." />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer - всегда видимо -->
     <div class="form-control">
       <label class="label">
         <span class="label-text font-medium">Текст футера</span>
@@ -141,14 +230,33 @@
       <textarea 
              [value]="config.footerText"
              (input)="updateConfig('footerText', $any($event.target).value)"
-             class="textarea textarea-bordered w-full h-20"
+             class="textarea textarea-bordered w-full h-16"
              placeholder="Cảm ơn bạn đã tham gia!"></textarea>
     </div>
   </div>
 
   <!-- Colors Section -->
   <div *ngIf="activeSection === 'colors'" class="space-y-6">
-    
+        <div class="card bg-base-200 p-4">
+      <h4 class="font-bold mb-4 text-primary">🔝 Шапка (градиент)</h4>
+      <div class="grid grid-cols-2 gap-4">
+        <div class="form-control">
+          <label class="label"><span class="label-text text-sm">Начало</span></label>
+          <div class="flex items-center gap-2">
+            <input type="color" [value]="config.headerBgStart" (input)="updateColor('headerBgStart', $event)" class="w-10 h-10 rounded cursor-pointer border" />
+            <span class="text-xs font-mono">{{ config.headerBgStart }}</span>
+          </div>
+        </div>
+        <div class="form-control">
+          <label class="label"><span class="label-text text-sm">Конец</span></label>
+          <div class="flex items-center gap-2">
+            <input type="color" [value]="config.headerBgEnd" (input)="updateColor('headerBgEnd', $event)" class="w-10 h-10 rounded cursor-pointer border" />
+            <span class="text-xs font-mono">{{ config.headerBgEnd }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="card bg-base-200 p-4">
       <h4 class="font-bold mb-4 text-primary">🎨 Основные цвета</h4>
       <div class="grid grid-cols-3 gap-4">
@@ -191,26 +299,6 @@
           <div class="flex items-center gap-2">
             <input type="color" [value]="config.textSecondaryColor" (input)="updateColor('textSecondaryColor', $event)" class="w-10 h-10 rounded cursor-pointer border" />
             <span class="text-xs font-mono">{{ config.textSecondaryColor }}</span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="card bg-base-200 p-4">
-      <h4 class="font-bold mb-4 text-primary">🔝 Шапка (градиент)</h4>
-      <div class="grid grid-cols-2 gap-4">
-        <div class="form-control">
-          <label class="label"><span class="label-text text-sm">Начало</span></label>
-          <div class="flex items-center gap-2">
-            <input type="color" [value]="config.headerBgStart" (input)="updateColor('headerBgStart', $event)" class="w-10 h-10 rounded cursor-pointer border" />
-            <span class="text-xs font-mono">{{ config.headerBgStart }}</span>
-          </div>
-        </div>
-        <div class="form-control">
-          <label class="label"><span class="label-text text-sm">Конец</span></label>
-          <div class="flex items-center gap-2">
-            <input type="color" [value]="config.headerBgEnd" (input)="updateColor('headerBgEnd', $event)" class="w-10 h-10 rounded cursor-pointer border" />
-            <span class="text-xs font-mono">{{ config.headerBgEnd }}</span>
           </div>
         </div>
       </div>
@@ -267,7 +355,7 @@
   <!-- Advanced Section -->
   <div *ngIf="activeSection === 'advanced'" class="space-y-4">
     
-    <div class="alert alert-info">
+    <!-- <div class="alert alert-info">
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
       </svg>
@@ -277,10 +365,12 @@
           <code class="bg-base-300 px-1 rounded">{{name}}</code> — имя пользователя<br>
           <code class="bg-base-300 px-1 rounded">{{score}}</code> — баллы (%)<br>
           <code class="bg-base-300 px-1 rounded">{{quizTitle}}</code> — название квиза<br>
+          <code class="bg-base-300 px-1 rounded">{{correct}}</code> — правильных ответов<br>
+          <code class="bg-base-300 px-1 rounded">{{total}}</code> — всего вопросов<br>
           <code class="bg-base-300 px-1 rounded">{{year}}</code> — текущий год
         </p>
       </div>
-    </div>
+    </div> -->
 
     <div class="card bg-base-200 p-4">
       <h4 class="font-bold mb-4">🔍 Тестовые данные для превью</h4>
@@ -293,6 +383,43 @@
           <label class="label"><span class="label-text text-sm">Баллы</span></label>
           <input type="number" [(ngModel)]="previewVariables.score" class="input input-bordered input-sm w-full" />
         </div>
+      </div>
+    </div>
+
+    <!-- Быстрые действия с блоками -->
+    <div class="card bg-base-200 p-4">
+      <h4 class="font-bold mb-4">⚡ Быстрое управление блоками</h4>
+      <div class="flex flex-wrap gap-2">
+        <button class="btn btn-sm" 
+                [class.btn-success]="config.showHighlight"
+                [class.btn-ghost]="!config.showHighlight"
+                (click)="toggleBlock('showHighlight')">
+          📊 Баллы
+        </button>
+        <button class="btn btn-sm" 
+                [class.btn-warning]="config.showPrize"
+                [class.btn-ghost]="!config.showPrize"
+                (click)="toggleBlock('showPrize')">
+          🎁 Приз
+        </button>
+        <button class="btn btn-sm" 
+                [class.btn-info]="config.showDescription"
+                [class.btn-ghost]="!config.showDescription"
+                (click)="toggleBlock('showDescription')">
+          📝 Описание
+        </button>
+        <button class="btn btn-sm" 
+                [class.btn-accent]="config.showCTA"
+                [class.btn-ghost]="!config.showCTA"
+                (click)="toggleBlock('showCTA')">
+          📢 CTA
+        </button>
+        <button class="btn btn-sm" 
+                [class.btn-primary]="config.showButton"
+                [class.btn-ghost]="!config.showButton"
+                (click)="toggleBlock('showButton')">
+          🔘 Кнопка
+        </button>
       </div>
     </div>
 

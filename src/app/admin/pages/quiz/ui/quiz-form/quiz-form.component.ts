@@ -1,8 +1,16 @@
+// src/app/admin/pages/quiz/components/quiz-form/quiz-form.component.ts
+
 import { Component, EventEmitter, Input, Output, OnInit, OnDestroy, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { QuizFormData, QuizQuestion, QuizAnswer, QuizServerPayload } from '../../interfaces/quiz-form.interface';
 import { DraftService } from '../../../../../shared/services/draft-quiz.service';
-import { EmailTemplateConfig } from '../../interfaces/email-template.interface';
+import { 
+  EmailTemplateConfig, 
+  ChainEmailStep,
+  ChainTemplate,
+  delayMinutesToLabel,
+  DEFAULT_EMAIL_CONFIG,
+} from '../../interfaces/email-template.interface';
 import { EmailTemplateService } from '../../../../../shared/services/email-template.service';
 import { environment } from '../../../../../../environments/environment';
 
@@ -26,8 +34,13 @@ export class QuizFormComponent implements OnInit, OnDestroy {
   emailHtml: string = '';
   existingTemplates: any[] = [];
   
-  // NEW: Загруженный шаблон из БД
+  // Загруженный шаблон result из БД
   loadedResultTemplate: { html: string; subject: string } | null = null;
+
+  // NEW: Цепочка писем
+  existingChainTemplates: ChainTemplate[] = [];
+  chainSteps: ChainEmailStep[] = [];
+  chainLoading = false;
 
   form$ = new BehaviorSubject<QuizFormData>(this.getDefaultForm());
 
@@ -72,6 +85,7 @@ export class QuizFormComponent implements OnInit, OnDestroy {
       // Загружаем существующие email шаблоны для этого квиза
       if (this.quizNumericId) {
         this.loadEmailTemplates(this.quizNumericId);
+        this.loadChainTemplates(this.quizNumericId);  // NEW: Загружаем цепочку
       }
     } else {
       const draft = this.draftService.loadDraft(this.draftService.getCreateDraftKey());
@@ -99,7 +113,7 @@ export class QuizFormComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Загрузить существующие email шаблоны для квиза
+   * Загрузить существующие email шаблоны для квиза (result)
    */
   private loadEmailTemplates(quizId: number): void {
     const domain = this.getDomain();
@@ -107,22 +121,110 @@ export class QuizFormComponent implements OnInit, OnDestroy {
 
     this.emailTemplateService.getTemplates(domain, app, quizId).subscribe(templates => {
       this.existingTemplates = templates;
-      console.log('Загружены email шаблоны для квиза:', templates);
+      // console.log('Загружены email шаблоны для квиза:', templates);
 
-      // NEW: Находим шаблон 'result' и сохраняем для редактора
       const resultTemplate = templates.find((t: any) => t.type === 'result');
       if (resultTemplate) {
         this.loadedResultTemplate = {
           html: resultTemplate.html,
           subject: resultTemplate.subject
         };
-        // Устанавливаем HTML для сохранения
         this.emailHtml = resultTemplate.html;
-        console.log('Найден result шаблон:', this.loadedResultTemplate);
+        // console.log('Найден result шаблон:', this.loadedResultTemplate);
       }
 
       this.cdr.markForCheck();
     });
+  }
+
+  /**
+   * NEW: Загрузить цепочку писем для квиза
+   */
+private loadChainTemplates(quizId: number): void {
+  const app = this.getApp();
+  
+  if (!app) {
+    console.warn('App не задан, цепочка писем не будет загружена');
+    return;
+  }
+
+  this.chainLoading = true;
+  this.cdr.markForCheck();
+
+  // УПРОЩЁННЫЙ запрос: только app + quizId
+  this.emailTemplateService.getChainTemplates(app, quizId)
+    .subscribe({
+      next: (templates) => {
+        this.existingChainTemplates = templates;
+        // console.log('Загружены chain шаблоны:', templates);
+
+        if (templates.length > 0) {
+          this.chainSteps = templates
+            .sort((a, b) => a.step - b.step)
+            .map(tmpl => this.chainTemplateToStep(tmpl));
+          // console.log('Конвертированные chain steps:', this.chainSteps);
+        }
+
+        this.chainLoading = false;
+        this.cdr.markForCheck();
+      },
+      error: (err) => {
+        console.error('Ошибка загрузки chain шаблонов:', err);
+        this.chainLoading = false;
+        this.cdr.markForCheck();
+      }
+    });
+}
+
+
+  /**
+   * NEW: Конвертировать ChainTemplate из БД в ChainEmailStep для редактора
+   */
+  private chainTemplateToStep(tmpl: ChainTemplate): ChainEmailStep {
+    return {
+      step: tmpl.step,
+      delayMinutes: tmpl.delayMinutes,
+      delayLabel: delayMinutesToLabel(tmpl.delayMinutes),
+      subject: tmpl.subject,
+      html: tmpl.html,
+      config: this.extractConfigFromHtml(tmpl.html),
+      isExpanded: false,
+      isDirty: false,
+    };
+  }
+
+  /**
+   * Базовое извлечение config из HTML (можно расширить)
+   */
+  private extractConfigFromHtml(html: string): EmailTemplateConfig {
+    // Пока возвращаем дефолт, но можно парсить цвета из HTML
+    const config = { ...DEFAULT_EMAIL_CONFIG };
+    
+    // Попытка извлечь некоторые значения из HTML
+    const titleMatch = html.match(/<div[^>]*style="[^"]*font-size:\s*26px[^"]*"[^>]*>([^<]+)<\/div>/i);
+    if (titleMatch) {
+      config.titleText = titleMatch[1].trim();
+    }
+
+    const greetingMatch = html.match(/font-size:\s*22px[^>]*>([^,<]+),/i);
+    if (greetingMatch) {
+      config.greeting = greetingMatch[1].trim();
+    }
+
+    // Извлекаем цвет из header gradient
+    const headerBgMatch = html.match(/linear-gradient\(135deg,\s*(#[0-9a-fA-F]{6})\s*0%,\s*(#[0-9a-fA-F]{6})/i);
+    if (headerBgMatch) {
+      config.headerBgStart = headerBgMatch[1];
+      config.headerBgEnd = headerBgMatch[2];
+    }
+
+    // Извлекаем primary color
+    const primaryMatch = html.match(/color:\s*(#[0-9a-fA-F]{6})[^>]*>\{\{name\}\}/i);
+    if (primaryMatch) {
+      config.primaryColor = primaryMatch[1];
+    }
+
+    return config;
   }
 
   /**
@@ -133,7 +235,7 @@ export class QuizFormComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Получить app из environment (если есть)
+   * Получить app из environment
    */
   private getApp(): string | undefined {
     return environment.auth.app;
@@ -329,59 +431,111 @@ export class QuizFormComponent implements OnInit, OnDestroy {
     this.errorMessage = null;
     this.cdr.markForCheck();
 
-    // Сначала сохраняем email шаблоны (если они были отредактированы)
-    if (this.emailConfig && this.emailHtml) {
-      this.saveEmailTemplates(form).then(() => {
-        this.submitQuiz(form);
-      }).catch(err => {
-        console.error('Ошибка сохранения email шаблонов:', err);
-        this.errorMessage = 'Ошибка сохранения email шаблонов';
-        this.loading = false;
-        this.cdr.markForCheck();
-      });
-    } else {
+    // Сохраняем email шаблоны и цепочку параллельно
+    Promise.all([
+      this.saveEmailTemplates(form),
+      this.saveChainTemplates(),  // NEW: Сохраняем цепочку
+    ]).then(() => {
       this.submitQuiz(form);
-    }
+    }).catch(err => {
+      console.error('Ошибка сохранения шаблонов:', err);
+      this.errorMessage = 'Ошибка сохранения email шаблонов';
+      this.loading = false;
+      this.cdr.markForCheck();
+    });
   }
 
   /**
-   * Сохранить email шаблоны для квиза
+   * Сохранить email шаблоны для квиза (result)
    */
-private async saveEmailTemplates(form: QuizFormData): Promise<void> {
-  if (!this.emailConfig || !this.emailHtml) return;
-  
-  if (!this.quizNumericId) {
-    console.warn('Нет числового ID квиза, шаблоны будут сохранены после создания квиза');
+  private async saveEmailTemplates(form: QuizFormData): Promise<void> {
+    if (!this.emailConfig || !this.emailHtml) return;
+    
+    if (!this.quizNumericId) {
+      console.warn('Нет числового ID квиза, шаблоны будут сохранены после создания квиза');
+      return;
+    }
+
+    const domain = this.getDomain();
+    const app = this.getApp();
+
+    const templateData = {
+      domain,
+      app,
+      quiz_id: this.quizNumericId,
+      type: 'result' as const,
+      subject: this.emailConfig.greeting || 'Результаты квиза',
+      html: this.emailHtml
+    };
+
+    // console.log('Saving result template with data:', templateData);
+
+    return new Promise((resolve, reject) => {
+      this.emailTemplateService.updateTemplateByClient(templateData).subscribe(result => {
+        // console.log('Save result template:', result);
+        if (result.success) {
+          resolve();
+        } else {
+          reject(new Error(result.error || 'Ошибка сохранения шаблона'));
+        }
+      });
+    });
+  }
+
+  /**
+   * NEW: Сохранить цепочку писем
+   */
+private async saveChainTemplates(): Promise<void> {
+  if (this.chainSteps.length === 0) {
+    // console.log('Нет chain steps для сохранения');
     return;
   }
 
-  const domain = this.getDomain();
+  const dirtySteps = this.chainSteps.filter(s => s.isDirty);
+  if (dirtySteps.length === 0 && this.existingChainTemplates.length > 0) {
+    // console.log('Нет изменений в chain steps');
+    return;
+  }
+
+  if (!this.quizNumericId) {
+    console.warn('Нет ID квиза, цепочка не будет сохранена');
+    return;
+  }
+
   const app = this.getApp();
+  if (!app) {
+    console.warn('App не задан, цепочка не будет сохранена');
+    return;
+  }
 
-  const templateData = {
-    domain,
-    app,
-    quiz_id: this.quizNumericId,
-    type: 'result' as const,
-    subject: this.emailConfig.greeting || 'Результаты квиза',
-    html: this.emailHtml
-  };
+  const templates = this.chainSteps.map(step => ({
+    step: step.step,
+    delayMinutes: step.delayMinutes,
+    subject: step.subject,
+    html: step.html,
+  }));
 
-  // DEBUG
-  console.log('Saving template with data:', templateData);
+  // console.log('Saving chain templates:', { app, quizId: this.quizNumericId, templates });
 
   return new Promise((resolve, reject) => {
-    this.emailTemplateService.updateTemplateByClient(templateData).subscribe(result => {
-      console.log('Save result:', result);
+    this.emailTemplateService.upsertChainTemplatesBulk({
+      app,
+      quizId: this.quizNumericId!,
+      chainType: 'PERSONAL',
+      templates,
+      domain: this.getDomain(),  // Для создания новых
+    }).subscribe(result => {
+      // console.log('Save chain templates result:', result);
       if (result.success) {
-        console.log('Email шаблон сохранен:', result);
+        this.chainSteps.forEach(s => s.isDirty = false);
         resolve();
       } else {
-        reject(new Error(result.error || 'Ошибка сохранения шаблона'));
+        reject(new Error(result.error || 'Ошибка сохранения цепочки'));
       }
     });
   });
 }
+
 
   /**
    * Отправить данные квиза
@@ -471,6 +625,14 @@ private async saveEmailTemplates(form: QuizFormData): Promise<void> {
 
   onEmailHtmlChange(html: string): void {
     this.emailHtml = html;
+  }
+
+  /**
+   * NEW: Обработчик изменений цепочки из редактора
+   */
+  onChainStepsChange(steps: ChainEmailStep[]): void {
+    this.chainSteps = steps;
+    // console.log('Chain steps updated from editor:', steps);
   }
   
   autoCloseMessage(): void {

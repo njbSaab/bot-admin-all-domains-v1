@@ -40,6 +40,7 @@ import { ViewPageComponent } from './pages/quiz/ui/quiz-form/view-page/view-page
 import { EmailTemplatePreviewComponent } from './pages/quiz/ui/email-template-preview/email-template-preview.component';
 import { EmailEditorContainerComponent } from './pages/quiz/ui/email-editor-container/email-editor-container.component';
 import { QuizEmailTemplateEditorComponent } from './pages/quiz/ui/email-template-editor/email-template-editor.component';
+import { ChainEmailEditorComponent } from './pages/quiz/ui/chain-email-editor/chain-email-editor.component';
 
 @NgModule({
   declarations: [
@@ -79,7 +80,8 @@ import { QuizEmailTemplateEditorComponent } from './pages/quiz/ui/email-template
     ViewPageComponent,
     EmailTemplatePreviewComponent,
     EmailEditorContainerComponent,
-    QuizEmailTemplateEditorComponent
+    QuizEmailTemplateEditorComponent,
+    ChainEmailEditorComponent
   ],
   imports: [
     CommonModule,

@@ -1,4 +1,4 @@
-// src/app/admin/pages/quiz/components/email-template-editor/email-template-editor.component.ts
+// src/app/admin/pages/quiz/ui/email-template-editor/email-template-editor.component.ts
 
 import { Component, Input, Output, EventEmitter, OnInit, OnChanges, SimpleChanges, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
@@ -26,6 +26,10 @@ export class QuizEmailTemplateEditorComponent implements OnInit, OnChanges {
 
   config$ = new BehaviorSubject<EmailTemplateConfig>({ ...DEFAULT_EMAIL_CONFIG });
 
+  // Placeholder строки с переменными шаблона (Angular не будет их интерполировать)
+  readonly subjectPlaceholder = 'Chúc mừng {{name}}! Bạn đạt {{score}}% điểm';
+  readonly scorePlaceholder = 'Bạn đã đạt được {{score}}% điểm!';
+
   previewVariables: EmailTemplateVariables = {
     name: 'Nguyen',
     score: 85,
@@ -41,26 +45,63 @@ export class QuizEmailTemplateEditorComponent implements OnInit, OnChanges {
   constructor(private cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {
+    console.log('[Editor] ngOnInit, mode:', this.mode);
+    console.log('[Editor] ngOnInit, initialConfig:', this.initialConfig);
     this.initConfig();
   }
 
+  // FIX: Теперь initialConfig применяется и в edit, и в create режиме
   ngOnChanges(changes: SimpleChanges): void {
+    console.log('[Editor] ngOnChanges called');
+    
     if (changes['quizName'] || changes['grandPrize'] || changes['prizeForEveryOne']) {
       this.updatePreviewVariables();
     }
+
+    // Логируем изменение initialConfig
+    if (changes['initialConfig']) {
+      console.log('[Editor] initialConfig changed:');
+      console.log('[Editor]   previousValue:', changes['initialConfig'].previousValue);
+      console.log('[Editor]   currentValue:', changes['initialConfig'].currentValue);
+      console.log('[Editor]   firstChange:', changes['initialConfig'].firstChange);
+    }
+
+    // Применяем initialConfig когда он приходит (и в edit, и в create)
     if (changes['initialConfig'] && this.initialConfig) {
-      this.config$.next({ ...DEFAULT_EMAIL_CONFIG, ...this.initialConfig });
-      this.emitChanges(this.config$.value);
+      const newConfig = { ...DEFAULT_EMAIL_CONFIG, ...this.initialConfig };
+      console.log('[Editor] Applying new config:', newConfig);
+      console.log('[Editor]   greeting:', newConfig.greeting);
+      console.log('[Editor]   titleText:', newConfig.titleText);
+      console.log('[Editor]   logoUrl:', newConfig.logoUrl);
+      
+      this.config$.next(newConfig);
+      this.emitChanges(newConfig);
+      this.cdr.markForCheck();
     }
   }
 
   private initConfig(): void {
+    console.log('[Editor] initConfig, mode:', this.mode);
+    
+    if (this.mode === 'edit') {
+      // В edit ждём реальных данных из [initialConfig]
+      if (this.initialConfig) {
+        console.log('[Editor] initConfig: edit mode with initialConfig');
+        this.config$.next({ ...DEFAULT_EMAIL_CONFIG, ...this.initialConfig });
+      } else {
+        console.log('[Editor] initConfig: edit mode WITHOUT initialConfig, using defaults');
+        this.config$.next({ ...DEFAULT_EMAIL_CONFIG });
+      }
+      return;
+    }
+
+    // create
     const config = this.initialConfig 
       ? { ...DEFAULT_EMAIL_CONFIG, ...this.initialConfig }
       : { ...DEFAULT_EMAIL_CONFIG };
     
+    console.log('[Editor] initConfig: create mode, config:', config);
     this.config$.next(config);
-    this.updatePreviewVariables();
     this.emitChanges(config);
   }
 
@@ -73,7 +114,16 @@ export class QuizEmailTemplateEditorComponent implements OnInit, OnChanges {
     };
   }
 
+  // Обновление текстовых полей
   updateConfig(key: keyof EmailTemplateConfig, value: string): void {
+    const current = this.config$.value;
+    const updated = { ...current, [key]: value };
+    this.config$.next(updated);
+    this.emitChanges(updated);
+  }
+
+  // Обновление boolean полей (чекбоксы)
+  updateConfigBool(key: keyof EmailTemplateConfig, value: boolean): void {
     const current = this.config$.value;
     const updated = { ...current, [key]: value };
     this.config$.next(updated);
@@ -90,6 +140,13 @@ export class QuizEmailTemplateEditorComponent implements OnInit, OnChanges {
   private emitChanges(config: EmailTemplateConfig): void {
     this.configChange.emit(config);
     this.htmlChange.emit(this.generateHtml(config));
+  }
+
+  toggleBlock(key: keyof EmailTemplateConfig): void {
+    const current = this.config$.value;
+    const updated = { ...current, [key]: !current[key] };
+    this.config$.next(updated);
+    this.emitChanges(updated);
   }
 
   generateHtml(config: EmailTemplateConfig): string {
@@ -128,7 +185,7 @@ export class QuizEmailTemplateEditorComponent implements OnInit, OnChanges {
     <div class="content">
       <p class="greeting">${config.greeting}, <strong>{{name}}</strong>! {{quizTitle}}</p>
 
-      ${config.highlightText ? `
+      ${config.showHighlight ? `
       <div class="highlight-box">
         <div>Điểm số của bạn</div>
         <div class="score">{{score}}%</div>
@@ -136,25 +193,27 @@ export class QuizEmailTemplateEditorComponent implements OnInit, OnChanges {
       </div>
       ` : ''}
 
-      ${config.prizeText ? `
+      ${config.showPrize && config.prizeText ? `
       <div class="prize-box">
         <strong>Chú ý!</strong> ${config.prizeText}
       </div>
       ` : ''}
 
-      ${config.descriptionText ? `
+      ${config.showDescription && config.descriptionText ? `
       <div class="description">${config.descriptionText}</div>
       ` : ''}
 
-      ${config.callToAction ? `
+      ${config.showCTA && config.callToAction ? `
       <div class="cta-box">
         <p style="margin: 0; font-weight: 600;">${config.callToAction}</p>
       </div>
       ` : ''}
 
+      ${config.showButton ? `
       <div style="text-align: center; margin: 40px 0;">
         <a href="${config.btnLink}" class="btn">${config.btnText}</a>
       </div>
+      ` : ''}
     </div>
 
     <div class="footer">

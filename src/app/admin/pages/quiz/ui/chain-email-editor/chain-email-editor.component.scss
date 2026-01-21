@@ -1,0 +1,48 @@
+// src/app/admin/pages/quiz/components/chain-email-editor/chain-email-editor.component.scss
+
+.chain-editor {
+  .timeline-wrapper {
+    .timeline-step {
+      cursor: pointer;
+      transition: all 0.2s ease;
+      
+      &:hover:not(.active) {
+        background: var(--fallback-p, oklch(var(--p) / 0.1));
+      }
+      
+      &.active {
+        transform: scale(1.05);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      }
+    }
+  }
+  
+  .steps-list {
+    .step-card {
+      transition: all 0.3s ease;
+      
+      &:hover:not(:has(.step-content)) {
+        border-color: var(--fallback-p, oklch(var(--p) / 0.5));
+      }
+    }
+    
+    .step-header {
+      transition: background 0.2s ease;
+    }
+    
+    .step-content {
+      animation: slideDown 0.3s ease;
+    }
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    max-height: 0;
+  }
+  to {
+    opacity: 1;
+    max-height: 2000px;
+  }
+}

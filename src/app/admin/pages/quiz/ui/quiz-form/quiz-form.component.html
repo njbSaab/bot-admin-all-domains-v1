@@ -1,4 +1,4 @@
-<div class="flex flex-row gap-8 max-h-[100dvh] overflow-hidden py-[20px] bg-gradient-to-r from-indigo-800 via-indigo-500 to-indigo-200" *ngIf="form$ | async as form">
+<div class="flex flex-row gap-8 max-h-[100dvh] overflow-hidden py-[20px] bg-gradient-to-r from-indigo-800 via-indigo-500 to-indigo-200 w-full" *ngIf="form$ | async as form">
 
   <div class="card h-[100dvh] bg-base-100 shadow-xl w-full max-w-5xl mx-auto rounded-2xl overflow-hidden border border-base-200/60">
     <div class="card-body p-6 pb-[50px] h-full overflow-y-auto">
@@ -451,32 +451,45 @@
         </div>
       </div>
 
-      <!-- Редактор Email шаблона -->
+      <!-- Редактор Email шаблона - обновляем кнопку -->
       <div class="mt-12">
-        <button class="btn btn-outline btn-primary gap-2 w-full" 
-                (click)="showEmailEditor = !showEmailEditor">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <button class="btn email-btn btn-outline btn-success gap-2 w-full" 
+                (click)="showEmailEditor = !showEmailEditor"
+                [disabled]="chainLoading">
+          <span *ngIf="chainLoading" class="loading loading-spinner loading-sm"></span>
+          <svg *ngIf="!chainLoading" xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
             <polyline points="22,6 12,13 2,6"/>
           </svg>
-          {{ showEmailEditor ? 'Скрыть' : 'Редактировать' }} Email шаблон
+          {{ showEmailEditor ? 'Скрыть' : 'Редактировать' }} Email шаблоны
+          
+          <!-- Показываем количество писем в цепочке -->
+          <!-- <span *ngIf="existingChainTemplates.length > 0" class="badge badge-success ml-2">
+            Цепочка: {{ existingChainTemplates.length }} писем
+          </span> -->
         </button>
       </div>
 
 
-<!-- Email Editor Modal -->
-<div *ngIf="showEmailEditor" 
-    class="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
-  <div class="w-full max-w-7xl h-[90vh]">
-    <app-email-editor-container
-      [quizName]="form.name"
-      [mode]="mode"
-      (configChange)="onEmailConfigChange($event)"
-      (htmlChange)="onEmailHtmlChange($event)"
-      (close)="showEmailEditor = false">
-    </app-email-editor-container>
-  </div>
-</div>
+      <!-- Email Editor Modal - передаём все необходимые данные -->
+      <div *ngIf="showEmailEditor" 
+          class="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
+        <div class="w-full max-w-7xl h-[90vh]">
+          <app-email-editor-container
+            [quizName]="(form$ | async)?.name || ''"
+            [quizId]="quizNumericId"
+            [grandPrize]="(form$ | async)?.grandPrize || ''"
+            [prizeForEveryOne]="(form$ | async)?.prizeForEveryOne || ''"
+            [initialConfig]="null"
+            [mode]="mode"
+            [existingChainTemplates]="existingChainTemplates"
+            (configChange)="onEmailConfigChange($event)"
+            (htmlChange)="onEmailHtmlChange($event)"
+            (chainStepsChange)="onChainStepsChange($event)"
+            (close)="showEmailEditor = false">
+          </app-email-editor-container>
+        </div>
+      </div>
 
 
       <!-- Кнопки сохранения -->
