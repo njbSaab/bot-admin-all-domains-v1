@@ -3,20 +3,25 @@ export const environment = {
   auth: {
     email: 'admin-bot-1x',
     password: 'tJfB59iWxAXL',
-    apiUrl: 'https://vi.devsmm.pro/api/',
-    baseUrl: 'https://vi.devsmm.pro',
-    apiUrlEventLandings: 'https://forecast-server.najib-saab.workers.dev/vietget-admin/landings',
-    apiUrlEvents: 'https://forecast-server.najib-saab.workers.dev/vietget-admin/events',
-    apiUrlEventsStatistics: 'https://forecast-server.najib-saab.workers.dev/statistics',
-    imageUrl: 'https://vi.devsmm.pro',
-    secret:  'vietget-admin',
-    domenUrl: 'https://vietget.online/',
-    localQuiz: 'http://localhost:3110',
-    adminSecretQuiz: 'top4winner-admin-qusmm',
-    geo: 'vn',
-    emailServiceUrl: 'http://localhost:3500',
-    app: 'qusmm-vn',     
-    emailDomein: 'vietget.online'
+
+
+    // vn
+    // apiUrl: 'https://vi.devsmm.pro/api/',
+    // baseUrl: 'https://vi.devsmm.pro',
+    // apiUrlEventLandings: 'https://forecast-server.najib-saab.workers.dev/vietget-admin/landings',
+    // apiUrlEvents: 'https://forecast-server.najib-saab.workers.dev/vietget-admin/events',
+    // apiUrlEventsStatistics: 'https://forecast-server.najib-saab.workers.dev/statistics',
+    // imageUrl: 'https://vi.devsmm.pro',
+    // secret:  'vietget-admin',
+    // domenUrl: 'https://vietget.online/',
+    // // localQuiz: 'http://localhost:3110',
+    // localQuiz: 'https://dev.devsmm.pro',
+    // localStorage: 'https://dev.devsmm.pro',
+    // adminSecretQuiz: 'top4winner-admin-qusmm',
+    // geo: 'vn',
+    // emailServiceUrl: 'http://localhost:3500',
+    // app: 'qusmm-vn',     
+    // emailDomein: 'vietget.online'
 
 
     // kr
@@ -27,16 +32,31 @@ export const environment = {
     // apiUrlEventsStatistics: 'https://forecast-server-kr.najib-saab.workers.dev/statistics',
     // imageUrl: 'https://vi.devsmm.pro',
     // secret:  '1xarea-admin',
-    // domenUrl: 'https://1xarea.com/'
+    // domenUrl: 'https://1xarea.com/',
+    // // localQuiz: 'http://localhost:3110',
+    // localQuiz: 'https://dev.devsmm.pro',
+    // localStorage: 'https://dev.devsmm.pro',
+    // adminSecretQuiz: 'top4winner-admin-qusmm',
+    // geo: 'kr',
+    // emailServiceUrl: 'http://localhost:3500',
+    // app: 'qusmm-kr',     
+    // emailDomein: 'https://1xarea.com'    
 
     //jp
-    // apiUrl: 'https://jp.devsmm.pro/api/',
-    // baseUrl: 'https://jp.devsmm.pro',
-    // imageUrl: 'https://vi.devsmm.pro',
-    // apiUrlEventLandings: 'https://forecast-server-jp.najib-saab.workers.dev/1xjet-admin/landings',
-    // apiUrlEvents: 'https://forecast-server-jp.najib-saab.workers.dev/1xjet-admin/events',
-    // apiUrlEventsStatistics: 'https://forecast-server-jp.najib-saab.workers.dev/statistics',
-    // secret: '1xjet-admin',
-    // domenUrl: 'https://1xjet.jp/'
+      apiUrl: 'https://jp.devsmm.pro/api/',
+      baseUrl: 'https://jp.devsmm.pro',
+      imageUrl: 'https://vi.devsmm.pro',
+      apiUrlEventLandings: 'https://forecast-server-jp.najib-saab.workers.dev/1xjet-admin/landings',
+      apiUrlEvents: 'https://forecast-server-jp.najib-saab.workers.dev/1xjet-admin/events',
+      apiUrlEventsStatistics: 'https://forecast-server-jp.najib-saab.workers.dev/statistics',
+      secret: '1xjet-admin',
+      domenUrl: 'https://1xjet.jp/',
+      localQuiz: 'https://dev.devsmm.pro',
+      localStorage: 'https://dev.devsmm.pro',
+      adminSecretQuiz: 'top4winner-admin-qusmm',
+      geo: 'jp',
+      emailServiceUrl: 'http://localhost:3500',
+      app: 'qusmm-jp',     
+      emailDomein: 'https://1xjet.jp'    
   }
 };
